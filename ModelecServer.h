@@ -5,6 +5,8 @@
 class ModelecServer : public TCPServer {
 
 public:
+    void acceptConnections() override;
+
     ~ModelecServer() override;
 
     explicit ModelecServer(int port);

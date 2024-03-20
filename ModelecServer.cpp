@@ -1,5 +1,10 @@
 #include "ModelecServer.h"
 
+void ModelecServer::acceptConnections()
+{
+    TCPServer::acceptConnections();
+}
+
 ModelecServer::~ModelecServer()
 {
     this->stop();
