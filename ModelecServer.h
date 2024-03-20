@@ -7,5 +7,5 @@ class ModelecServer : public TCPServer {
 public:
     ModelecServer(int port);
 
-    void handleMessage(const std::string& message, int clientSocket) override;
+    void handleMessage(const std::string& message, int clientSocket = -1) override;
 };
