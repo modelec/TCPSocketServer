@@ -14,7 +14,7 @@ int main() {
     signal(SIGTERM, signalHandler);
     signal(SIGINT, signalHandler);
 
-    TCPServer server(8082);
+    TCPServer server(8080);
 
     try {
         server.start();
