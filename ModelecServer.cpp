@@ -1,5 +1,10 @@
 #include "ModelecServer.h"
 
+ModelecServer::~ModelecServer()
+{
+    this->stop();
+}
+
 ModelecServer::ModelecServer(int port) : TCPServer(port)
 {
 
