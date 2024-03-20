@@ -7,7 +7,7 @@ ModelecServer::ModelecServer(int port) : TCPServer(port)
 
 void ModelecServer::handleMessage(const std::string& message, int clientSocket)
 {
-    if (startWith(message, "request robotPos"))
+    if (startWith(message, "request robotPose"))
     {
         this->broadcastMessage("robotPos 25 24 23 2");
     }
