@@ -101,7 +101,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     if (message.find("request robotPose") != std::string::npos)
     {
         broadcastMessage("robotPose 12 13 14 15");
-    } else if (message.rfind("arucoTag", 0) == 0)
+    } else if (message.rfind("arucotags", 0) == 0)
     {
         std::cout << "Received aruco tag: " << message << std::endl;
     }
