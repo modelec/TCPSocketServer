@@ -1,7 +1,7 @@
 #include <atomic>
 #include <csignal>
 
-#include <TCPSocket/TCPServer.hpp>
+#include "TCPServer.h"
 
 std::atomic<bool> keepRunning(true);
 
