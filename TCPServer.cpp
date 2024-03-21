@@ -21,6 +21,8 @@ void ClientHandler::handle() {
             processMessage(buffer);
 
             buffer.clear();
+
+            std::cout << "test" << std::endl;
         } else if (valread == 0) {
             std::cout << "Client disconnected." << std::endl;
             break; // Client disconnected
