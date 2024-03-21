@@ -98,7 +98,7 @@ void TCPServer::acceptConnections()
 
 void TCPServer::handleMessage(const std::string& message, int clientSocket)
 {
-    std::cout << "Message from : " << clientSocket << " : " << message << std::endl;
+    std::cout << message.find("aruco") << std::endl;
 
     if (message.find("request robotPose") != std::string::npos)
     {
