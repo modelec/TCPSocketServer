@@ -44,7 +44,7 @@ public:
     // Broadcast message to all connected clients
     void broadcastMessage(const char* message, int senderSocket = -1); // Modified method signature
 
-    void handleMessage(const std::string& message, int clientSocket);
+    void handleMessage(const std::string& message, int clientSocket = -1);
 
     void clientDisconnected(int clientSocket); // New method to handle client disconnection
 
