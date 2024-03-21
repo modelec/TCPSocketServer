@@ -20,7 +20,7 @@ int main() {
         server.start();
 
         while (keepRunning) {
-            sleep(5);
+            sleep(1);
 
             server.broadcastMessage("request aruco");
 
