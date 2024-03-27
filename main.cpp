@@ -1,30 +1,26 @@
-#include <atomic>
-#include <csignal>
-
 #include "TCPServer.h"
 
-std::atomic<bool> keepRunning(true);
-
-void signalHandler(int signum) {
-    std::cout << "Interrupt signal (" << signum << ") received.\n";
-    keepRunning = false;
-}
-
 int main() {
-    signal(SIGTERM, signalHandler);
-    signal(SIGINT, signalHandler);
 
     TCPServer server(8080);
 
     try {
         server.start();
 
-        while (keepRunning) {
+        while (true) {
             sleep(1);
 
-            server.broadcastMessage("request aruco");
+            std::string message;
+            std::cout << "Enter message ('quit' to exit): ";
+            std::getline(std::cin, message);
 
-            std::cout << "Main thread communicating with server..." << std::endl;
+            if (message == "quit") {
+                server.stop();
+                break;
+            }
+
+            server.broadcastMessage(message.c_str());
+
         }
 
         server.stop();
