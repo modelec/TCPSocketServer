@@ -1,5 +1,7 @@
 #include "TCPServer.h"
 
+#include "utils.h"
+
 ClientHandler::ClientHandler(int clientSocket, TCPServer* server) : clientSocket(clientSocket), server(server) {};
 
 void ClientHandler::handle() {
@@ -98,6 +100,19 @@ void TCPServer::acceptConnections()
 
 void TCPServer::handleMessage(const std::string& message, int clientSocket)
 {
+    std::vector<std::string> tokens = split(message, ";");
+
+    if (tokens.size() != 4)
+    {
+        std::cerr << "Invalid message format : " << message << std::endl;
+        return;
+    }
+    if (tokens[1] != "strat")
+    {
+        std::cout << "Broadcast message" << std::endl;
+        this->broadcastMessage(message.c_str(), clientSocket);
+    }
+
     std::cout << "Received: " << message << std::endl;
 }
 

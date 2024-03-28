@@ -1,8 +1,13 @@
 #include "TCPServer.h"
 
-int main() {
+int main(int argc, char* argv[]) {
 
-    TCPServer server(8080);
+    int port = 8080;
+    if (argc >= 2) {
+        port = std::stoi(argv[1]);
+    }
+
+    TCPServer server(port);
 
     try {
         server.start();

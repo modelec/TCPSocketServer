@@ -5,4 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(socketServer main.cpp
         TCPServer.cpp
-        TCPServer.h)
+        TCPServer.h
+        utils.h
+)
