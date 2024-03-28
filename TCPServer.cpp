@@ -109,7 +109,10 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
     if (tokens[1] != "strat")
     {
-        std::cout << "Broadcast message" << std::endl;
+        this->broadcastMessage(message.c_str(), clientSocket);
+    }
+    if (tokens[0] == "tirette" && tokens[1] == "set state")
+    {
         this->broadcastMessage(message.c_str(), clientSocket);
     }
 
