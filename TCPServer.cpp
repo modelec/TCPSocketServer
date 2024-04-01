@@ -1,7 +1,5 @@
 #include "TCPServer.h"
 
-#include "utils.h"
-
 ClientHandler::ClientHandler(int clientSocket, TCPServer* server) : clientSocket(clientSocket), server(server) {};
 
 void ClientHandler::handle() {
@@ -68,6 +66,39 @@ TCPServer::TCPServer(int port)
     }
 
     std::cout << "Server started on port " << port << std::endl;
+
+    clients.reserve(7);
+    ClientTCP tirette;
+    tirette.name = "tirette";
+
+    ClientTCP aruco;
+    aruco.name = "aruco";
+
+    ClientTCP ihm;
+    ihm.name = "ihm";
+
+    ClientTCP lidar;
+    lidar.name = "lidar";
+
+    ClientTCP arduino;
+    arduino.name = "arduino";
+    arduino.isReady = true;
+
+    ClientTCP servo_pot;
+    servo_pot.name = "servo_pot";
+    servo_pot.isReady = true;
+
+    ClientTCP servo_panneaux_solaire;
+    servo_panneaux_solaire.name = "servo_ps";
+    servo_panneaux_solaire.isReady = true;
+
+    clients.push_back(tirette);
+    clients.push_back(aruco);
+    clients.push_back(ihm);
+    clients.push_back(lidar);
+    clients.push_back(arduino);
+    clients.push_back(servo_pot);
+    clients.push_back(servo_panneaux_solaire);
 }
 
 void TCPServer::acceptConnections()
@@ -114,6 +145,19 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     if (tokens[0] == "tirette" && tokens[1] == "set state")
     {
         this->broadcastMessage(message.c_str(), clientSocket);
+    }
+    if (tokens[2] == "ready")
+    {
+        for (ClientTCP& client : clients)
+        {
+            if (client.name == tokens[0])
+            {
+                client.isReady = true;
+                client.socket = clientSocket;
+                break;
+            }
+        }
+        checkIfAllClientsReady();
     }
 
     std::cout << "Received: " << message << std::endl;
@@ -162,4 +206,21 @@ int TCPServer::nbClients()
 void TCPServer::start()
 {
     std::thread([this]() { acceptConnections(); }).detach();
+}
+
+void TCPServer::checkIfAllClientsReady()
+{
+    bool allReady = true;
+    for (ClientTCP& client : clients)
+    {
+        if (!client.isReady)
+        {
+            allReady = false;
+        }
+    }
+
+    if (allReady)
+    {
+        this->broadcastMessage("strat;all;ready;1");
+    }
 }

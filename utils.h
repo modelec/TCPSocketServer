@@ -3,12 +3,12 @@
 #include <vector>
 #include <string>
 
-bool startWith(const std::string& str, const std::string& start)
+inline bool startWith(const std::string& str, const std::string& start)
 {
     return str.rfind(start, 0) == 0;
 }
 
-bool endsWith(const std::string& str, const std::string& end)
+inline bool endsWith(const std::string& str, const std::string& end)
 {
     if (str.length() >= end.length())
     {
@@ -17,12 +17,12 @@ bool endsWith(const std::string& str, const std::string& end)
     return false;
 }
 
-bool contains(const std::string& str, const std::string& sub)
+inline bool contains(const std::string& str, const std::string& sub)
 {
     return str.find(sub) != std::string::npos;
 }
 
-std::vector<std::string> split(const std::string& str, const std::string& delimiter)
+inline std::vector<std::string> split(const std::string& str, const std::string& delimiter)
 {
     std::vector<std::string> tokens;
     size_t prev = 0, pos = 0;
@@ -36,3 +36,10 @@ std::vector<std::string> split(const std::string& str, const std::string& delimi
     } while (pos < str.length() && prev < str.length());
     return tokens;
 }
+
+struct ClientTCP
+{
+    std::string name;
+    int socket = -1;
+    bool isReady = false;
+};

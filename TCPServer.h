@@ -9,6 +9,8 @@
 #include <vector>
 #include <algorithm>
 
+#include "utils.h"
+
 class TCPServer; // Forward declaration
 
 class ClientHandler {
@@ -33,6 +35,7 @@ private:
     std::vector<int> clientSockets; // Store connected client sockets
     int connectedClients = 0; // Track the number of connected clients
     bool shouldStop = false; // Flag to indicate if the server should stop
+    std::vector<ClientTCP> clients; // Store connected clients
 
 public:
     explicit TCPServer(int port);
@@ -51,6 +54,8 @@ public:
     void stop();
 
     int nbClients();
+
+    void checkIfAllClientsReady();
 
     ~TCPServer();
 };
