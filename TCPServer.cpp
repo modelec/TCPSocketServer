@@ -82,11 +82,9 @@ TCPServer::TCPServer(int port)
 
     ClientTCP arduino;
     arduino.name = "arduino";
-    arduino.isReady = true;
 
     ClientTCP servo_pot;
     servo_pot.name = "servo_pot";
-    servo_pot.isReady = true;
 
     ClientTCP servo_panneaux_solaire;
     servo_panneaux_solaire.name = "servo_ps";
@@ -158,6 +156,11 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             }
         }
         checkIfAllClientsReady();
+    }
+    if (tokens[2] == "spawn") {
+        // TODO change that to handle spawn point
+        std::string toSend = "ihm;arduino;set;100,100";
+        this->broadcastMessage(toSend.c_str(), clientSocket);
     }
 
     std::cout << "Received: " << message << std::endl;
