@@ -159,7 +159,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
     if (tokens[2] == "spawn") {
         // TODO change that to handle spawn point
-        std::string toSend = "ihm;arduino;set;100,100";
+        std::string toSend = "ihm;arduino;set;100,100;-90";
         this->broadcastMessage(toSend.c_str(), clientSocket);
     }
 
