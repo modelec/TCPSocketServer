@@ -83,20 +83,15 @@ TCPServer::TCPServer(int port)
     ClientTCP arduino;
     arduino.name = "arduino";
 
-    ClientTCP servo_pot;
-    servo_pot.name = "servo_pot";
-
-    ClientTCP servo_panneaux_solaire;
-    servo_panneaux_solaire.name = "servo_ps";
-    servo_panneaux_solaire.isReady = true;
+    ClientTCP servo_moteur;
+    servo_moteur.name = "servo_moteur";
 
     clients.push_back(tirette);
     clients.push_back(aruco);
     clients.push_back(ihm);
     clients.push_back(lidar);
     clients.push_back(arduino);
-    clients.push_back(servo_pot);
-    clients.push_back(servo_panneaux_solaire);
+    clients.push_back(servo_moteur);
 }
 
 void TCPServer::acceptConnections()
@@ -159,7 +154,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
     if (tokens[2] == "spawn") {
         // TODO change that to handle spawn point
-        std::string toSend = "ihm;arduino;set;500,500,-90";
+        const std::string toSend = "ihm;arduino;set;500,500,-90";
         this->broadcastMessage(toSend.c_str(), clientSocket);
     }
 
@@ -201,8 +196,7 @@ TCPServer::~TCPServer() {
     }
 }
 
-int TCPServer::nbClients()
-{
+int TCPServer::nbClients() const {
     return connectedClients;
 }
 
@@ -214,9 +208,9 @@ void TCPServer::start()
 void TCPServer::checkIfAllClientsReady()
 {
     bool allReady = true;
-    for (ClientTCP& client : clients)
+    for (auto&[name, socket, isReady] : clients)
     {
-        if (!client.isReady)
+        if (!isReady)
         {
             allReady = false;
         }
