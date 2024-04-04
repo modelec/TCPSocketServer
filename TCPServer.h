@@ -53,7 +53,7 @@ public:
 
     void stop();
 
-    int nbClients() const;
+    [[nodiscard]] int nbClients() const;
 
     void checkIfAllClientsReady();
 
