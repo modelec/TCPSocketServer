@@ -135,7 +135,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     {
         this->broadcastMessage(message.c_str(), clientSocket);
     }
-    if (tokens[0] == "tirette" && tokens[1] == "set state")
+    if (tokens[0] == "tirette" && tokens[2] == "set state")
     {
         this->broadcastMessage(message.c_str(), clientSocket);
     }
