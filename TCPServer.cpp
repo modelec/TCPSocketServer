@@ -171,7 +171,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     if (tokens[0] == "aruco" && tokens[2] == "get aruco") {
         std::string aruco = tokens[3];
         if (aruco == "404") {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            usleep(50'000);
             this->broadcastMessage("strat;aruco;get aruco;1\n");
         } else if (firstPot) {
             std::cout << "Aruco tags received" << std::endl;
