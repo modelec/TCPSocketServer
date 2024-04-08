@@ -173,7 +173,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         if (aruco == "404") {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             this->broadcastMessage("strat;aruco;get aruco;1\n");
-        } else {
+        } else if (firstPot) {
             std::cout << "Aruco tags received" << std::endl;
             std::vector<std::string> arucoArgs = split(aruco, ",");
             int x = static_cast<int>(std::stof(arucoArgs[2])) - 70;
@@ -183,13 +183,34 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             usleep(3'000'000);
             this->broadcastMessage("strat;servo_moteur;fermer pince;0\n");
             this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
+            firstPot = false;
+            usleep(1'000'000);
+            this->broadcastMessage("strat;arduino;rotate;0.78539\n");
+            this->broadcastMessage("strat;aruco;get aruco;1\n");
+        } else {
+            this->broadcastMessage("strat;servo_moteur;baisser bras;1");
+            this->broadcastMessage("strat;servo_moteur;ouvrir pince;1");
+            std::vector<std::string> arucoArgs = split(aruco, ",");
+            int x = static_cast<int>(std::stof(arucoArgs[2])) - 70;
+            int y = static_cast<int>(std::stof(arucoArgs[4]));
+            std::string toSend = "strat;arduino;go;" + std::to_string(x) + "," + std::to_string(y);
+            this->broadcastMessage(toSend.c_str());
+            usleep(6'000'000);
+            this->broadcastMessage("strat;servo_moteur;fermer pince;1\n");
+            this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
             usleep(1'000'000);
             this->broadcastMessage("strat;arduino;go;1000,1500\n");
             usleep(4'000'000);
             this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
+            this->broadcastMessage("strat;servo_moteur;ouvrir pince;1\n");
+            usleep(500'000);
+            this->broadcastMessage("strat;arduino;go;900,1500\n");
+            usleep(2'000'000);
+            this->broadcastMessage("strat;servo_moteur;fermer pince;1\n");
             this->broadcastMessage("strat;servo_moteur;ouvrir pince;0\n");
             usleep(1'000'000);
             this->broadcastMessage("strat;arduino;go;500,500\n");
+
         }
     }
     std::cout << "Received: " << message << std::endl;

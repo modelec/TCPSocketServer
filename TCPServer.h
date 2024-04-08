@@ -42,6 +42,8 @@ private:
 
     int actionNb = -1;
 
+    bool firstPot = true;
+
     bool canMove = false;
 
 public:
