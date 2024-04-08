@@ -185,7 +185,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
             firstPot = false;
             usleep(1'000'000);
-            this->broadcastMessage("strat;arduino;rotate;0.78539\n");
+            this->broadcastMessage("strat;arduino;angle;0.78539\n");
             usleep(5'000'000);
             this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
             usleep(1'000'000);
