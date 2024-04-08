@@ -92,6 +92,7 @@ TCPServer::TCPServer(int port)
     clients.push_back(lidar);
     clients.push_back(arduino);
     clients.push_back(servo_moteur);
+
 }
 
 void TCPServer::acceptConnections()
@@ -154,10 +155,26 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
     if (tokens[2] == "spawn") {
         // TODO change that to handle spawn point
-        const std::string toSend = "ihm;arduino;set;500,500,-90";
+        const std::string toSend = "ihm;arduino;set;500,500,-1.57079";
         this->broadcastMessage(toSend.c_str(), clientSocket);
     }
-
+    if (tokens[2] == "start")
+    {
+        this->broadcastMessage(message.c_str(), clientSocket);
+        this->actionNb = 0;
+        this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
+        this->broadcastMessage("strat;servo_moteur;ouvrir pince;1\n");
+        this->broadcastMessage("strat;aruco;get aruco;1\n");
+    }
+    if (tokens[1] == "aruco" && tokens[2] == "get aruco") {
+        std::string aruco = tokens[3];
+        if (aruco == "404") {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            this->broadcastMessage("strat;aruco;get aruco;1\n");
+        } else {
+            std::cout << "Aruco tags received" << aruco << std::endl;
+        }
+    }
     std::cout << "Received: " << message << std::endl;
 }
 

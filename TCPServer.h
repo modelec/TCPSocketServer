@@ -37,6 +37,13 @@ private:
     bool shouldStop = false; // Flag to indicate if the server should stop
     std::vector<ClientTCP> clients; // Store connected clients
 
+
+    std::vector<std::string> actions;
+
+    int actionNb = -1;
+
+    bool canMove = false;
+
 public:
     explicit TCPServer(int port);
 
