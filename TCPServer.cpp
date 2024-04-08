@@ -163,7 +163,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         this->broadcastMessage(message.c_str(), clientSocket);
         this->actionNb = 0;
         this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
-        this->broadcastMessage("strat;servo_moteur;ouvrir pince;1\n");
+        this->broadcastMessage("strat;servo_moteur;ouvrir pince;0\n");
         this->broadcastMessage("strat;aruco;get aruco;1\n");
     }
     if (tokens[0] == "aruco" && tokens[2] == "get aruco") {
@@ -174,18 +174,18 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         } else {
             std::cout << "Aruco tags received" << std::endl;
             std::vector<std::string> arucoArgs = split(aruco, ",");
-            int x = static_cast<int>(std::stof(arucoArgs[2]));
+            int x = static_cast<int>(std::stof(arucoArgs[2])) - 70;
             int y = static_cast<int>(std::stof(arucoArgs[4]));
             std::string toSend = "strat;arduino;go;" + std::to_string(x) + "," + std::to_string(y);
             this->broadcastMessage(toSend.c_str());
             usleep(3'000'000);
-            this->broadcastMessage("strat;servo_moteur;fermer pince;1\n");
+            this->broadcastMessage("strat;servo_moteur;fermer pince;0\n");
             this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
             usleep(1'000'000);
             this->broadcastMessage("strat;arduino;go;1000,1500\n");
             usleep(6'000'000);
             this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
-            this->broadcastMessage("strat;servo_moteur;ouvrir pince;1\n");
+            this->broadcastMessage("strat;servo_moteur;ouvrir pince;0\n");
             usleep(2'000'000);
             this->broadcastMessage("strat;arduino;go;500,500\n");
         }
