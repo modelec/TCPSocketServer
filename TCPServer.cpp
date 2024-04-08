@@ -176,7 +176,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             std::vector<std::string> arucoArgs = split(aruco, ",");
             int x = static_cast<int>(std::stof(arucoArgs[0]));
             int y = static_cast<int>(std::stof(arucoArgs[2]));
-            std::string toSend = "strat;arduino;go;" + std::to_string(x) + "," + std::to_string(y);
+            std::string toSend = "strat;arduino;go;" + std::to_string(y) + "," + std::to_string(x);
             this->broadcastMessage(toSend.c_str());
             usleep(3'000'000);
             this->broadcastMessage("strat;servo_moteur;fermer pince;1\n");
