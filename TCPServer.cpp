@@ -178,11 +178,11 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             int y = static_cast<int>(std::stof(arucoArgs[2]));
             std::string toSend = "strat;arduino;go;" + std::to_string(x) + "," + std::to_string(y);
             this->broadcastMessage(toSend.c_str());
-            std::this_thread::sleep_for(std::chrono::seconds(2));
+            usleep(2'000'000);
             this->broadcastMessage("strat;servo_moteur;fermer pince;1\n");
             this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
             this->broadcastMessage("strat;arduino;go;1000,1500\n");
-            std::this_thread::sleep_for(std::chrono::seconds(2));
+            usleep(2'000'000);
             this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
             this->broadcastMessage("strat;servo_moteur;ouvrir pince;1\n");
             this->broadcastMessage("strat;arduino;go;500,500\n");
