@@ -177,7 +177,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             std::cout << "Aruco tags received" << std::endl;
             std::vector<std::string> arucoArgs = split(aruco, ",");
             int x = static_cast<int>(std::stof(arucoArgs[2])) - 70;
-            int y = static_cast<int>(std::stof(arucoArgs[4]));
+            int y = static_cast<int>(std::stof(arucoArgs[3]));
             std::string toSend = "strat;arduino;go;" + std::to_string(x) + "," + std::to_string(y);
             this->broadcastMessage(toSend.c_str());
             usleep(3'000'000);
@@ -194,8 +194,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             this->broadcastMessage("strat;servo_moteur;baisser bras;1");
             this->broadcastMessage("strat;servo_moteur;ouvrir pince;1");
             std::vector<std::string> arucoArgs = split(aruco, ",");
-            int x = static_cast<int>(std::stof(arucoArgs[2])) - 70;
-            int y = static_cast<int>(std::stof(arucoArgs[4]));
+            int x = static_cast<int>(std::stof(arucoArgs[2]));
+            int y = static_cast<int>(std::stof(arucoArgs[3]));
             std::string toSend = "strat;arduino;go;" + std::to_string(x) + "," + std::to_string(y);
             this->broadcastMessage(toSend.c_str());
             usleep(6'000'000);
@@ -213,7 +213,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             this->broadcastMessage("strat;servo_moteur;ouvrir pince;0\n");
             usleep(1'000'000);
             this->broadcastMessage("strat;arduino;go;500,500\n");
-
         }
     }
     std::cout << "Received: " << message << std::endl;
