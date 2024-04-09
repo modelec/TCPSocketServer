@@ -46,6 +46,14 @@ private:
 
     bool canMove = false;
 
+    struct Position {
+        struct {
+            float x;
+            float y;
+        } pos;
+        float theta;
+    } robotPose;
+
 public:
     explicit TCPServer(int port);
 

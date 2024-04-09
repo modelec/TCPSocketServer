@@ -44,6 +44,8 @@ void ClientHandler::closeConnection() {
 
 TCPServer::TCPServer(int port)
 {
+    this->robotPose = {500, 500, -3.1415/2};
+
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket == -1) {
         std::cerr << "Socket creation failed" << std::endl;
@@ -153,9 +155,19 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
         checkIfAllClientsReady();
     }
+    if (tokens[2] == "set pos") {
+        std::vector<std::string> pos = split(tokens[3], ",");
+        this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2])};
+        this->broadcastMessage(message.c_str(), clientSocket);
+    }
+    if (tokens[2] == "get pos") {
+        std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta);
+        this->broadcastMessage(toSend.c_str(), clientSocket);
+    }
     if (tokens[2] == "spawn") {
         // TODO change that to handle spawn point
-        const std::string toSend = "ihm;arduino;set;200,150,-1.57079";
+        this->robotPose = {200, 150, -1.57079};
+        const std::string toSend = "strat;all;set pos;200,150,-1.57079";
         this->broadcastMessage(toSend.c_str(), clientSocket);
     }
     if (tokens[2] == "start")
