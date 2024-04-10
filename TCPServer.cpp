@@ -176,7 +176,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     if (tokens[2] == "start")
     {
         this->broadcastMessage(message.c_str(), clientSocket);
-        this->broadcastMessage("strat;arduino;speed;200");
+        this->broadcastMessage("strat;arduino;speed;200\n");
         this->actionNb = 0;
         this->startGame();
     }
