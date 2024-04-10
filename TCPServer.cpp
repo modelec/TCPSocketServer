@@ -312,7 +312,6 @@ void TCPServer::startGame() {
 }
 
 void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
-    std::cout << arucoTagPos.pos.first[0] << arucoTagPos.pos.first[1] << std::endl;
     float decalage;
     if (pince < 0 || pince > 2) {
         return;
@@ -344,7 +343,7 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
     double x = (xPrime * std::cos(robotPose.theta) + yPrime * std::sin(robotPose.theta)) + this->robotPose.pos.x;
     double y = (-xPrime * std::sin(robotPose.theta) + yPrime * std::cos(robotPose.theta)) + this->robotPose.pos.y;
 
-    std::cout << x << " " << y << std::endl;
+    std::cout << "Aruco position " << x << " " << y << std::endl;
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "\n";
     this->broadcastMessage(toSend);
