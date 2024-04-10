@@ -312,6 +312,7 @@ void TCPServer::startGame() {
 }
 
 void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
+    std::cout << arucoTagPos.pos.first[0] << arucoTagPos.pos.first[1] << std::endl;
     float decalage;
     if (pince < 0 || pince > 2) {
         return;
