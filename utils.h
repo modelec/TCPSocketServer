@@ -43,3 +43,15 @@ struct ClientTCP
     int socket = -1;
     bool isReady = false;
 };
+
+struct ArucoTag
+{
+    int id;
+    std::string name;
+};
+
+struct ArucoTagPos
+{
+    ArucoTag tag;
+    std::pair<float[2], float[3]> pos;
+};

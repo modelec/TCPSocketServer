@@ -8,7 +8,10 @@
 #include <thread>
 #include <vector>
 #include <algorithm>
+#include <cmath>
 
+#include "utils.h"
+#include "utils.h"
 #include "utils.h"
 
 class TCPServer; // Forward declaration
@@ -42,9 +45,10 @@ private:
 
     int actionNb = -1;
 
-    bool firstPot = true;
-
+    bool havePot[3] = {false, false, false};
     bool canMove = false;
+
+    bool waitForAruco = false;
 
     struct Position {
         struct {
@@ -53,6 +57,8 @@ private:
         } pos;
         float theta;
     } robotPose;
+
+    std::vector<ArucoTagPos> arucoTags;
 
 public:
     explicit TCPServer(int port);
@@ -63,6 +69,7 @@ public:
 
     // Broadcast message to all connected clients
     void broadcastMessage(const char* message, int senderSocket = -1); // Modified method signature
+    void broadcastMessage(const std::string& message, int senderSocket = -1); // Modified method signature
 
     void handleMessage(const std::string& message, int clientSocket = -1);
 
@@ -73,6 +80,10 @@ public:
     [[nodiscard]] int nbClients() const;
 
     void checkIfAllClientsReady();
+
+    void startGame();
+
+    void goToAruco(const ArucoTagPos &arucoTagPos, int pince);
 
     ~TCPServer();
 };
