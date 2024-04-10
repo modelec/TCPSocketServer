@@ -291,7 +291,7 @@ void TCPServer::startGame() {
     goToAruco(this->arucoTags[0], 1);
 
     // pi/4
-    this->broadcastMessage("strat;arduino;angle;78");
+    this->broadcastMessage("strat;arduino;angle;0");
     this->robotPose.theta = 0.785398;
     usleep(1'000'000);
     this->broadcastMessage("strat;aruco;get aruco;1\n");
