@@ -189,6 +189,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             std::vector<std::string> aruco = split(arucoResponse, ",");
             for (int i = 0; i < aruco.size() - 1; i += 7) {
                 ArucoTagPos tag;
+                std::cout << aruco[i] << std::stoi(aruco[i]) << std::endl;
                 tag.tag.id = std::stoi(aruco[i]);
                 tag.tag.name = aruco[i + 1];
                 tag.pos.first[0] = std::stof(aruco[i + 2]);
