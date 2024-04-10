@@ -190,7 +190,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             std::vector<std::string> aruco = split(arucoResponse, ",");
             for (int i = 0; i < aruco.size() - 1; i += 7) {
                 ArucoTagPos tag;
-                std::cout << aruco[i] << std::stoi(aruco[i]) << std::endl;
                 tag.tag.id = std::stoi(aruco[i]);
                 tag.tag.name = aruco[i + 1];
                 tag.pos.first[0] = std::stof(aruco[i + 2]);
@@ -312,6 +311,8 @@ void TCPServer::startGame() {
 }
 
 void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
+    std::cout << arucoTagPos.tag.id << " " << arucoTagPos.pos.first[0] << " " << arucoTagPos.pos.first[1] << std::endl;
+
     float decalage;
     if (pince < 0 || pince > 2) {
         return;
