@@ -311,6 +311,7 @@ void TCPServer::startGame() {
 }
 
 void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
+    this->broadcastMessage("strat;aruco;speed;100\n");
     float decalage;
     if (pince < 0 || pince > 2) {
         return;
@@ -353,4 +354,5 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
     this->broadcastMessage(toSend);
     this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
     havePot[pince] = true;
+    this->broadcastMessage("strat;aruco;speed;200\n");
 }
