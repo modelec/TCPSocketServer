@@ -186,6 +186,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             this->broadcastMessage("strat;aruco;get aruco;1\n");
         } else {
             this->arucoTags.clear();
+            std::cout << "Aruco" << arucoResponse << std::endl;
             std::vector<std::string> aruco = split(arucoResponse, ",");
             for (int i = 0; i < aruco.size(); i += 7) {
                 ArucoTagPos tag;
