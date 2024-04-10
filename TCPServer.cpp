@@ -163,13 +163,13 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         this->broadcastMessage(message.c_str(), clientSocket);
     }
     if (tokens[2] == "get pos") {
-        std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta);
+        std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta) + "\n";
         this->broadcastMessage(toSend.c_str(), clientSocket);
     }
     if (tokens[2] == "spawn") {
         // TODO change that to handle spawn point
         this->robotPose = {500, 500, -1.57079};
-        const std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100);
+        const std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
         this->broadcastMessage(toSend.c_str(), clientSocket);
 
     }
@@ -210,15 +210,20 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
 void TCPServer::broadcastMessage(const char* message, int senderSocket)
 {
-    for (int clientSocket : clientSockets) {
-        if (clientSocket != senderSocket) { // Exclude the sender's socket
-            send(clientSocket, message, strlen(message), 0);
-        }
-    }
+    std::string temp = message;
+    this->broadcastMessage(temp, senderSocket);
 }
 
-void TCPServer::broadcastMessage(const std::string &message, int senderSocket) {
-    this->broadcastMessage(message.c_str(), senderSocket);
+void TCPServer::broadcastMessage(std::string &message, int senderSocket) {
+    if (!endsWith(message, "\n")) {
+        message += "\n";
+    }
+
+    for (int clientSocket : clientSockets) {
+        if (clientSocket != senderSocket) { // Exclude the sender's socket
+            send(clientSocket, message.c_str(), message.size(), 0);
+        }
+    }
 }
 
 void TCPServer::clientDisconnected(const int clientSocket) {

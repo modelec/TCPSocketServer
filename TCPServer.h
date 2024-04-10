@@ -68,7 +68,7 @@ public:
 
     // Broadcast message to all connected clients
     void broadcastMessage(const char* message, int senderSocket = -1); // Modified method signature
-    void broadcastMessage(const std::string& message, int senderSocket = -1); // Modified method signature
+    void broadcastMessage(std::string &message, int senderSocket = -1); // Modified method signature
 
     void handleMessage(const std::string& message, int clientSocket = -1);
 
