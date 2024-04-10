@@ -8,7 +8,6 @@
 #include <thread>
 #include <vector>
 #include <algorithm>
-#include <cmath>
 
 #include "utils.h"
 #include "utils.h"

@@ -1,5 +1,7 @@
 #include "TCPServer.h"
 
+#include <cmath>
+
 ClientHandler::ClientHandler(int clientSocket, TCPServer* server) : clientSocket(clientSocket), server(server) {};
 
 void ClientHandler::handle() {
@@ -276,9 +278,9 @@ void TCPServer::startGame() {
 
     waitForAruco = true;
     this->broadcastMessage("strat;aruco;get aruco;1\n");
-    /*while (this->waitForAruco) {
+    while (this->waitForAruco) {
         usleep(100'000);
-    }*/
+    }
 
     goToAruco(this->arucoTags[1], 1);
 
@@ -288,9 +290,9 @@ void TCPServer::startGame() {
     usleep(1'000'000);
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;" + std::to_string(1) + "\n");
     this->broadcastMessage("strat;aruco;get aruco;1\n");
-    /*while (this->waitForAruco) {
+    while (this->waitForAruco) {
         usleep(100'000);
-    }*/
+    }
     goToAruco(this->arucoTags[0], 0);
 
     this->broadcastMessage("strat;arduino;go;500,500\n");
@@ -302,7 +304,7 @@ void TCPServer::startGame() {
 }
 
 void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
-    int decalage = 0;
+    float decalage;
     if (pince < 0 || pince > 2) {
         return;
     }
@@ -322,21 +324,16 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
             break;
     }
 
-
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;" + std::to_string(pince) + "\n");
 
-    int xPrime = static_cast<int>(arucoTagPos.pos.second[0]);
-    int yPrime = static_cast<int>(arucoTagPos.pos.second[1]) + decalage;
+    double xPrime = arucoTagPos.pos.second[0];
+    double yPrime = arucoTagPos.pos.second[1] + decalage;
 
-    /* TODO
-        e'1 = cos(α) e1 + sin(α) e2 ;
-        e'2 = –sin(α) e1 + cos(α) e2 ;
-     */
-    int x = static_cast<int>(((xPrime - 90) / cos(this->robotPose.theta)) + this->robotPose.pos.x);
-    int y = static_cast<int>(((yPrime) / cos(this->robotPose.theta)) + this->robotPose.pos.y);
+    double x = (xPrime * std::cos(robotPose.theta) + yPrime * std::sin(robotPose.theta)) + this->robotPose.pos.x;
+    double y = (-xPrime * std::sin(robotPose.theta) + yPrime * std::cos(robotPose.theta)) + this->robotPose.pos.y;
 
-    this->broadcastMessage("strat;arduino;go;" + std::to_string(x) + "," + std::to_string(y) + "\n");
+    this->broadcastMessage("strat;arduino;go;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "\n");
     usleep(3'000'000);
     this->broadcastMessage("strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n");
     this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
