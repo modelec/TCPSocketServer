@@ -349,7 +349,8 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "\n";
     this->broadcastMessage(toSend);
-    usleep(3'000'000);
+    usleep(6'000'000);
+    std::cout << "end sleep" << std::endl;
     toSend = "strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n";
     this->broadcastMessage(toSend);
     this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
