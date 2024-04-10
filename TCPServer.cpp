@@ -340,6 +340,8 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
     double xPrime = arucoTagPos.pos.first[0];
     double yPrime = arucoTagPos.pos.first[1] + decalage;
 
+    std::cout << "Aruco position1 " << xPrime << " " << yPrime << std::endl;
+
     double x = (xPrime * std::cos(robotPose.theta) + yPrime * std::sin(robotPose.theta)) + this->robotPose.pos.x;
     double y = (-xPrime * std::sin(robotPose.theta) + yPrime * std::cos(robotPose.theta)) + this->robotPose.pos.y;
 
