@@ -84,5 +84,7 @@ public:
 
     void goToAruco(const ArucoTagPos &arucoTagPos, int pince);
 
+    void askArduinoPos();
+
     ~TCPServer();
 };

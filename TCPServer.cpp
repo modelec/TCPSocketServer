@@ -160,8 +160,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     if (tokens[2] == "set pos") {
         std::vector<std::string> pos = split(tokens[3], ",");
         this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]) / 100};
-        std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
-        this->broadcastMessage(toSend, clientSocket);
     }
     if (tokens[2] == "get pos") {
         std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
@@ -257,6 +255,7 @@ int TCPServer::nbClients() const {
 void TCPServer::start()
 {
     std::thread([this]() { acceptConnections(); }).detach();
+    std::thread([this]() { askArduinoPos(); }).detach();
 }
 
 void TCPServer::checkIfAllClientsReady()
@@ -292,7 +291,7 @@ void TCPServer::startGame() {
 
     // pi/4
     this->broadcastMessage("strat;arduino;angle;0");
-    this->robotPose.theta = 0.785398;
+    this->robotPose.theta = 0;
     usleep(1'000'000);
     this->broadcastMessage("strat;aruco;get aruco;1\n");
     while (this->waitForAruco) {
@@ -354,4 +353,11 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
     this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
     havePot[pince] = true;
     this->broadcastMessage("strat;arduino;speed;200\n");
+}
+
+void TCPServer::askArduinoPos() {
+    while (!this->shouldStop) {
+        this->broadcastMessage("strat;arduino;get pos;1\n");
+        usleep(50'000);
+    }
 }
