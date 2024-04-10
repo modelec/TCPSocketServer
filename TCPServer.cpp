@@ -159,18 +159,19 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
     if (tokens[2] == "set pos") {
         std::vector<std::string> pos = split(tokens[3], ",");
-        this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2])};
-        this->broadcastMessage(message.c_str(), clientSocket);
+        this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]) / 100};
+        std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
+        this->broadcastMessage(toSend, clientSocket);
     }
     if (tokens[2] == "get pos") {
-        std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta) + "\n";
+        std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
         this->broadcastMessage(toSend.c_str(), clientSocket);
     }
     if (tokens[2] == "spawn") {
         // TODO change that to handle spawn point
         this->robotPose = {500, 500, -1.57079};
-        const std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
-        this->broadcastMessage(toSend.c_str(), clientSocket);
+        std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
+        this->broadcastMessage(toSend, clientSocket);
 
     }
     if (tokens[2] == "start")
