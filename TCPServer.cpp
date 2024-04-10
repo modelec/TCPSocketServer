@@ -288,7 +288,7 @@ void TCPServer::startGame() {
         usleep(100'000);
     }
 
-    goToAruco(this->arucoTags[1], 1);
+    goToAruco(this->arucoTags[0], 1);
 
     // pi/4
     this->broadcastMessage("strat;arduino;angle;78");
@@ -311,8 +311,6 @@ void TCPServer::startGame() {
 }
 
 void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
-    std::cout << arucoTagPos.tag.id << " " << arucoTagPos.pos.first[0] << " " << arucoTagPos.pos.first[1] << std::endl;
-
     float decalage;
     if (pince < 0 || pince > 2) {
         return;
