@@ -165,14 +165,13 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
     if (tokens[2] == "get pos") {
         std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
-        this->broadcastMessage(toSend.c_str(), clientSocket);
+        this->broadcastMessage(toSend, clientSocket);
     }
     if (tokens[2] == "spawn") {
         // TODO change that to handle spawn point
         this->robotPose = {500, 500, -1.57079};
         std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
         this->broadcastMessage(toSend, clientSocket);
-
     }
     if (tokens[2] == "start")
     {
@@ -344,6 +343,8 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
 
     double x = (xPrime * std::cos(robotPose.theta) + yPrime * std::sin(robotPose.theta)) + this->robotPose.pos.x;
     double y = (-xPrime * std::sin(robotPose.theta) + yPrime * std::cos(robotPose.theta)) + this->robotPose.pos.y;
+
+    std::cout << x << " " << y << std::endl;
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "\n";
     this->broadcastMessage(toSend);
