@@ -206,6 +206,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
         this->waitForAruco = false;
     }
+    if (tokens[0] == "arduino" && tokens[2] == "set state") {
+        this->canMove = tokens[3] == "0";
+    }
     // std::cout << "Received: " << message << std::endl;
 }
 
@@ -306,7 +309,7 @@ void TCPServer::startGame() {
     // pi/4
     this->broadcastMessage("strat;arduino;angle;0\n");
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
-    usleep(2'000'000);
+    usleep(1'00'000);
 
     waitForAruco = true;
     this->broadcastMessage("strat;aruco;get aruco;1\n");
@@ -322,8 +325,12 @@ void TCPServer::startGame() {
 
     this->broadcastMessage("strat;arduino;rotate;-78\n");
     usleep(1'000'000);
+    canMove = false;
     this->broadcastMessage("strat;arduino;go;500,500\n");
-    usleep(6'000'000);
+    while (!this->canMove) {
+        usleep(200'000);
+        this->broadcastMessage("strat;arduino;get state;1\n");
+    }
 
     // -pi/2
     this->broadcastMessage("strat;arduino;angle;-157");
@@ -373,8 +380,15 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
     double posV200Y = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(posV200X)) + "," + std::to_string(static_cast<int>(posV200Y)) + "\n";
+    canMove = false;
     this->broadcastMessage(toSend);
-    usleep(4'000'000);
+    while (!this->canMove) {
+        usleep(200'000);
+        this->broadcastMessage("strat;arduino;get state;1\n");
+    }
+
+
+    // ReSharper disable once CppDFAUnreachableCode
     this->broadcastMessage("strat;arduino;speed;150\n");
     usleep(500'000);
 
@@ -385,9 +399,13 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
     double robotPosForPotY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(robotPosForPotX)) + "," + std::to_string(static_cast<int>(robotPosForPotY)) + "\n";
+    canMove = false;
     this->broadcastMessage(toSend);
-    usleep(1'000'000);
-    std::cout << "end sleep" << std::endl;
+    while (!this->canMove) {
+        usleep(200'000);
+        this->broadcastMessage("strat;arduino;get state;1\n");
+    }
+
     toSend = "strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n";
     this->broadcastMessage(toSend);
     this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
