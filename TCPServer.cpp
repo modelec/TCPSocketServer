@@ -129,6 +129,8 @@ void TCPServer::acceptConnections()
 
 void TCPServer::handleMessage(const std::string& message, int clientSocket)
 {
+    std::cout << message << " | " << clientSocket << std::endl;
+
     std::vector<std::string> tokens = split(message, ";");
 
     if (tokens.size() != 4)
