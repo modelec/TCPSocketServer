@@ -301,7 +301,7 @@ void TCPServer::startGame() {
 
     // pi/4
     this->broadcastMessage("strat;arduino;angle;0");
-    usleep(1'000'000);
+    usleep(3'000'000);
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
     std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
     usleep(4'000'000);
