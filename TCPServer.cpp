@@ -277,7 +277,7 @@ void TCPServer::startGame() {
     this->broadcastMessage("strat;servo_moteur;fermer pince;1\n");
     this->broadcastMessage("strat;servo_moteur;fermer pince;2\n");
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;0\n");
-    this->broadcastMessage("strat;arduino;speed;120\n");
+    this->broadcastMessage("strat;arduino;speed;150\n");
 
     waitForAruco = true;
     this->broadcastMessage("strat;aruco;get aruco;1\n");
