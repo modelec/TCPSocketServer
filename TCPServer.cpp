@@ -71,7 +71,7 @@ TCPServer::TCPServer(int port)
 
     std::cout << "Server started on port " << port << std::endl;
 
-    clients.reserve(7);
+    clients.reserve(6);
     ClientTCP tirette;
     tirette.name = "tirette";
 
@@ -173,7 +173,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
         this->broadcastMessage(toSend, clientSocket);
     }
-    if (tokens[2] == "start")
+    if (tokens[2] == "start" && tokens[1] == "strat")
     {
         this->broadcastMessage(message.c_str(), clientSocket);
         this->broadcastMessage("strat;arduino;speed;200\n");
