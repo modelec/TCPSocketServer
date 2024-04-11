@@ -89,7 +89,7 @@ public:
 
     void askArduinoPos();
 
-    bool shouldStop();
+    bool shouldStop() const;
 
     ~TCPServer();
 };

@@ -17,7 +17,7 @@ void ClientHandler::handle() {
             //std::cout << "Received: " << buffer << std::endl;
 
             if (buffer == "quit") {
-                std::cout << "Client requested to quit. Closing connection." << std::endl;
+                std::cerr << "Client requested to quit. Closing connection." << std::endl;
                 break;
             }
             processMessage(buffer);
@@ -281,7 +281,7 @@ void TCPServer::startGame() {
 
     waitForAruco = true;
     this->broadcastMessage("strat;aruco;get aruco;1\n");
-    std::cout << "Ask for aruco" << std::endl;
+    // std::cout << "Ask for aruco" << std::endl;
 
     while (this->waitForAruco) {
         usleep(100'000);
@@ -293,18 +293,18 @@ void TCPServer::startGame() {
         // TODO maybe rotate the robot but handle that here
     }
 
-    std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
-    std::cout << "Aruco found" << std::endl;
+    // std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
+    // std::cout << "Aruco found" << std::endl;
     goToAruco(this->arucoTags[0], 1);
-    std::cout << "I'm on aruco" << std::endl;
-    std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
+    // std::cout << "I'm on aruco" << std::endl;
+    // std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
 
     // pi/4
     this->broadcastMessage("strat;arduino;angle;0\n");
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
-    std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
+    // std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
     usleep(2'000'000);
-    std::cout << "An other aruco" << std::endl;
+    // std::cout << "An other aruco" << std::endl;
 
     waitForAruco = true;
     this->broadcastMessage("strat;aruco;get aruco;1\n");
@@ -316,22 +316,22 @@ void TCPServer::startGame() {
         return;
     }
 
-    std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
-    std::cout << "Aruco found" << std::endl;
+    // std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
+    // std::cout << "Aruco found" << std::endl;
     goToAruco(this->arucoTags[0], 2);
-    std::cout << "I'm on aruco" << std::endl;
-    std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
+    // std::cout << "I'm on aruco" << std::endl;
+    // std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
 
     this->broadcastMessage("strat;arduino;rotate;-78\n");
     usleep(1'000'000);
     this->broadcastMessage("strat;arduino;go;500,500\n");
     usleep(6'000'000);
-    std::cout << "I'm on spawn point" << std::endl;
+    // std::cout << "I'm on spawn point" << std::endl;
     // -pi/2
     this->broadcastMessage("strat;arduino;angle;-157");
     this->broadcastMessage("strat;servo_moteur;baisser bras;1");
     this->broadcastMessage("strat;servo_moteur;clear;1");
-    std::cout << "End of game" << std::endl;
+    // std::cout << "End of game" << std::endl;
 }
 
 void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
@@ -372,7 +372,7 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
     xPrime -= x5Percent;
     yPrime -= decalage5Percent;
 
-    std::cout << "Aruco position1 " << xPrime << " " << yPrime << std::endl;
+    // std::cout << "Aruco position1 " << xPrime << " " << yPrime << std::endl;
 
     double posV200X = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
     double posV200Y = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
@@ -422,6 +422,6 @@ void TCPServer::sendToClient(std::string &message, int clientSocket) {
     this->sendToClient(message.c_str(), clientSocket);
 }
 
-bool TCPServer::shouldStop() {
+bool TCPServer::shouldStop() const {
     return _shouldStop;
 }
