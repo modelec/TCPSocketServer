@@ -163,7 +163,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
     if (tokens[2] == "get pos") {
         std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
-        this->broadcastMessage(toSend, clientSocket);
+        this->broadcastMessage(toSend);
     }
     if (tokens[2] == "spawn") {
         // TODO change that to handle spawn point
