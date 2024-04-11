@@ -142,6 +142,12 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     {
         this->broadcastMessage(message.c_str(), clientSocket);
     }
+
+    // EMERGENCY
+    if (tokens[3] == "stop proximity") {
+        this->broadcastMessage("strat;arduino;stop;1");
+    }
+
     if (tokens[0] == "tirette" && tokens[2] == "set state")
     {
         this->broadcastMessage(message.c_str(), clientSocket);
@@ -357,8 +363,8 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
     double xPrime = arucoTagPos.pos.first[0] - 5;
     double yPrime = arucoTagPos.pos.first[1] - decalage;
 
-    double x10Percent = xPrime * 0.2;
-    double decalage10Percent = decalage * 0.2;
+    double x10Percent = xPrime * 0.3;
+    double decalage10Percent = decalage * 0.3;
 
     xPrime -= x10Percent;
     yPrime -= decalage10Percent;
