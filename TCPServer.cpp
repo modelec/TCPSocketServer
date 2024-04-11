@@ -176,7 +176,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         this->broadcastMessage(message.c_str(), clientSocket);
         this->broadcastMessage("strat;arduino;speed;200\n");
         this->actionNb = 0;
-        this->startGame();
+        std::thread([this]() { this->startGame(); }).detach();
     }
     if (tokens[0] == "aruco" && tokens[2] == "get aruco") {
         std::string arucoResponse = tokens[3];
