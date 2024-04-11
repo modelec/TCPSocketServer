@@ -295,6 +295,8 @@ void TCPServer::startGame() {
 
     // pi/4
     this->broadcastMessage("strat;arduino;angle;0");
+    usleep(1'000'000);
+    this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
     usleep(4'000'000);
     this->broadcastMessage("strat;aruco;get aruco;1\n");
 
