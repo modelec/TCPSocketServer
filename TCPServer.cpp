@@ -318,7 +318,7 @@ void TCPServer::startGame() {
 
     std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
     std::cout << "Aruco found" << std::endl;
-    goToAruco(this->arucoTags[0], 1);
+    goToAruco(this->arucoTags[0], 2);
     std::cout << "I'm on aruco" << std::endl;
     std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
 
