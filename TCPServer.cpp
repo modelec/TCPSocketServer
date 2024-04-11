@@ -300,11 +300,10 @@ void TCPServer::startGame() {
     std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
 
     // pi/4
-    this->broadcastMessage("strat;arduino;angle;0");
-    usleep(3'000'000);
+    this->broadcastMessage("strat;arduino;angle;0\n");
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
     std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
-    usleep(4'000'000);
+    usleep(2'000'000);
     std::cout << "An other aruco" << std::endl;
 
     waitForAruco = true;
@@ -360,7 +359,7 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
 
     this->broadcastMessage(toSend);
 
-    double xPrime = arucoTagPos.pos.first[0] - 10;
+    double xPrime = arucoTagPos.pos.first[0] - 5;
     double yPrime = arucoTagPos.pos.first[1] + decalage;
 
     std::cout << "Aruco position1 " << xPrime << " " << yPrime << std::endl;
@@ -372,7 +371,7 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "\n";
     this->broadcastMessage(toSend);
-    usleep(6'000'000);
+    usleep(4'000'000);
     std::cout << "end sleep" << std::endl;
     toSend = "strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n";
     this->broadcastMessage(toSend);
