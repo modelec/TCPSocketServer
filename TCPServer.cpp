@@ -347,7 +347,7 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
             decalage = 0;
             break;
         case 2:
-            decalage = +100;
+            decalage = -100;
             break;
         default:
             decalage = 0;
