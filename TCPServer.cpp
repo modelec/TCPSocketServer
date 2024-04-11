@@ -262,6 +262,7 @@ void TCPServer::checkIfAllClientsReady()
     {
         if (!isReady)
         {
+            std::cout << name << " is not ready" << std::endl;
             allReady = false;
         }
     }
