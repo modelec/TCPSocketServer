@@ -198,7 +198,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
         this->waitForAruco = false;
     }
-    std::cout << "Received: " << message << std::endl;
+    // std::cout << "Received: " << message << std::endl;
 }
 
 
@@ -281,6 +281,7 @@ void TCPServer::startGame() {
 
     waitForAruco = true;
     this->broadcastMessage("strat;aruco;get aruco;1\n");
+    std::cout << "Ask for aruco" << std::endl;
 
     while (this->waitForAruco) {
         usleep(100'000);
@@ -291,16 +292,20 @@ void TCPServer::startGame() {
         return;
         // TODO maybe rotate the robot but handle that here
     }
+
+    std::cout << "Aruco found" << std::endl;
     goToAruco(this->arucoTags[0], 1);
+    std::cout << "I'm on aruco" << std::endl;
 
     // pi/4
     this->broadcastMessage("strat;arduino;angle;0");
     usleep(1'000'000);
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
     usleep(4'000'000);
-    this->broadcastMessage("strat;aruco;get aruco;1\n");
+    std::cout << "An other aruco" << std::endl;
 
     waitForAruco = true;
+    this->broadcastMessage("strat;aruco;get aruco;1\n");
     while (this->waitForAruco) {
         usleep(100'000);
     }
@@ -308,14 +313,19 @@ void TCPServer::startGame() {
     if (this->arucoTags.empty()) {
         return;
     }
+
+    std::cout << "Aruco found" << std::endl;
     goToAruco(this->arucoTags[0], 0);
+    std::cout << "I'm on aruco" << std::endl;
 
     this->broadcastMessage("strat;arduino;go;500,500\n");
     usleep(2'000'000);
+    std::cout << "I'm on spawn point" << std::endl;
     // -pi/2
     this->broadcastMessage("strat;arduino;angle;-157");
     this->broadcastMessage("strat;servo_moteur;baisser bras;1");
     this->broadcastMessage("strat;servo_moteur;clear;1");
+    std::cout << "End of game" << std::endl;
 }
 
 void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
