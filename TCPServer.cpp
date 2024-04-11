@@ -324,7 +324,7 @@ void TCPServer::startGame() {
     std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
 
     this->broadcastMessage("strat;arduino;go;500,500\n");
-    usleep(2'000'000);
+    usleep(6'000'000);
     std::cout << "I'm on spawn point" << std::endl;
     // -pi/2
     this->broadcastMessage("strat;arduino;angle;-157");
