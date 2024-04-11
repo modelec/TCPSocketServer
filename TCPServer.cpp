@@ -368,8 +368,8 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
 
     std::cout << "Aruco position1 " << xPrime << " " << yPrime << std::endl;
 
-    double posV200X = ((xPrime - 100) * std::cos(theta) + (yPrime - (decalage / 2)) * std::sin(theta)) + robotPosX;
-    double posV200Y = (-(xPrime - 100) * std::sin(theta) + (yPrime - (decalage / 2)) * std::cos(theta)) + robotPosY;
+    double posV200X = ((xPrime - 100) * std::cos(theta) + (yPrime - decalage) * std::sin(theta)) + robotPosX;
+    double posV200Y = (-(xPrime - 100) * std::sin(theta) + (yPrime - decalage) * std::cos(theta)) + robotPosY;
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(posV200X)) + "," + std::to_string(static_cast<int>(posV200Y)) + "\n";
     this->broadcastMessage(toSend);
