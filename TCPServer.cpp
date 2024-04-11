@@ -345,13 +345,13 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
 
     switch (pince) {
         case 0:
-            decalage = -80;
+            decalage = -75;
             break;
         case 1:
             decalage = 0;
             break;
         case 2:
-            decalage = 80;
+            decalage = 75;
             break;
         default:
             decalage = 0;
@@ -363,7 +363,7 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
 
     this->broadcastMessage(toSend);
 
-    double xPrime = arucoTagPos.pos.first[0] - 105;
+    double xPrime = arucoTagPos.pos.first[0] - 95;
     double yPrime = arucoTagPos.pos.first[1];
 
     std::cout << "Aruco position1 " << xPrime << " " << yPrime << std::endl;
@@ -377,7 +377,7 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
     this->broadcastMessage("strat;arduino;speed;150\n");
     usleep(500'000);
 
-    xPrime += 100;
+    xPrime += 95;
 
     double robotPosForPotX = (xPrime * std::cos(theta) + (yPrime - decalage) * std::sin(theta)) + robotPosX;
     double robotPosForPotY = (-xPrime * std::sin(theta) + (yPrime - decalage) * std::cos(theta)) + robotPosY;
