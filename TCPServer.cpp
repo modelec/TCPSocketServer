@@ -357,8 +357,8 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
     double xPrime = arucoTagPos.pos.first[0] - 5;
     double yPrime = arucoTagPos.pos.first[1] - decalage;
 
-    double x10Percent = xPrime * 0.1;
-    double decalage10Percent = decalage * 0.1;
+    double x10Percent = xPrime * 0.2;
+    double decalage10Percent = decalage * 0.2;
 
     xPrime -= x10Percent;
     yPrime -= decalage10Percent;
