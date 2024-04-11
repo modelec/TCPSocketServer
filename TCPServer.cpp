@@ -363,19 +363,21 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
 
     this->broadcastMessage(toSend);
 
-    double xPrime = arucoTagPos.pos.first[0] - 5;
+    double xPrime = arucoTagPos.pos.first[0] - 105;
     double yPrime = arucoTagPos.pos.first[1];
 
     std::cout << "Aruco position1 " << xPrime << " " << yPrime << std::endl;
 
-    double posV200X = ((xPrime - 100) * std::cos(theta) + (yPrime - decalage) * std::sin(theta)) + robotPosX;
-    double posV200Y = (-(xPrime - 100) * std::sin(theta) + (yPrime - decalage) * std::cos(theta)) + robotPosY;
+    double posV200X = (xPrime * std::cos(theta) + (yPrime - decalage) * std::sin(theta)) + robotPosX;
+    double posV200Y = (-xPrime * std::sin(theta) + (yPrime - decalage) * std::cos(theta)) + robotPosY;
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(posV200X)) + "," + std::to_string(static_cast<int>(posV200Y)) + "\n";
     this->broadcastMessage(toSend);
     usleep(4'000'000);
     this->broadcastMessage("strat;arduino;speed;150\n");
     usleep(500'000);
+
+    xPrime += 100;
 
     double robotPosForPotX = (xPrime * std::cos(theta) + (yPrime - decalage) * std::sin(theta)) + robotPosX;
     double robotPosForPotY = (-xPrime * std::sin(theta) + (yPrime - decalage) * std::cos(theta)) + robotPosY;
