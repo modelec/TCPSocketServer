@@ -163,7 +163,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
     if (tokens[2] == "get pos") {
         std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
-        this->broadcastMessage(toSend);
+        this->sendToClient(toSend, clientSocket);
     }
     if (tokens[2] == "spawn") {
         // TODO change that to handle spawn point
@@ -400,4 +400,17 @@ void TCPServer::askArduinoPos() {
         this->broadcastMessage("strat;arduino;get pos;1\n");
         usleep(500'000);
     }
+}
+
+void TCPServer::sendToClient(const char *message, int clientSocket) {
+    for (int client : clientSockets) {
+        if (client == clientSocket) {
+            send(client, message, strlen(message), 0);
+            break;
+        }
+    }
+}
+
+void TCPServer::sendToClient(std::string &message, int clientSocket) {
+    this->sendToClient(message.c_str(), clientSocket);
 }

@@ -70,6 +70,9 @@ public:
     void broadcastMessage(const char* message, int senderSocket = -1); // Modified method signature
     void broadcastMessage(std::string &message, int senderSocket = -1); // Modified method signature
 
+    void sendToClient(const char* message, int clientSocket); // New method to send message to a specific client
+    void sendToClient(std::string &message, int clientSocket); // New method to send message to a specific client
+
     void handleMessage(const std::string& message, int clientSocket = -1);
 
     void clientDisconnected(int clientSocket); // New method to handle client disconnection
