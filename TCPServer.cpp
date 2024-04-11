@@ -370,7 +370,7 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(posV200X)) + "," + std::to_string(static_cast<int>(posV200Y)) + "\n";
     this->broadcastMessage(toSend);
-    usleep(2'000'000);
+    usleep(4'000'000);
     this->broadcastMessage("strat;arduino;speed;150\n");
 
     double robotPosForPotX = (xPrime * std::cos(robotPose.theta) + yPrime * std::sin(robotPose.theta)) + this->robotPose.pos.x;
@@ -380,7 +380,7 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(robotPosForPotX)) + "," + std::to_string(static_cast<int>(robotPosForPotX)) + "\n";
     this->broadcastMessage(toSend);
-    usleep(1'000'000);
+    usleep(3'000'000);
     std::cout << "end sleep" << std::endl;
     toSend = "strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n";
     this->broadcastMessage(toSend);
