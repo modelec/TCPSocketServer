@@ -293,14 +293,17 @@ void TCPServer::startGame() {
         // TODO maybe rotate the robot but handle that here
     }
 
+    std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
     std::cout << "Aruco found" << std::endl;
     goToAruco(this->arucoTags[0], 1);
     std::cout << "I'm on aruco" << std::endl;
+    std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
 
     // pi/4
     this->broadcastMessage("strat;arduino;angle;0");
     usleep(1'000'000);
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
+    std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
     usleep(4'000'000);
     std::cout << "An other aruco" << std::endl;
 
@@ -314,9 +317,11 @@ void TCPServer::startGame() {
         return;
     }
 
+    std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
     std::cout << "Aruco found" << std::endl;
     goToAruco(this->arucoTags[0], 0);
     std::cout << "I'm on aruco" << std::endl;
+    std::cout << "Position " << this->robotPose.pos.x << " " << this->robotPose.pos.y << " " << this->robotPose.theta << std::endl;
 
     this->broadcastMessage("strat;arduino;go;500,500\n");
     usleep(2'000'000);
