@@ -367,6 +367,6 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
 void TCPServer::askArduinoPos() {
     while (!this->shouldStop) {
         this->broadcastMessage("strat;arduino;get pos;1\n");
-        usleep(200'000);
+        usleep(500'000);
     }
 }
