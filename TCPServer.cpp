@@ -180,10 +180,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
     if (tokens[0] == "aruco" && tokens[2] == "get aruco") {
         std::string arucoResponse = tokens[3];
-        if (arucoResponse == "404") {
-            usleep(50'000);
-            this->broadcastMessage("strat;aruco;get aruco;1\n");
-        } else {
+        if (arucoResponse != "404") {
             this->arucoTags.clear();
             std::vector<std::string> aruco = split(arucoResponse, ",");
             for (int i = 0; i < aruco.size() - 1; i += 7) {
@@ -198,8 +195,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
                 this->arucoTags.push_back(tag);
             }
-            this->waitForAruco = false;
         }
+        this->waitForAruco = false;
     }
     std::cout << "Received: " << message << std::endl;
 }
@@ -283,19 +280,28 @@ void TCPServer::startGame() {
 
     waitForAruco = true;
     this->broadcastMessage("strat;aruco;get aruco;1\n");
+
     while (this->waitForAruco) {
         usleep(100'000);
     }
 
+    // ReSharper disable once CppDFAUnreachableCode
+    if (this->arucoTags.empty()) {
+        return;
+        // TODO maybe rotate the robot but handle that here
+    }
     goToAruco(this->arucoTags[0], 1);
 
     // pi/4
     this->broadcastMessage("strat;arduino;angle;0");
-    this->robotPose.theta = 0;
     usleep(1'000'000);
     this->broadcastMessage("strat;aruco;get aruco;1\n");
     while (this->waitForAruco) {
         usleep(100'000);
+    }
+
+    if (this->arucoTags.empty()) {
+        return;
     }
     goToAruco(this->arucoTags[0], 0);
 
