@@ -341,13 +341,13 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
 
     switch (pince) {
         case 0:
-            decalage = -10;
+            decalage = -100;
             break;
         case 1:
             decalage = 0;
             break;
         case 2:
-            decalage = 10;
+            decalage = 100;
             break;
         default:
             decalage = 0;
@@ -359,7 +359,7 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
 
     this->broadcastMessage(toSend);
 
-    double xPrime = arucoTagPos.pos.first[0];
+    double xPrime = arucoTagPos.pos.first[0] - 10;
     double yPrime = arucoTagPos.pos.first[1] + decalage;
 
     std::cout << "Aruco position1 " << xPrime << " " << yPrime << std::endl;
