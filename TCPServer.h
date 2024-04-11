@@ -36,7 +36,7 @@ private:
     std::vector<std::thread> clientThreads;
     std::vector<int> clientSockets; // Store connected client sockets
     int connectedClients = 0; // Track the number of connected clients
-    bool shouldStop = false; // Flag to indicate if the server should stop
+    bool _shouldStop = false; // Flag to indicate if the server should stop
     std::vector<ClientTCP> clients; // Store connected clients
 
 
@@ -88,6 +88,8 @@ public:
     void goToAruco(const ArucoTagPos &arucoTagPos, int pince);
 
     void askArduinoPos();
+
+    bool shouldStop();
 
     ~TCPServer();
 };

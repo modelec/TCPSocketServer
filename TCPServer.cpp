@@ -101,7 +101,7 @@ TCPServer::TCPServer(int port)
 
 void TCPServer::acceptConnections()
 {
-    while (!shouldStop) {
+    while (!_shouldStop) {
         sockaddr_in clientAddress{};
         int addrlen = sizeof(clientAddress);
         int clientSocket =
@@ -228,7 +228,7 @@ void TCPServer::clientDisconnected(const int clientSocket) {
 }
 
 void TCPServer::stop() {
-    shouldStop = true;
+    _shouldStop = true;
     // Close all client sockets
     for (int clientSocket : clientSockets) {
         close(clientSocket);
@@ -366,11 +366,11 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
     double xPrime = arucoTagPos.pos.first[0] - 5;
     double yPrime = arucoTagPos.pos.first[1] - decalage;
 
-    double x10Percent = xPrime * 0.05;
-    double decalage10Percent = decalage * 0.05;
+    double x5Percent = xPrime * 0.05;
+    double decalage5Percent = decalage * 0.05;
 
-    xPrime -= x10Percent;
-    yPrime -= decalage10Percent;
+    xPrime -= x5Percent;
+    yPrime -= decalage5Percent;
 
     std::cout << "Aruco position1 " << xPrime << " " << yPrime << std::endl;
 
@@ -383,8 +383,8 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
     this->broadcastMessage("strat;arduino;speed;150\n");
     usleep(500'000);
 
-    xPrime += x10Percent;
-    yPrime += decalage10Percent;
+    xPrime += x5Percent;
+    yPrime += decalage5Percent;
 
     double robotPosForPotX = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
     double robotPosForPotY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
@@ -403,7 +403,7 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
 }
 
 void TCPServer::askArduinoPos() {
-    while (!this->shouldStop) {
+    while (!this->_shouldStop) {
         this->broadcastMessage("strat;arduino;get pos;1\n");
         usleep(500'000);
     }
@@ -420,4 +420,8 @@ void TCPServer::sendToClient(const char *message, int clientSocket) {
 
 void TCPServer::sendToClient(std::string &message, int clientSocket) {
     this->sendToClient(message.c_str(), clientSocket);
+}
+
+bool TCPServer::shouldStop() {
+    return _shouldStop;
 }

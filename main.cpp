@@ -12,20 +12,8 @@ int main(int argc, char* argv[]) {
     try {
         server.start();
 
-        while (true) {
+        while (!server.shouldStop()) {
             sleep(1);
-
-            std::string message;
-            std::cout << "Enter message ('quit' to exit): ";
-            std::getline(std::cin, message);
-
-            if (message == "quit") {
-                server.stop();
-                break;
-            }
-
-            server.broadcastMessage(message.c_str());
-
         }
 
         server.stop();
