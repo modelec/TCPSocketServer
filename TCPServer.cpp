@@ -145,7 +145,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
     // EMERGENCY
     if (tokens[3] == "stop proximity") {
-        this->broadcastMessage("strat;arduino;stop;1");
+        // TODO handle emergency
+        // this->broadcastMessage("strat;arduino;stop;1");
     }
 
     if (tokens[0] == "tirette" && tokens[2] == "set state")
@@ -207,6 +208,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         this->waitForAruco = false;
     }
     if (tokens[0] == "arduino" && tokens[2] == "set state") {
+        std::cout << "Can move : " << tokens[3] << std::endl;
         this->canMove = tokens[3] == "0";
     }
     // std::cout << "Received: " << message << std::endl;
