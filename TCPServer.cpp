@@ -236,7 +236,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
     else if (tokens[0] == "arduino" && tokens[2] == "set state") {
         std::cout << message << std::endl;
-        this->canMove = (tokens[3] == "1");
+        this->canMove = (tokens[3] == "0");
+        std::cout << this->canMove << std::endl;
     }
     // std::cout << "Received: " << message << std::endl;
 }
