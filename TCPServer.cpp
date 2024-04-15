@@ -235,6 +235,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
     }
     else if (tokens[0] == "arduino" && tokens[2] == "set state") {
+        std::cout << message << std::endl;
         this->canMove = (tokens[3] == "1");
     }
     // std::cout << "Received: " << message << std::endl;
@@ -427,6 +428,7 @@ void TCPServer::startGame() {
     this->broadcastMessage("strat;arduino;go;500,500\n");
     while (!this->canMove) {
         usleep(200'000);
+        std::cout << this->canMove << std::endl;
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
 
