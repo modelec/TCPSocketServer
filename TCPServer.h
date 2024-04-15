@@ -8,10 +8,21 @@
 #include <thread>
 #include <vector>
 #include <algorithm>
+#include <map>
 
 #include "utils.h"
-#include "utils.h"
-#include "utils.h"
+
+struct ClientTCP
+{
+    std::string name;
+    int socket = -1;
+    bool isReady = false;
+};
+
+enum Team {
+    YELLOW,
+    BLUE
+};
 
 class TCPServer; // Forward declaration
 
@@ -39,15 +50,8 @@ private:
     bool _shouldStop = false; // Flag to indicate if the server should stop
     std::vector<ClientTCP> clients; // Store connected clients
 
-
-    std::vector<std::string> actions;
-
-    int actionNb = -1;
-
-    bool havePot[3] = {false, false, false};
+    PinceState pinceState[3] = {NONE, NONE, NONE};
     bool canMove = false;
-
-    bool waitForAruco = false;
 
     struct Position {
         struct {
@@ -55,9 +59,11 @@ private:
             float y;
         } pos;
         float theta;
-    } robotPose;
+    } robotPose{};
 
-    std::vector<ArucoTagPos> arucoTags;
+    std::vector<ArucoTag> arucoTags;
+
+    Team team;
 
 public:
     explicit TCPServer(int port);
@@ -73,23 +79,28 @@ public:
     void sendToClient(const char* message, int clientSocket); // New method to send message to a specific client
     void sendToClient(std::string &message, int clientSocket); // New method to send message to a specific client
 
+    void sendToClient(const char* message, const std::string& clientName); // New method to send message to a specific client
+    void sendToClient(std::string &message, const std::string& clientName); // New method to send message to a specific client
+
     void handleMessage(const std::string& message, int clientSocket = -1);
 
     void clientDisconnected(int clientSocket); // New method to handle client disconnection
 
     void stop();
 
-    [[nodiscard]] int nbClients() const;
+    [[nodiscard]] size_t nbClients() const;
 
     void checkIfAllClientsReady();
 
     void startGame();
 
-    void goToAruco(const ArucoTagPos &arucoTagPos, int pince);
+    void goToAruco(const ArucoTag &arucoTag, int pince);
+
+    void turnSolarPanel(const ArucoTag &arucoTag);
 
     void askArduinoPos();
 
-    bool shouldStop() const;
+    [[nodiscard]] bool shouldStop() const;
 
     ~TCPServer();
 };
