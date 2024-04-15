@@ -51,7 +51,7 @@ private:
     std::vector<ClientTCP> clients; // Store connected clients
 
     PinceState pinceState[3] = {NONE, NONE, NONE};
-    bool canMove = false;
+    bool isRobotMoving = false;
 
     struct Position {
         struct {
