@@ -471,7 +471,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     this->broadcastMessage(toSend);
 
-    double xPrime = arucoTag.pos().first[0]/* - 5*/;
+    double xPrime = arucoTag.pos().first[0] + 10/* - 5*/;
     double yPrime = arucoTag.pos().first[1] - decalage;
 
     // calculate the angle to be in front of the tag
