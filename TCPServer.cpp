@@ -524,10 +524,11 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
         usleep(500'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(200'000);
+    usleep(1'000'000);
 
     toSend = "strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n";
     this->broadcastMessage(toSend);
+    usleep(500'000);
     this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
     // TODO set to 200 when the robot is ready
     this->broadcastMessage("strat;arduino;speed;150\n");
