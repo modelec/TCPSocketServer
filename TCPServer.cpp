@@ -385,7 +385,7 @@ void TCPServer::startGame() {
     }
 
     // pi/4
-    this->broadcastMessage("strat;arduino;angle;-314\n");
+    this->broadcastMessage("strat;arduino;angle;314\n");
     isRobotMoving = true;
     while (this->isRobotMoving) {
         usleep(500'000);
@@ -546,6 +546,7 @@ void TCPServer::askArduinoPos() {
     ClientTCP arduino;
     for (const auto & client : clients) {
         if (client.name == "arduino") {
+            std::cout << "Find arduino socker : " << client.socket << std::endl;
             arduino = client;
             break;
         }
