@@ -474,9 +474,12 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     double xPrime = arucoTag.pos().first[0]/* - 5*/;
     double yPrime = arucoTag.pos().first[1] - decalage;
 
+    double testX = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
+    double testY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
+
     // calculate the angle to be in front of the tag
 
-    double thetaPrime= std::atan2(yPrime, xPrime);
+    double thetaPrime = std::atan2(testY, testX);
 
     toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>((this->robotPose.theta + rotate + thetaPrime) * 100)) + "\n";
     canMove = false;
@@ -493,10 +496,10 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     xPrime -= x30Percent;
     yPrime -= decalage30Percent;
 
-    double posV200X = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
-    double posV200Y = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
+    double pos30PercentX = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
+    double pos30PercentY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(posV200X)) + "," + std::to_string(static_cast<int>(posV200Y)) + "\n";
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(pos30PercentX)) + "," + std::to_string(static_cast<int>(pos30PercentY)) + "\n";
     canMove = false;
     this->broadcastMessage(toSend);
     while (!this->canMove) {
