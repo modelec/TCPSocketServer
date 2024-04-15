@@ -478,11 +478,8 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     this->broadcastMessage(toSend);
 
-    double xPrime = arucoTag.pos().first[0] + 25/* - 5*/;
+    double xPrime = arucoTag.pos().first[0] + 5/* - 5*/;
     double yPrime = arucoTag.pos().first[1] - decalage;
-
-    // calculate the angle to be in front of the tag
-    std::cout << "Tag pos relative : " << xPrime << " " << yPrime << " " << this->robotPose.theta << std::endl;
 
     double thetaPrime = std::atan2(yPrime, xPrime);
 
@@ -496,10 +493,10 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     usleep(500'000);
 
     double x30Percent = xPrime * 0.3;
-    double decalage30Percent = decalage * 0.3;
+    double y30Percent = yPrime * 0.3;
 
     xPrime -= x30Percent;
-    yPrime -= decalage30Percent;
+    yPrime -= y30Percent;
 
     double pos30PercentX = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
     double pos30PercentY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
@@ -519,7 +516,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     usleep(1'000'000);
 
     xPrime += x30Percent;
-    yPrime += decalage30Percent;
+    yPrime += y30Percent;
 
     double robotPosForPotX = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
     double robotPosForPotY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
