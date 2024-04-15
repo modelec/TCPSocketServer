@@ -176,7 +176,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
     else if (tokens[2] == "spawn") {
         // TODO change that to handle spawn point
-        int spawnPointNb = std::stoi(tokens[3]);
+        /*int spawnPointNb = std::stoi(tokens[3]);
         float spawnPoint[2];
         float finishPoint[2];
 
@@ -203,7 +203,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
         std::ofstream file("end_point.txt");
         file << finishPoint[0] << " " << finishPoint[1];
-        file.close();
+        file.close();*/
 
         this->robotPose = {500, 500, -1.57079};
         std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
