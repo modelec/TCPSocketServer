@@ -483,10 +483,10 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     canMove = false;
     this->broadcastMessage(toSend);
     while (!this->canMove) {
-        usleep(200'000);
+        usleep(500'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(200'000);
+    usleep(500'000);
 
     double x30Percent = xPrime * 0.3;
     double decalage30Percent = decalage * 0.3;
@@ -501,10 +501,10 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     canMove = false;
     this->broadcastMessage(toSend);
     while (!this->canMove) {
-        usleep(200'000);
+        usleep(500'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(200'000);
+    usleep(500'000);
 
     // ReSharper disable once CppDFAUnreachableCode
     // TODO set to 150 when the robot is ready
