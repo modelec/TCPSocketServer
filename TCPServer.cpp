@@ -321,7 +321,6 @@ size_t TCPServer::nbClients() const {
 void TCPServer::start()
 {
     std::thread([this]() { acceptConnections(); }).detach();
-    std::thread([this]() { askArduinoPos(); }).detach();
 }
 
 void TCPServer::checkIfAllClientsReady()
@@ -339,6 +338,7 @@ void TCPServer::checkIfAllClientsReady()
     if (allReady)
     {
         this->broadcastMessage("strat;all;ready;1");
+        std::thread([this]() { askArduinoPos(); }).detach();
     }
 }
 
@@ -546,7 +546,6 @@ void TCPServer::askArduinoPos() {
     ClientTCP arduino;
     for (const auto & client : clients) {
         if (client.name == "arduino") {
-            std::cout << "Find arduino socker : " << client.socket << std::endl;
             arduino = client;
             break;
         }
