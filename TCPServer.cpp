@@ -518,9 +518,9 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     double robotPosForPotY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(robotPosForPotX)) + "," + std::to_string(static_cast<int>(robotPosForPotY)) + "\n";
-    isRobotMoving = false;
+    isRobotMoving = true;
     this->broadcastMessage(toSend);
-    while (!this->isRobotMoving) {
+    while (this->isRobotMoving) {
         usleep(500'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
