@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
         server.start();
 
         while (!server.shouldStop()) {
-            sleep(1);
+            usleep(1'000'000);
         }
 
         server.stop();
