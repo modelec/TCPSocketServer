@@ -386,8 +386,15 @@ void TCPServer::startGame() {
 
     // pi/4
     this->broadcastMessage("strat;arduino;angle;-314\n");
+    isRobotMoving = true;
+    while (this->isRobotMoving) {
+        usleep(500'000);
+        this->broadcastMessage("strat;arduino;get state;1\n");
+    }
+    usleep(500'000);
+
+
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
-    usleep(1'000'000);
 
     arucoTags.clear();
     this->broadcastMessage("strat;aruco;get aruco;1\n");
@@ -423,8 +430,8 @@ void TCPServer::startGame() {
         return;
     }
 
-    isRobotMoving = true;
     this->broadcastMessage("strat;arduino;go;500,500\n");
+    isRobotMoving = true;
     while (this->isRobotMoving) {
         usleep(500'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
@@ -480,8 +487,8 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     double thetaPrime = std::atan2(yPrime, xPrime);
 
     toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>((this->robotPose.theta + rotate + thetaPrime) * 100)) + "\n";
-    isRobotMoving = true;
     this->broadcastMessage(toSend);
+    isRobotMoving = true;
     while (this->isRobotMoving) {
         usleep(500'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
@@ -498,8 +505,8 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     double pos30PercentY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(pos30PercentX)) + "," + std::to_string(static_cast<int>(pos30PercentY)) + "\n";
-    isRobotMoving = true;
     this->broadcastMessage(toSend);
+    isRobotMoving = true;
     while (this->isRobotMoving) {
         usleep(500'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
@@ -518,8 +525,8 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     double robotPosForPotY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(robotPosForPotX)) + "," + std::to_string(static_cast<int>(robotPosForPotY)) + "\n";
-    isRobotMoving = true;
     this->broadcastMessage(toSend);
+    isRobotMoving = true;
     while (this->isRobotMoving) {
         usleep(500'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
