@@ -1,57 +1,50 @@
 #pragma once
 
+#include <utility>
 #include <vector>
 #include <string>
 
-inline bool startWith(const std::string& str, const std::string& start)
-{
-    return str.rfind(start, 0) == 0;
-}
-
-inline bool endsWith(const std::string& str, const std::string& end)
-{
-    if (str.length() >= end.length())
-    {
-        return (0 == str.compare(str.length() - end.length(), end.length(), end));
-    }
-    return false;
-}
-
-inline bool contains(const std::string& str, const std::string& sub)
-{
-    return str.find(sub) != std::string::npos;
-}
-
-inline std::vector<std::string> split(const std::string& str, const std::string& delimiter)
-{
-    std::vector<std::string> tokens;
-    size_t prev = 0, pos = 0;
-    do
-    {
-        pos = str.find(delimiter, prev);
-        if (pos == std::string::npos) pos = str.length();
-        std::string token = str.substr(prev, pos - prev);
-        if (!token.empty()) tokens.push_back(token);
-        prev = pos + delimiter.length();
-    } while (pos < str.length() && prev < str.length());
-    return tokens;
-}
-
-struct ClientTCP
-{
-    std::string name;
-    int socket = -1;
-    bool isReady = false;
+enum PinceState {
+    WHITE_FLOWER,
+    PURPLE_FLOWER,
+    NONE
 };
 
-struct ArucoTag
-{
-    int id;
-    std::string name;
-};
+namespace TCPUtils {
+    bool startWith(const std::string& str, const std::string& start);
 
-struct ArucoTagPos
-{
-    ArucoTag tag;
-    std::pair<float[2], float[3]> pos;
+    bool endsWith(const std::string& str, const std::string& end);
+
+    bool contains(const std::string& str, const std::string& sub);
+
+    std::vector<std::string> split(const std::string& str, const std::string& delimiter);
+}
+
+class ArucoTag {
+
+public:
+    ArucoTag(int id, std::string  name, std::pair<float[2], float[3]> pos);
+
+    ArucoTag() = default;
+
+    [[nodiscard]] int id() const;
+
+    [[nodiscard]] std::string name() const;
+
+    [[nodiscard]] std::pair<float[2], float[3]> pos() const;
+
+    void setId(int id);
+
+    void setName(const std::string& name);
+
+    void setPos(float x, float y);
+
+    void setRot(float x, float y, float z);
+
+    ArucoTag& operator=(const ArucoTag& tag);
+
+private:
+    int _id = 0;
+    std::string _name;
+    std::pair<float[2], float[3]> _pos;
 };
