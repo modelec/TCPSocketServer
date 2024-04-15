@@ -477,7 +477,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     // calculate the angle to be in front of the tag
     std::cout << "Tag pos relative : " << xPrime << " " << yPrime << std::endl;
 
-    double thetaPrime = std::atan2(yPrime, xPrime);
+    double thetaPrime = std::atan2(xPrime, yPrime);
 
     toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>((this->robotPose.theta + rotate + thetaPrime) * 100)) + "\n";
     canMove = false;
