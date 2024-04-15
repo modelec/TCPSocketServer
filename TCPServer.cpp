@@ -1,15 +1,16 @@
 #include "TCPServer.h"
 
 #include <cmath>
+#include <fstream>
 
 ClientHandler::ClientHandler(int clientSocket, TCPServer* server) : clientSocket(clientSocket), server(server) {};
 
 void ClientHandler::handle() {
     std::string buffer;
-    buffer.reserve(4096); // Pre-allocate memory to avoid frequent allocations
+    buffer.reserve(8192); // Pre-allocate memory to avoid frequent allocations
 
     while (true) {
-        char tempBuffer[4096] = {0};
+        char tempBuffer[8192] = {0};
         ssize_t valread = recv(clientSocket, tempBuffer, sizeof(tempBuffer), 0);
 
         if (valread > 0) {
@@ -71,6 +72,7 @@ TCPServer::TCPServer(int port)
 
     std::cout << "Server started on port " << port << std::endl;
 
+
     clients.reserve(6);
     ClientTCP tirette;
     tirette.name = "tirette";
@@ -96,7 +98,6 @@ TCPServer::TCPServer(int port)
     clients.push_back(lidar);
     clients.push_back(arduino);
     clients.push_back(servo_moteur);
-
 }
 
 void TCPServer::acceptConnections()
@@ -112,6 +113,7 @@ void TCPServer::acceptConnections()
         }
         std::cout << "Connection accepted" << std::endl;
 
+
         // Add the client socket to the list
         clientSockets.push_back(clientSocket);
         connectedClients++;
@@ -125,13 +127,11 @@ void TCPServer::acceptConnections()
     }
 }
 
-
-
 void TCPServer::handleMessage(const std::string& message, int clientSocket)
 {
     // std::cout << message << std::endl;
 
-    std::vector<std::string> tokens = split(message, ";");
+    std::vector<std::string> tokens = TCPUtils::split(message, ";");
 
     if (tokens.size() != 4)
     {
@@ -144,16 +144,16 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
 
     // EMERGENCY
-    if (tokens[3] == "stop proximity") {
+    if (tokens[2] == "stop proximity") {
         // TODO handle emergency
         // this->broadcastMessage("strat;arduino;stop;1");
     }
 
-    if (tokens[0] == "tirette" && tokens[2] == "set state")
+    else if (tokens[0] == "tirette" && tokens[2] == "set state")
     {
         this->broadcastMessage(message.c_str(), clientSocket);
     }
-    if (tokens[2] == "ready")
+    else if (tokens[2] == "ready")
     {
         for (ClientTCP& client : clients)
         {
@@ -166,48 +166,75 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
         checkIfAllClientsReady();
     }
-    if (tokens[2] == "set pos") {
-        std::vector<std::string> pos = split(tokens[3], ",");
+    else if (tokens[2] == "set pos") {
+        std::vector<std::string> pos = TCPUtils::split(tokens[3], ",");
         this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]) / 100};
     }
-    if (tokens[2] == "get pos") {
+    else if (tokens[2] == "get pos") {
         std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
         this->sendToClient(toSend, clientSocket);
     }
-    if (tokens[2] == "spawn") {
+    else if (tokens[2] == "spawn") {
         // TODO change that to handle spawn point
+        int spawnPointNb = std::stoi(tokens[3]);
+        float spawnPoint[2];
+        float finishPoint[2];
+
+        switch (spawnPointNb) {
+            case 3:
+                this->team = BLUE;
+                spawnPoint[0] = 500;
+                spawnPoint[1] = 500;
+                finishPoint[0] = 500;
+                finishPoint[1] = 500;
+
+                break;
+            case 6:
+                this->team = YELLOW;
+                spawnPoint[0] = 500;
+                spawnPoint[1] = 500;
+                finishPoint[0] = 500;
+                finishPoint[1] = 500;
+                break;
+
+            default:
+                return;
+        }
+
+        std::ofstream file("end_point.txt");
+        file << finishPoint[0] << " " << finishPoint[1];
+        file.close();
+
         this->robotPose = {500, 500, -1.57079};
         std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
         this->broadcastMessage(toSend, clientSocket);
     }
-    if (tokens[2] == "start" && tokens[1] == "strat")
+    else if (tokens[1] == "strat" && tokens[2] == "start")
     {
         this->broadcastMessage(message.c_str(), clientSocket);
-        this->broadcastMessage("strat;arduino;speed;200\n");
-        this->actionNb = 0;
         std::thread([this]() { this->startGame(); }).detach();
     }
-    if (tokens[0] == "aruco" && tokens[2] == "get aruco") {
+    else if (tokens[0] == "aruco" && tokens[2] == "get aruco") {
         std::string arucoResponse = tokens[3];
         if (arucoResponse != "404") {
             this->arucoTags.clear();
-            std::vector<std::string> aruco = split(arucoResponse, ",");
+            std::vector<std::string> aruco = TCPUtils::split(arucoResponse, ",");
             for (int i = 0; i < aruco.size() - 1; i += 7) {
-                ArucoTagPos tag;
-                tag.tag.id = std::stoi(aruco[i]);
-                tag.tag.name = aruco[i + 1];
-                tag.pos.first[0] = std::stof(aruco[i + 2]);
-                tag.pos.first[1] = std::stof(aruco[i + 3]);
-                tag.pos.second[0] = std::stof(aruco[i + 4]);
-                tag.pos.second[1] = std::stof(aruco[i + 5]);
-                tag.pos.second[2] = std::stof(aruco[i + 6]);
+                ArucoTag tag;
+                tag.setId(std::stoi(aruco[i]));
+                tag.setName(aruco[i + 1]);
+
+                float pos[2] = {std::stof(aruco[i + 2]), std::stof(aruco[i + 3])};
+                float rot[3] = {std::stof(aruco[i + 4]), std::stof(aruco[i + 5]), std::stof(aruco[i + 6])};
+
+                tag.setPos(pos[0], pos[1]);
+                tag.setRot(rot[0], rot[1], rot[2]);
 
                 this->arucoTags.push_back(tag);
             }
         }
-        this->waitForAruco = false;
     }
-    if (tokens[0] == "arduino" && tokens[2] == "set state") {
+    else if (tokens[0] == "arduino" && tokens[2] == "set state") {
         std::cout << "Can move : " << tokens[3] << std::endl;
         this->canMove = tokens[3] == "0";
     }
@@ -222,7 +249,7 @@ void TCPServer::broadcastMessage(const char* message, int senderSocket)
 }
 
 void TCPServer::broadcastMessage(std::string &message, int senderSocket) {
-    if (!endsWith(message, "\n")) {
+    if (!TCPUtils::endsWith(message, "\n")) {
         message += "\n";
     }
 
@@ -231,6 +258,36 @@ void TCPServer::broadcastMessage(std::string &message, int senderSocket) {
             send(clientSocket, message.c_str(), message.size(), 0);
         }
     }
+}
+
+void TCPServer::sendToClient(std::string &message, int clientSocket) {
+    this->sendToClient(message.c_str(), clientSocket);
+}
+
+void TCPServer::sendToClient(const char *message, int clientSocket) {
+    for (int socket : clientSockets) {
+        if (socket == clientSocket) {
+            send(socket, message, strlen(message), 0);
+            break;
+        }
+    }
+}
+
+void TCPServer::sendToClient(std::string &message, const std::string &clientName) {
+    this->sendToClient(message.c_str(), clientName);
+}
+
+void TCPServer::sendToClient(const char *message, const std::string &clientName) {
+    for (auto & [name, socket, ready] : clients) {
+        if (name == clientName) {
+            send(socket, message, strlen(message), 0);
+            break;
+        }
+    }
+}
+
+bool TCPServer::shouldStop() const {
+    return _shouldStop;
 }
 
 void TCPServer::clientDisconnected(const int clientSocket) {
@@ -246,19 +303,19 @@ void TCPServer::stop() {
     for (int clientSocket : clientSockets) {
         close(clientSocket);
     }
+    // Join all threads before exiting
+    for (auto& thread : clientThreads) {
+        thread.join();
+    }
     // Close the server socket
     close(serverSocket);
 }
 
 TCPServer::~TCPServer() {
     this->stop();
-    // Join all threads before exiting
-    for (auto& thread : clientThreads) {
-        thread.join();
-    }
 }
 
-int TCPServer::nbClients() const {
+size_t TCPServer::nbClients() const {
     return connectedClients;
 }
 
@@ -293,40 +350,79 @@ void TCPServer::startGame() {
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;0\n");
     this->broadcastMessage("strat;arduino;speed;200\n");
 
-    waitForAruco = true;
     this->broadcastMessage("strat;aruco;get aruco;1\n");
 
-    while (this->waitForAruco) {
-        usleep(100'000);
+    int timeout = 0;
+    ArucoTag tag;
+    bool found = false;
+    while (!found) {
+        for (const auto & arucoTag : this->arucoTags) {
+            if (TCPUtils::endsWith(arucoTag.name(), "flower")) {
+                tag = arucoTag;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            this->broadcastMessage("start;aruco;get aruco;1");
+            usleep(500'000);
+            timeout++;
+            if (timeout > 10) {
+                return;
+            }
+        }
     }
 
-    // ReSharper disable once CppDFAUnreachableCode
-    if (this->arucoTags.empty()) {
+    if (pinceState[1] == NONE) {
+        goToAruco(tag, 1);
+    } else if (pinceState[2] == NONE) {
+        goToAruco(tag, 2);
+    } else if (pinceState[0] == NONE) {
+        goToAruco(tag, 0);
+    } else {
         return;
-        // TODO maybe rotate the robot but handle that here
     }
-
-    goToAruco(this->arucoTags[0], 1);
 
     // pi/4
     this->broadcastMessage("strat;arduino;angle;0\n");
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
     usleep(1'00'000);
 
-    waitForAruco = true;
+    arucoTags.clear();
     this->broadcastMessage("strat;aruco;get aruco;1\n");
-    while (this->waitForAruco) {
-        usleep(100'000);
+
+    found = false;
+    timeout = 0;
+    while (!found) {
+        for (const auto & arucoTag : this->arucoTags) {
+            if (TCPUtils::endsWith(arucoTag.name(), "flower")) {
+                tag = arucoTag;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            this->broadcastMessage("start;aruco;get aruco;1");
+            usleep(500'000);
+            timeout++;
+            if (timeout > 10) {
+                return;
+            }
+        }
     }
 
-    if (this->arucoTags.empty()) {
+    if (pinceState[1] == NONE) {
+        goToAruco(tag, 1);
+    } else if (pinceState[2] == NONE) {
+        goToAruco(tag, 2);
+    } else if (pinceState[0] == NONE) {
+        goToAruco(tag, 0);
+    } else {
         return;
     }
 
-    goToAruco(this->arucoTags[0], 2);
-
-    this->broadcastMessage("strat;arduino;rotate;-78\n");
-    usleep(1'000'000);
     canMove = false;
     this->broadcastMessage("strat;arduino;go;500,500\n");
     while (!this->canMove) {
@@ -335,32 +431,38 @@ void TCPServer::startGame() {
     }
 
     // -pi/2
+    // ReSharper disable once CppDFAUnreachableCode
     this->broadcastMessage("strat;arduino;angle;-157");
     this->broadcastMessage("strat;servo_moteur;baisser bras;1");
     this->broadcastMessage("strat;servo_moteur;clear;1");
 }
 
-void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
+void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     double robotPosX = this->robotPose.pos.x;
     double robotPosY = this->robotPose.pos.y;
     double theta = this->robotPose.theta;
     double decalage;
+    double rotate;
     if (pince < 0 || pince > 2) {
         return;
     }
 
     switch (pince) {
         case 0:
-            decalage = -80;
+            decalage = -70;
+            rotate = -0.3;
             break;
         case 1:
             decalage = 0;
+            rotate = 0;
             break;
         case 2:
-            decalage = 80;
+            decalage = 70;
+            rotate = 0.3;
             break;
         default:
             decalage = 0;
+            rotate = 0;
             break;
     }
 
@@ -369,14 +471,27 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
 
     this->broadcastMessage(toSend);
 
-    double xPrime = arucoTagPos.pos.first[0] - 5;
-    double yPrime = arucoTagPos.pos.first[1] - decalage;
+    double xPrime = arucoTag.pos().first[0]/* - 5*/;
+    double yPrime = arucoTag.pos().first[1] - decalage;
 
-    double x10Percent = xPrime * 0.3;
-    double decalage10Percent = decalage * 0.3;
+    // calculate the angle to be in front of the tag
 
-    xPrime -= x10Percent;
-    yPrime -= decalage10Percent;
+    double thetaPrime= std::atan2(yPrime, xPrime);
+
+    toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>((this->robotPose.theta + rotate + thetaPrime) * 100)) + "\n";
+    canMove = false;
+    this->broadcastMessage(toSend);
+    while (!this->canMove) {
+        usleep(200'000);
+        this->broadcastMessage("strat;arduino;get state;1\n");
+    }
+    usleep(200'000);
+
+    double x30Percent = xPrime * 0.3;
+    double decalage30Percent = decalage * 0.3;
+
+    xPrime -= x30Percent;
+    yPrime -= decalage30Percent;
 
     double posV200X = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
     double posV200Y = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
@@ -388,14 +503,14 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-
+    usleep(200'000);
 
     // ReSharper disable once CppDFAUnreachableCode
     this->broadcastMessage("strat;arduino;speed;150\n");
-    usleep(500'000);
+    usleep(1'000);
 
-    xPrime += x10Percent;
-    yPrime += decalage10Percent;
+    xPrime += x30Percent;
+    yPrime += decalage30Percent;
 
     double robotPosForPotX = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
     double robotPosForPotY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
@@ -407,34 +522,55 @@ void TCPServer::goToAruco(const ArucoTagPos &arucoTagPos, const int pince) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
+    usleep(200'000);
 
     toSend = "strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n";
     this->broadcastMessage(toSend);
     this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
     this->broadcastMessage("strat;arduino;speed;200\n");
-    havePot[pince] = true;
+    pinceState[pince] = arucoTag.name() == "Purple_flower" ? PURPLE_FLOWER : WHITE_FLOWER;
 }
 
 void TCPServer::askArduinoPos() {
+    ClientTCP arduino;
+    for (const auto & client : clients) {
+        if (client.name == "arduino") {
+            arduino = client;
+            break;
+        }
+    }
+
+    if (arduino.socket == -1) {
+        return;
+    }
+
     while (!this->_shouldStop) {
-        this->broadcastMessage("strat;arduino;get pos;1\n");
+        this->sendToClient("strat;arduino;get pos;1\n", arduino.socket);
         usleep(500'000);
     }
 }
 
-void TCPServer::sendToClient(const char *message, int clientSocket) {
-    for (int client : clientSockets) {
-        if (client == clientSocket) {
-            send(client, message, strlen(message), 0);
-            break;
-        }
+void TCPServer::turnSolarPanel(const ArucoTag &arucoTag) {
+
+    if (arucoTag.name() != "Solar_Panel") {
+        return;
     }
-}
 
-void TCPServer::sendToClient(std::string &message, int clientSocket) {
-    this->sendToClient(message.c_str(), clientSocket);
-}
+    double robotPosX = this->robotPose.pos.x;
+    double robotPosY = this->robotPose.pos.y;
+    double theta = this->robotPose.theta;
 
-bool TCPServer::shouldStop() const {
-    return _shouldStop;
+    double xPrime = arucoTag.pos().first[0];
+    double yPrime = arucoTag.pos().first[1];
+
+    double solarPanelX = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
+    double solarPanelY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
+
+    double yaw = arucoTag.pos().second[2];
+
+    solarPanelX -= 100;
+
+    std::string toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(solarPanelX)) + "," + std::to_string(static_cast<int>(solarPanelY)) + "\n";
+
+    this->broadcastMessage(toSend);
 }
