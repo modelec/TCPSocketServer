@@ -211,12 +211,10 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         this->endRobotPose = {1200, 1700, 1.57079};
         std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
 
-        for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
             this->broadcastMessage(toSend);
             usleep(200'000);
         }
-
-        this->broadcastMessage(toSend, clientSocket);
     }
     else if (tokens[1] == "strat" && tokens[2] == "start")
     {
@@ -452,6 +450,7 @@ void TCPServer::startGame() {
     // ReSharper disable once CppDFAUnreachableCode
     this->broadcastMessage("strat;arduino;angle;-157");
     this->broadcastMessage("strat;servo_moteur;baisser bras;1");*/
+    usleep(1'000'000);
 
     std::string toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
