@@ -453,6 +453,7 @@ void TCPServer::startGame() {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
+    usleep(500'000);
 
     // toSend = "start;arduino;angle;" + std::to_string(this->endRobotPose.theta * 100) + "\n";
     // this->broadcastMessage(toSend);
