@@ -402,7 +402,6 @@ void TCPServer::startGame() {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(500'000);
 
     // ReSharper disable once CppDFAUnreachableCode
 
@@ -449,7 +448,6 @@ void TCPServer::startGame() {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(500'000);
 
     // ReSharper disable once CppDFAUnreachableCode
 
@@ -502,7 +500,6 @@ void TCPServer::startGame() {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(200'000);
 
     this->broadcastMessage("strat;arduino;angle;157\n");
     usleep(200'000);
@@ -511,7 +508,6 @@ void TCPServer::startGame() {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(200'000);
 
     this->broadcastMessage("strat;arduino;speed;130\n");
     this->broadcastMessage("strat;arduino;go;762,0\n");
@@ -538,7 +534,14 @@ void TCPServer::startGame() {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(200'000);
+
+    toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>(this->endRobotPose.theta * 100)) + "\n";
+    this->broadcastMessage(toSend);
+    isRobotIdle = 0;
+    while (this->isRobotIdle < 3) {
+        usleep(200'000);
+        this->broadcastMessage("strat;arduino;get state;1\n");
+    }
 
     // toSend = "start;arduino;angle;" + std::to_string(this->endRobotPose.theta * 100) + "\n";
     // this->broadcastMessage(toSend);
