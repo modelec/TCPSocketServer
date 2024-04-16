@@ -374,7 +374,9 @@ void TCPServer::startGame() {
         }
     }
 
-    if (pinceState[1] == NONE) {
+    goToAruco(tag, 1);
+
+/*    if (pinceState[1] == NONE) {
         goToAruco(tag, 1);
     } else if (pinceState[2] == NONE) {
         goToAruco(tag, 2);
@@ -382,10 +384,10 @@ void TCPServer::startGame() {
         goToAruco(tag, 0);
     } else {
         return;
-    }
+    }*/
 
     // pi/4
-    this->broadcastMessage("strat;arduino;angle;314\n");
+/*    this->broadcastMessage("strat;arduino;angle;314\n");
     isRobotMoving = true;
     while (this->isRobotMoving) {
         usleep(500'000);
@@ -440,7 +442,7 @@ void TCPServer::startGame() {
     // -pi/2
     // ReSharper disable once CppDFAUnreachableCode
     this->broadcastMessage("strat;arduino;angle;-157");
-    this->broadcastMessage("strat;servo_moteur;baisser bras;1");
+    this->broadcastMessage("strat;servo_moteur;baisser bras;1");*/
     this->broadcastMessage("strat;servo_moteur;clear;1");
 }
 
@@ -490,7 +492,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
         usleep(500'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(500'000);
+    usleep(10'000'000);
 
     double x30Percent = xPrime * 0.3;
     double y30Percent = yPrime * 0.3;
@@ -508,7 +510,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
         usleep(500'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(500'000);
+    usleep(1'000'000);
 
     // ReSharper disable once CppDFAUnreachableCode
     // TODO set to 150 when the robot is ready
