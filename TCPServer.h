@@ -61,6 +61,9 @@ private:
         float theta;
     } robotPose{};
 
+    Position initRobotPose{};
+    Position endRobotPose{};
+
     std::vector<ArucoTag> arucoTags;
 
     Team team;
