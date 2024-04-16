@@ -496,7 +496,7 @@ void TCPServer::startGame() {
 
     this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
 
-    std::string toSend = "strat;arduino;go;762,200\n";
+    std::string toSend = "strat;arduino;go;762,300\n";
     this->broadcastMessage(toSend);
     usleep(5'000'000);
     /*isRobotMoving = 0;
@@ -506,7 +506,7 @@ void TCPServer::startGame() {
     }
     usleep(500'000);*/
 
-    this->broadcastMessage("strat;arduino;angle;0\n");
+    this->broadcastMessage("strat;arduino;angle;157\n");
     usleep(5'000'000);
     /*isRobotMoving = 0;
     while (this->isRobotMoving < 4) {
@@ -515,9 +515,9 @@ void TCPServer::startGame() {
     }
     usleep(500'000);*/
 
-    this->broadcastMessage("strat;arduino;speed;150\n");
+    this->broadcastMessage("strat;arduino;speed;130\n");
     this->broadcastMessage("strat;arduino;go;762,0\n");
-    usleep(5'000'000);
+    usleep(10'000'000);
 
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;0\n");
     pinceState[0] = NONE;
