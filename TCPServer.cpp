@@ -381,7 +381,7 @@ void TCPServer::startGame() {
         }
     }
 
-    goToAruco(tag, 0);
+    goToAruco(tag, 1);
 
 /*    if (pinceState[1] == NONE) {
         goToAruco(tag, 1);
