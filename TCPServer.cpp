@@ -502,12 +502,15 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     this->broadcastMessage(toSend);
 
-    double xPrime = arucoTag.pos().first[0] + 30/* - 5*/ + (decalage * 0.2);
+    double xPrime = arucoTag.pos().first[0];
     double yPrime = arucoTag.pos().first[1] + decalage;
 
-    double thetaPrime = std::atan2(-yPrime, xPrime);
+    xPrime *= 1.03;
+    yPrime *= 1.03;
 
-    toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>((this->robotPose.theta + rotate + thetaPrime) * 100)) + "\n";
+    double thetaPrime = std::atan2(yPrime, xPrime);
+
+    toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>((this->robotPose.theta + rotate - thetaPrime) * 100)) + "\n";
     this->broadcastMessage(toSend);
     isRobotMoving = 0;
     while (this->isRobotMoving < 3) {
