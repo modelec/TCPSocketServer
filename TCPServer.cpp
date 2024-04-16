@@ -242,8 +242,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
     }
     else if (tokens[0] == "arduino" && tokens[2] == "set state") {
-        std::string temp = message;
-        this->broadcastMessage(temp, clientSocket);
         if (TCPUtils::startWith(tokens[3], "0")) {
             this->isRobotIdle++;
         }
@@ -400,7 +398,7 @@ void TCPServer::startGame() {
     // pi/4
     this->broadcastMessage("strat;arduino;angle;314\n");
     isRobotIdle = 0;
-    while (this->isRobotIdle < 4) {
+    while (this->isRobotIdle < 3) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
@@ -447,7 +445,7 @@ void TCPServer::startGame() {
 
     this->broadcastMessage("strat;arduino;angle;157\n");
     isRobotIdle = 0;
-    while (this->isRobotIdle < 4) {
+    while (this->isRobotIdle < 3) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
@@ -500,36 +498,36 @@ void TCPServer::startGame() {
     this->broadcastMessage(toSend);
     usleep(200'000);
     isRobotIdle = 0;
-    while (this->isRobotIdle < 4) {
+    while (this->isRobotIdle < 3) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(500'000);
+    usleep(200'000);
 
     this->broadcastMessage("strat;arduino;angle;157\n");
     usleep(200'000);
     isRobotIdle = 0;
-    while (this->isRobotIdle < 4) {
+    while (this->isRobotIdle < 3) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(500'000);
+    usleep(200'000);
 
     this->broadcastMessage("strat;arduino;speed;130\n");
     this->broadcastMessage("strat;arduino;go;762,0\n");
-    usleep(3'000'000);
+    usleep(1'000'000);
 
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;0\n");
     pinceState[0] = NONE;
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;2\n");
     pinceState[2] = NONE;
-    usleep(1'000'000);
+    usleep(200'000);
 
     this->broadcastMessage("strat;servo_moteur;fermer pince;0\n");
     this->broadcastMessage("strat;servo_moteur;fermer pince;2\n");
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;1\n");
     pinceState[1] = NONE;
-    usleep(1'000'000);
+    usleep(200'000);
 
     this->broadcastMessage("strat;arduino;speed;150\n");
 
@@ -540,7 +538,7 @@ void TCPServer::startGame() {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(500'000);
+    usleep(200'000);
 
     // toSend = "start;arduino;angle;" + std::to_string(this->endRobotPose.theta * 100) + "\n";
     // this->broadcastMessage(toSend);
@@ -598,7 +596,6 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(500'000);
 
     double x30Percent = xPrime * 0.3;
     double y30Percent = yPrime * 0.3;
@@ -616,12 +613,11 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(500'000);
 
     // ReSharper disable once CppDFAUnreachableCode
     // TODO set to 150 when the robot is ready
     this->broadcastMessage("strat;arduino;speed;130\n");
-    usleep(1'000'000);
+    usleep(200'000);
 
     xPrime += x30Percent;
     yPrime += y30Percent;
@@ -636,7 +632,6 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(3'000'000);
 
     toSend = "strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n";
     this->broadcastMessage(toSend);
