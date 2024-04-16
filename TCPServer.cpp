@@ -405,7 +405,7 @@ void TCPServer::startGame() {
 
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
 
-    arucoTags.clear();
+    arucoTags.clear();change pince
     this->broadcastMessage("strat;aruco;get aruco;1\n");
 
     found = false;
@@ -480,16 +480,16 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     switch (pince) {
         case 0:
-            decalage = -70;
-            rotate = -0.3;
+            decalage = -60;
+            rotate = 0.3;
             break;
         case 1:
             decalage = 0;
             rotate = 0;
             break;
         case 2:
-            decalage = 70;
-            rotate = 0.3;
+            decalage = 60;
+            rotate = -0.3;
             break;
         default:
             decalage = 0;
@@ -502,7 +502,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     this->broadcastMessage(toSend);
 
-    double xPrime = arucoTag.pos().first[0] + 30/* - 5*/;
+    double xPrime = arucoTag.pos().first[0] + 40/* - 5*/;
     double yPrime = arucoTag.pos().first[1] - decalage;
 
     double thetaPrime = std::atan2(yPrime, xPrime);
