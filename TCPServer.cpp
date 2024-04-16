@@ -242,10 +242,10 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
     }
     else if (tokens[0] == "arduino" && tokens[2] == "set state") {
+        std::string temp = message;
+        this->broadcastMessage(temp, clientSocket);
         if (TCPUtils::startWith(tokens[3], "1")) {
             this->isRobotMoving++;
-            std::string temp = message;
-            this->broadcastMessage(temp, clientSocket);
         }
     }
     std::cout << "Received: " << message << std::endl;
