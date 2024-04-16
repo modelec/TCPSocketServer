@@ -453,13 +453,14 @@ void TCPServer::startGame() {
     this->broadcastMessage("strat;arduino;angle;-157");
     this->broadcastMessage("strat;servo_moteur;baisser bras;1");*/
 
-    std::string toSend = "stat;arduino;go;" + std::to_string(this->endRobotPose.pos.x) + "," + std::to_string(this->endRobotPose.pos.y) + "\n";
+    std::string toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
     isRobotMoving = true;
     while (this->isRobotMoving) {
         usleep(500'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
+    usleep(500'000);
 
     toSend = "start;arduino;angle;" + std::to_string(this->endRobotPose.theta * 100) + "\n";
     this->broadcastMessage(toSend);
@@ -531,7 +532,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
         usleep(500'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(1'000'000);
+    usleep(500'000);
 
     // ReSharper disable once CppDFAUnreachableCode
     // TODO set to 150 when the robot is ready
