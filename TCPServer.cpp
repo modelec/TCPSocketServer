@@ -562,7 +562,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     switch (pince) {
         case 0:
-            decalage = 80;
+            decalage = 60;
             rotate = -0.1;
             break;
         case 1:
@@ -570,7 +570,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
             rotate = 0;
             break;
         case 2:
-            decalage = -80;
+            decalage = -60;
             rotate = 0.1;
             break;
         default:
