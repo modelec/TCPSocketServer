@@ -407,7 +407,6 @@ void TCPServer::startGame() {
     usleep(500'000);
 
     // ReSharper disable once CppDFAUnreachableCode
-    usleep(500'000);
 
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
 
