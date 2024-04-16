@@ -244,6 +244,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     else if (tokens[0] == "arduino" && tokens[2] == "set state") {
         if (TCPUtils::startWith(tokens[3], "0")) {
             this->isRobotMoving++;
+            std::string temp = message;
+            this->broadcastMessage(temp, clientSocket);
         }
     }
     std::cout << "Received: " << message << std::endl;
@@ -453,7 +455,6 @@ void TCPServer::startGame() {
     usleep(500'000);
 
     // ReSharper disable once CppDFAUnreachableCode
-    usleep(500'000);
 
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
 
@@ -530,6 +531,8 @@ void TCPServer::startGame() {
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;1\n");
     pinceState[1] = NONE;
     usleep(1'000'000);
+
+    this->broadcastMessage("strat;arduino;speed;150\n");
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
