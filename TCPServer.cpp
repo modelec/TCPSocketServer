@@ -498,26 +498,26 @@ void TCPServer::startGame() {
 
     std::string toSend = "strat;arduino;go;762,300\n";
     this->broadcastMessage(toSend);
-    usleep(5'000'000);
-    /*isRobotMoving = 0;
+    usleep(200'000);
+    isRobotMoving = 0;
     while (this->isRobotMoving < 4) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(500'000);*/
+    usleep(500'000);
 
     this->broadcastMessage("strat;arduino;angle;157\n");
-    usleep(5'000'000);
-    /*isRobotMoving = 0;
+    usleep(200'000);
+    isRobotMoving = 0;
     while (this->isRobotMoving < 4) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(500'000);*/
+    usleep(500'000);
 
     this->broadcastMessage("strat;arduino;speed;130\n");
     this->broadcastMessage("strat;arduino;go;762,0\n");
-    usleep(10'000'000);
+    usleep(3'000'000);
 
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;0\n");
     pinceState[0] = NONE;
