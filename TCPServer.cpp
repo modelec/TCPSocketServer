@@ -481,7 +481,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     switch (pince) {
         case 0:
             decalage = -70;
-            rotate = 0.3;
+            rotate = -0.3;
             break;
         case 1:
             decalage = 0;
@@ -489,7 +489,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
             break;
         case 2:
             decalage = 70;
-            rotate = -0.3;
+            rotate = 0.3;
             break;
         default:
             decalage = 0;
@@ -507,7 +507,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     double thetaPrime = std::atan2(yPrime, xPrime);
 
-    toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>((this->robotPose.theta + rotate + thetaPrime) * 100)) + "\n";
+    toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>((this->robotPose.theta + rotate - thetaPrime) * 100)) + "\n";
     this->broadcastMessage(toSend);
     isRobotMoving = 0;
     while (this->isRobotMoving < 3) {
