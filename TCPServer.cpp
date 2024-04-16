@@ -397,13 +397,15 @@ void TCPServer::startGame() {
 
     // pi/4
     this->broadcastMessage("strat;arduino;angle;314\n");
-    isRobotMoving = true;
-    while (this->isRobotMoving) {
-        usleep(500'000);
+    isRobotMoving = 0;
+    while (this->isRobotMoving < 3) {
+        usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
     usleep(500'000);
 
+    // ReSharper disable once CppDFAUnreachableCode
+    usleep(500'000);
 
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
 
