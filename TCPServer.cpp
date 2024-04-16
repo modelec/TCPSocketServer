@@ -357,7 +357,7 @@ void TCPServer::startGame() {
     this->broadcastMessage("strat;servo_moteur;fermer pince;2\n");
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;0\n");
     // TODO set to 200 when the robot is ready
-    this->broadcastMessage("strat;arduino;speed;170\n");
+    this->broadcastMessage("strat;arduino;speed;150\n");
 
     this->broadcastMessage("strat;aruco;get aruco;1\n");
 
@@ -383,9 +383,9 @@ void TCPServer::startGame() {
         }
     }
 
-    goToAruco(tag, 1);
+    // goToAruco(tag, 1);
 
-/*    if (pinceState[1] == NONE) {
+    if (pinceState[1] == NONE) {
         goToAruco(tag, 1);
     } else if (pinceState[2] == NONE) {
         goToAruco(tag, 2);
@@ -393,10 +393,10 @@ void TCPServer::startGame() {
         goToAruco(tag, 0);
     } else {
         return;
-    }*/
+    }
 
     // pi/4
-/*    this->broadcastMessage("strat;arduino;angle;314\n");
+    this->broadcastMessage("strat;arduino;angle;314\n");
     isRobotMoving = true;
     while (this->isRobotMoving) {
         usleep(500'000);
@@ -407,7 +407,7 @@ void TCPServer::startGame() {
 
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
 
-    arucoTags.clear();change pince
+    arucoTags.clear();
     this->broadcastMessage("strat;aruco;get aruco;1\n");
 
     found = false;
@@ -441,17 +441,6 @@ void TCPServer::startGame() {
         return;
     }
 
-    this->broadcastMessage("strat;arduino;go;500,500\n");
-    isRobotMoving = true;
-    while (this->isRobotMoving) {
-        usleep(500'000);
-        this->broadcastMessage("strat;arduino;get state;1\n");
-    }
-
-    // -pi/2
-    // ReSharper disable once CppDFAUnreachableCode
-    this->broadcastMessage("strat;arduino;angle;-157");
-    this->broadcastMessage("strat;servo_moteur;baisser bras;1");*/
     usleep(1'000'000);
 
     std::string toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
@@ -564,7 +553,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     usleep(500'000);
     this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
     // TODO set to 200 when the robot is ready
-    this->broadcastMessage("strat;arduino;speed;170\n");
+    this->broadcastMessage("strat;arduino;speed;150\n");
     pinceState[pince] = arucoTag.name() == "Purple_flower" ? PURPLE_FLOWER : WHITE_FLOWER;
 }
 
