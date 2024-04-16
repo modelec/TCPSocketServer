@@ -513,7 +513,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
         usleep(500'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(10'000'000);
+    usleep(500'000);
 
     double x30Percent = xPrime * 0.3;
     double y30Percent = yPrime * 0.3;
@@ -551,7 +551,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
         usleep(500'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(1'000'000);
+    usleep(3'000'000);
 
     toSend = "strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n";
     this->broadcastMessage(toSend);
