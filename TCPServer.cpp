@@ -514,7 +514,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     // ReSharper disable once CppDFAUnreachableCode
     // TODO set to 150 when the robot is ready
-    this->broadcastMessage("strat;arduino;speed;130\n");
+    this->broadcastMessage("strat;arduino;speed;110\n");
     usleep(1'000'000);
 
     xPrime += x30Percent;
