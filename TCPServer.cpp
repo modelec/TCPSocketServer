@@ -444,8 +444,6 @@ void TCPServer::startGame() {
         return;
     }
 
-
-
     this->broadcastMessage("strat;arduino;angle;157\n");
     isRobotMoving = 0;
     while (this->isRobotMoving < 3) {
@@ -494,9 +492,41 @@ void TCPServer::startGame() {
         return;
     }
 
+    // got to jardinière
+
+    this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
+
+    std::string toSend = "strat;arduino;go;762,200\n";
+    this->broadcastMessage(toSend);
+    isRobotMoving = 0;
+    while (this->isRobotMoving < 3) {
+        usleep(200'000);
+        this->broadcastMessage("strat;arduino;get state;1\n");
+    }
+    usleep(500'000);
+
+    this->broadcastMessage("strat;arduino;angle;0\n");
+    isRobotMoving = 0;
+    while (this->isRobotMoving < 3) {
+        usleep(200'000);
+        this->broadcastMessage("strat;arduino;get state;1\n");
+    }
+    usleep(500'000);
+
+    this->broadcastMessage("strat;arduino;speed;130\n");
+    this->broadcastMessage("strat;arduino;go;762,0\n");
+    usleep(3'000'000);
+
+    this->broadcastMessage("strat;servo_moteur;ouvrir pince;0\n");
+    this->broadcastMessage("strat;servo_moteur;ouvrir pince;2\n");
     usleep(1'000'000);
 
-    std::string toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
+    this->broadcastMessage("strat;servo_moteur;fermer pince;0\n");
+    this->broadcastMessage("strat;servo_moteur;fermer pince;2\n");
+    this->broadcastMessage("strat;servo_moteur;ouvrir pince;1\n");
+    usleep(1'000'000);
+
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
     isRobotMoving = 0;
     while (this->isRobotMoving < 3) {
