@@ -398,7 +398,7 @@ void TCPServer::startGame() {
     // pi/4
     this->broadcastMessage("strat;arduino;angle;314\n");
     isRobotMoving = 0;
-    while (this->isRobotMoving < 3) {
+    while (this->isRobotMoving < 4) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
@@ -446,7 +446,7 @@ void TCPServer::startGame() {
 
     this->broadcastMessage("strat;arduino;angle;157\n");
     isRobotMoving = 0;
-    while (this->isRobotMoving < 3) {
+    while (this->isRobotMoving < 4) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
@@ -492,38 +492,43 @@ void TCPServer::startGame() {
         return;
     }
 
-    // got to jardinière
+    // go to jardinière
 
     this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
 
     std::string toSend = "strat;arduino;go;762,200\n";
     this->broadcastMessage(toSend);
-    isRobotMoving = 0;
-    while (this->isRobotMoving < 3) {
+    usleep(5'000'000);
+    /*isRobotMoving = 0;
+    while (this->isRobotMoving < 4) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(500'000);
+    usleep(500'000);*/
 
     this->broadcastMessage("strat;arduino;angle;0\n");
-    isRobotMoving = 0;
-    while (this->isRobotMoving < 3) {
+    usleep(5'000'000);
+    /*isRobotMoving = 0;
+    while (this->isRobotMoving < 4) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(500'000);
+    usleep(500'000);*/
 
-    this->broadcastMessage("strat;arduino;speed;130\n");
+    this->broadcastMessage("strat;arduino;speed;150\n");
     this->broadcastMessage("strat;arduino;go;762,0\n");
-    usleep(3'000'000);
+    usleep(5'000'000);
 
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;0\n");
+    pinceState[0] = NONE;
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;2\n");
+    pinceState[2] = NONE;
     usleep(1'000'000);
 
     this->broadcastMessage("strat;servo_moteur;fermer pince;0\n");
     this->broadcastMessage("strat;servo_moteur;fermer pince;2\n");
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;1\n");
+    pinceState[1] = NONE;
     usleep(1'000'000);
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
