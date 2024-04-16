@@ -242,7 +242,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
     }
     else if (tokens[0] == "arduino" && tokens[2] == "set state") {
-        this->isRobotMoving += (TCPUtils::startWith(tokens[3], "0") ? 1 : 0);
+        this->isRobotMoving += (TCPUtils::startWith(tokens[3], "1") ? 0 : 1);
     }
     std::cout << "Received: " << message << std::endl;
 }
@@ -461,8 +461,8 @@ void TCPServer::startGame() {
     }
     usleep(500'000);
 
-    toSend = "start;arduino;angle;" + std::to_string(this->endRobotPose.theta * 100) + "\n";
-    this->broadcastMessage(toSend);
+    // toSend = "start;arduino;angle;" + std::to_string(this->endRobotPose.theta * 100) + "\n";
+    // this->broadcastMessage(toSend);
 
     this->broadcastMessage("strat;servo_moteur;clear;1");
 }
