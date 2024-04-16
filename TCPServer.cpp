@@ -452,10 +452,10 @@ void TCPServer::startGame() {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
-    usleep(500'000);
+    usleep(5'000'000);
 
-    // toSend = "start;arduino;angle;" + std::to_string(this->endRobotPose.theta * 100) + "\n";
-    // this->broadcastMessage(toSend);
+    toSend = "start;arduino;angle;" + std::to_string(this->endRobotPose.theta * 100) + "\n";
+    this->broadcastMessage(toSend);
 
     this->broadcastMessage("strat;servo_moteur;baisser bras;1");
     this->broadcastMessage("strat;servo_moteur;clear;1");
@@ -498,8 +498,8 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     double xPrime = arucoTag.pos().first[0] + 20;
     double yPrime = arucoTag.pos().first[1] + decalage;
 
-    xPrime *= 1.05;
-    yPrime *= 1.05;
+    xPrime *= 1.1;
+    yPrime *= 1.1;
 
     double thetaPrime = std::atan2(yPrime, xPrime);
 
