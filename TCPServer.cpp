@@ -242,7 +242,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
     }
     else if (tokens[0] == "arduino" && tokens[2] == "set state") {
-        if (TCPUtils::startWith(tokens[3], "1")) {
+        if (TCPUtils::startWith(tokens[3], "0")) {
             this->isRobotMoving++;
         }
     }
