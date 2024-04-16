@@ -244,8 +244,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     else if (tokens[0] == "arduino" && tokens[2] == "set state") {
         std::string temp = message;
         this->broadcastMessage(temp, clientSocket);
-        if (TCPUtils::startWith(tokens[3], "1")) {
-            this->isRobotMoving++;
+        if (TCPUtils::startWith(tokens[3], "0")) {
+            this->isRobotIdle++;
         }
     }
     std::cout << "Received: " << message << std::endl;
@@ -399,8 +399,8 @@ void TCPServer::startGame() {
 
     // pi/4
     this->broadcastMessage("strat;arduino;angle;314\n");
-    isRobotMoving = 0;
-    while (this->isRobotMoving < 4) {
+    isRobotIdle = 0;
+    while (this->isRobotIdle < 4) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
@@ -446,8 +446,8 @@ void TCPServer::startGame() {
     }
 
     this->broadcastMessage("strat;arduino;angle;157\n");
-    isRobotMoving = 0;
-    while (this->isRobotMoving < 4) {
+    isRobotIdle = 0;
+    while (this->isRobotIdle < 4) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
@@ -499,8 +499,8 @@ void TCPServer::startGame() {
     std::string toSend = "strat;arduino;go;762,300\n";
     this->broadcastMessage(toSend);
     usleep(200'000);
-    isRobotMoving = 0;
-    while (this->isRobotMoving < 4) {
+    isRobotIdle = 0;
+    while (this->isRobotIdle < 4) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
@@ -508,8 +508,8 @@ void TCPServer::startGame() {
 
     this->broadcastMessage("strat;arduino;angle;157\n");
     usleep(200'000);
-    isRobotMoving = 0;
-    while (this->isRobotMoving < 4) {
+    isRobotIdle = 0;
+    while (this->isRobotIdle < 4) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
@@ -535,8 +535,8 @@ void TCPServer::startGame() {
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
-    isRobotMoving = 0;
-    while (this->isRobotMoving < 3) {
+    isRobotIdle = 0;
+    while (this->isRobotIdle < 3) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
@@ -593,8 +593,8 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>((this->robotPose.theta + rotate - thetaPrime) * 100)) + "\n";
     this->broadcastMessage(toSend);
-    isRobotMoving = 0;
-    while (this->isRobotMoving < 3) {
+    isRobotIdle = 0;
+    while (this->isRobotIdle < 3) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
@@ -611,8 +611,8 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(pos30PercentX)) + "," + std::to_string(static_cast<int>(pos30PercentY)) + "\n";
     this->broadcastMessage(toSend);
-    isRobotMoving = 0;
-    while (this->isRobotMoving < 3) {
+    isRobotIdle = 0;
+    while (this->isRobotIdle < 3) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
@@ -631,8 +631,8 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(robotPosForPotX)) + "," + std::to_string(static_cast<int>(robotPosForPotY)) + "\n";
     this->broadcastMessage(toSend);
-    isRobotMoving = 0;
-    while (this->isRobotMoving < 3) {
+    isRobotIdle = 0;
+    while (this->isRobotIdle < 3) {
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
