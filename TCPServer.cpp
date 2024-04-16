@@ -357,7 +357,7 @@ void TCPServer::startGame() {
     this->broadcastMessage("strat;servo_moteur;fermer pince;2\n");
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;0\n");
     // TODO set to 200 when the robot is ready
-    this->broadcastMessage("strat;arduino;speed;150\n");
+    this->broadcastMessage("strat;arduino;speed;200\n");
 
     this->broadcastMessage("strat;aruco;get aruco;1\n");
 
@@ -509,7 +509,7 @@ void TCPServer::startGame() {
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
 
-    this->broadcastMessage("strat;arduino;speed;130\n");
+    this->broadcastMessage("strat;arduino;speed;150\n");
     this->broadcastMessage("strat;arduino;go;762,0\n");
     usleep(1'000'000);
 
@@ -525,7 +525,7 @@ void TCPServer::startGame() {
     pinceState[1] = NONE;
     usleep(200'000);
 
-    this->broadcastMessage("strat;arduino;speed;150\n");
+    this->broadcastMessage("strat;arduino;speed;200\n");
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
@@ -600,11 +600,11 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
 
-    double x30Percent = xPrime * 0.3;
-    double y30Percent = yPrime * 0.3;
+    double x15Percent = xPrime * 0.15;
+    double y15Percent = yPrime * 0.15;
 
-    xPrime -= x30Percent;
-    yPrime -= y30Percent;
+    xPrime -= x15Percent;
+    yPrime -= y15Percent;
 
     double pos30PercentX = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
     double pos30PercentY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
@@ -619,11 +619,10 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     // ReSharper disable once CppDFAUnreachableCode
     // TODO set to 150 when the robot is ready
-    this->broadcastMessage("strat;arduino;speed;130\n");
-    usleep(200'000);
+    this->broadcastMessage("strat;arduino;speed;150\n");
 
-    xPrime += x30Percent;
-    yPrime += y30Percent;
+    xPrime += x15Percent;
+    yPrime += y15Percent;
 
     double robotPosForPotX = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
     double robotPosForPotY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
@@ -641,7 +640,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     usleep(500'000);
     this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
     // TODO set to 200 when the robot is ready
-    this->broadcastMessage("strat;arduino;speed;150\n");
+    this->broadcastMessage("strat;arduino;speed;200\n");
     pinceState[pince] = arucoTag.name() == "Purple_flower" ? PURPLE_FLOWER : WHITE_FLOWER;
 }
 
