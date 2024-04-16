@@ -498,8 +498,8 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     double xPrime = arucoTag.pos().first[0] + 20;
     double yPrime = arucoTag.pos().first[1] + decalage;
 
-    xPrime *= 1.1;
-    yPrime *= 1.1;
+    xPrime *= 1.05;
+    yPrime *= 1.05;
 
     double thetaPrime = std::atan2(yPrime, xPrime);
 
