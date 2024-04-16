@@ -444,6 +444,56 @@ void TCPServer::startGame() {
         return;
     }
 
+
+
+    this->broadcastMessage("strat;arduino;angle;157\n");
+    isRobotMoving = 0;
+    while (this->isRobotMoving < 3) {
+        usleep(200'000);
+        this->broadcastMessage("strat;arduino;get state;1\n");
+    }
+    usleep(500'000);
+
+    // ReSharper disable once CppDFAUnreachableCode
+    usleep(500'000);
+
+    this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
+
+    usleep(2'000'000);
+    arucoTags.clear();
+    this->broadcastMessage("strat;aruco;get aruco;1\n");
+
+    found = false;
+    timeout = 0;
+    while (!found) {
+        for (const auto & arucoTag : this->arucoTags) {
+            if (TCPUtils::endsWith(arucoTag.name(), "flower")) {
+                tag = arucoTag;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            this->broadcastMessage("start;aruco;get aruco;1");
+            usleep(500'000);
+            timeout++;
+            if (timeout > 10) {
+                return;
+            }
+        }
+    }
+
+    if (pinceState[1] == NONE) {
+        goToAruco(tag, 1);
+    } else if (pinceState[2] == NONE) {
+        goToAruco(tag, 2);
+    } else if (pinceState[0] == NONE) {
+        goToAruco(tag, 0);
+    } else {
+        return;
+    }
+
     usleep(1'000'000);
 
     std::string toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
