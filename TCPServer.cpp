@@ -464,6 +464,7 @@ void TCPServer::startGame() {
     // toSend = "start;arduino;angle;" + std::to_string(this->endRobotPose.theta * 100) + "\n";
     // this->broadcastMessage(toSend);
 
+    this->broadcastMessage("strat;servo_moteur;baisser bras;1");
     this->broadcastMessage("strat;servo_moteur;clear;1");
 }
 
