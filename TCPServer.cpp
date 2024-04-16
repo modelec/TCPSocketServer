@@ -456,7 +456,7 @@ void TCPServer::startGame() {
     this->broadcastMessage(toSend);
     isRobotMoving = 0;
     while (this->isRobotMoving < 3) {
-        usleep(500'000);
+        usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
     usleep(500'000);
@@ -511,7 +511,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     this->broadcastMessage(toSend);
     isRobotMoving = 0;
     while (this->isRobotMoving < 3) {
-        usleep(500'000);
+        usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
     usleep(500'000);
@@ -529,7 +529,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     this->broadcastMessage(toSend);
     isRobotMoving = 0;
     while (this->isRobotMoving < 3) {
-        usleep(500'000);
+        usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
     usleep(500'000);
@@ -549,7 +549,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     this->broadcastMessage(toSend);
     isRobotMoving = 0;
     while (this->isRobotMoving < 3) {
-        usleep(500'000);
+        usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
     usleep(3'000'000);
