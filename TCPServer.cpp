@@ -409,6 +409,7 @@ void TCPServer::startGame() {
 
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
 
+    usleep(2'000'000);
     arucoTags.clear();
     this->broadcastMessage("strat;aruco;get aruco;1\n");
 
