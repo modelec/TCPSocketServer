@@ -185,9 +185,15 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 spawnPoint[0] = 200;
                 spawnPoint[1] = 1781;
                 spawnPoint[2] = 0;
-                finishPoint[0] = 400;
+
+                // For test
+                finishPoint[0] = 200;
+                finishPoint[1] = 1781;
+                finishPoint[2] = 0;
+
+                /*finishPoint[0] = 400;
                 finishPoint[1] = 400;
-                finishPoint[2] = 3.1415;
+                finishPoint[2] = 3.1415;*/
                 break;
             case 6:
                 this->team = YELLOW;
