@@ -1074,6 +1074,8 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     //this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
     this->broadcastMessage("strat;arduino;speed;200\n");
     pinceState[pince] = TCPUtils::startWith(arucoTag.name(), "Purple_flower") ? PURPLE_FLOWER : WHITE_FLOWER;
+    toSend = "strat;client;have aruco;" + std::to_string(pince) + "," + arucoTag.name() + "," + (pinceState[pince] == PURPLE_FLOWER ? "purple" : "white") + "\n";
+    this->broadcastMessage(toSend);
 }
 
 void TCPServer::askArduinoPos() {
@@ -1091,7 +1093,7 @@ void TCPServer::askArduinoPos() {
 
     while (!this->_shouldStop) {
         this->sendToClient("strat;arduino;get pos;1\n", arduino.socket);
-        usleep(300'000);
+        usleep(200'000);
     }
 }
 
