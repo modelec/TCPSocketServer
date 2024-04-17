@@ -453,7 +453,7 @@ void TCPServer::startGameBlueTeam() {
     }
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 400)) + "\n";
-    this->broadcastMessage(toSend);
+    this->broadcastMessage("strat;arduino;go;1000,");
     awaitRobotIdle();
 
     this->broadcastMessage("strat;arduino;angle;157\n");
@@ -1274,29 +1274,10 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
-
-    double x15Percent = xPrime * 0.15;
-    double y15Percent = yPrime * 0.15;
-
-    xPrime -= x15Percent;
-    yPrime -= y15Percent;
-
-    double pos30PercentX = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
-    double pos30PercentY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
-
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(pos30PercentX)) + "," + std::to_string(static_cast<int>(pos30PercentY)) + "\n";
-    this->broadcastMessage(toSend);
-    awaitRobotIdle();
-
-    this->broadcastMessage("strat;arduino;speed;150\n");
-
-    xPrime += x15Percent;
-    yPrime += y15Percent;
-
     double robotPosForPotX = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
     double robotPosForPotY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(robotPosForPotX)) + "," + std::to_string(static_cast<int>(robotPosForPotY)) + "\n";
+    toSend = "strat;arduino;transit;" + std::to_string(static_cast<int>(robotPosForPotX)) + "," + std::to_string(static_cast<int>(robotPosForPotY)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
