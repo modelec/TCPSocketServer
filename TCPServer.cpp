@@ -1095,7 +1095,7 @@ void TCPServer::askArduinoPos() {
 
     while (!this->_shouldStop) {
         this->sendToClient("strat;arduino;get pos;1\n", arduino.socket);
-        usleep(200'000);
+        usleep(300'000);
     }
 }
 
@@ -1104,7 +1104,7 @@ void TCPServer::awaitRobotIdle() {
     // ReSharper disable once CppDFAConstantConditions
     // ReSharper disable once CppDFAEndlessLoop
     while (this->isRobotIdle < 3) {
-        usleep(100'000);
+        usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
 }
