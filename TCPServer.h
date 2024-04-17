@@ -21,7 +21,8 @@ struct ClientTCP
 
 enum Team {
     YELLOW,
-    BLUE
+    BLUE,
+    TEST
 };
 
 class TCPServer; // Forward declaration
@@ -98,6 +99,8 @@ public:
     void startGameBlueTeam();
 
     void startGameYellowTeam();
+
+    void startGameTest();
 
     void goToAruco(const ArucoTag &arucoTag, int pince);
 
