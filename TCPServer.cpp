@@ -368,31 +368,31 @@ void TCPServer::startGameBlueTeam() {
     usleep(100'000);
     std::string toSend;
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + ",380\n";
+    toSend = "strat;arduino;go;380," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
     this->broadcastMessage("strat;servo_moteur;uncheck panneau;7\n");
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + ",474\n";
+    toSend = "strat;arduino;go;474," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
     usleep(100'000);
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + ",620\n";
+    toSend = "strat;arduino;go;620," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
     this->broadcastMessage("strat;servo_moteur;uncheck panneau;7\n");
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + ",749\n";
+    toSend = "strat;arduino;go;749," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
     usleep(100'000);
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + ",805\n";
+    toSend = "strat;arduino;go;805," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
