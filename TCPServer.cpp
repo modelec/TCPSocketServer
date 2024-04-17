@@ -1172,7 +1172,7 @@ void TCPServer::startGameTest() {
 
     this->broadcastMessage("strat;arduino;speed;150\n");
     this->broadcastMessage("strat;arduino;go;762,0\n");
-    usleep(1'000'000);
+    usleep(4'000'000);
 
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;0\n");
     pinceState[0] = NONE;
