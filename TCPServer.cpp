@@ -399,6 +399,8 @@ void TCPServer::startGameBlueTeam() {
     this->broadcastMessage("strat;arduino;angle;104\n");
     awaitRobotIdle();
 
+    this->broadcastMessage("strat;servo_moteur;uncheck panneau;7\n");
+
     int timeout = 0;
     ArucoTag tag;
     bool found = false;
