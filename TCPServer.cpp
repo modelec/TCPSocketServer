@@ -267,7 +267,7 @@ void TCPServer::broadcastMessage(const char* message, int senderSocket)
 }
 
 void TCPServer::broadcastMessage(std::string &message, int senderSocket) {
-    if (!TCPUtils::endsWith(message, "\n")) {
+    if (!TCPUtils::endWith(message, "\n")) {
         message += "\n";
     }
 
@@ -404,7 +404,7 @@ void TCPServer::startGameBlueTeam() {
     bool found = false;
     while (!found) {
         for (const auto & arucoTag : this->arucoTags) {
-            if (TCPUtils::endsWith(arucoTag.name(), "flower")) {
+            if (TCPUtils::endWith(arucoTag.name(), "flower")) {
                 if (arucoTag.pos().first[0] < 800 && arucoTag.pos().first[0] > 300 && arucoTag.pos().first[1] < 300 && arucoTag.pos().first[1] > -300) {
                     tag = arucoTag;
                     found = true;
@@ -444,7 +444,7 @@ void TCPServer::startGameBlueTeam() {
     found = false;
     while (!found) {
         for (const auto & arucoTag : this->arucoTags) {
-            if (TCPUtils::endsWith(arucoTag.name(), "flower")) {
+            if (TCPUtils::endWith(arucoTag.name(), "flower")) {
                 if (arucoTag.pos().first[0] < 800 && arucoTag.pos().first[0] > 300 && arucoTag.pos().first[1] < 300 && arucoTag.pos().first[1] > -300) {
                     tag = arucoTag;
                     found = true;
@@ -484,7 +484,7 @@ void TCPServer::startGameBlueTeam() {
     found = false;
     while (!found) {
         for (const auto & arucoTag : this->arucoTags) {
-            if (TCPUtils::endsWith(arucoTag.name(), "flower")) {
+            if (TCPUtils::endWith(arucoTag.name(), "flower")) {
                 if (arucoTag.pos().first[0] < 800 && arucoTag.pos().first[0] > 300 && arucoTag.pos().first[1] < 300 && arucoTag.pos().first[1] > -300) {
                     tag = arucoTag;
                     found = true;

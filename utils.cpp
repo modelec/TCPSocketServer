@@ -5,7 +5,7 @@ bool TCPUtils::startWith(const std::string& str, const std::string& start)
     return str.rfind(start, 0) == 0;
 }
 
-bool TCPUtils::endsWith(const std::string& str, const std::string& end)
+bool TCPUtils::endWith(const std::string& str, const std::string& end)
 {
     if (str.length() >= end.length())
     {

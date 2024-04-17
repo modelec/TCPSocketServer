@@ -13,7 +13,7 @@ enum PinceState {
 namespace TCPUtils {
     bool startWith(const std::string& str, const std::string& start);
 
-    bool endsWith(const std::string& str, const std::string& end);
+    bool endWith(const std::string& str, const std::string& end);
 
     bool contains(const std::string& str, const std::string& sub);
 
