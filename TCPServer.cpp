@@ -433,7 +433,7 @@ void TCPServer::startGameBlueTeam() {
         return;
     }
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y + 200)) + "\n";
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 400)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
@@ -473,7 +473,7 @@ void TCPServer::startGameBlueTeam() {
         return;
     }
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y + 200)) + "\n";
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 400)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
@@ -513,21 +513,21 @@ void TCPServer::startGameBlueTeam() {
         return;
     }
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y + 200)) + "\n";
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
     this->broadcastMessage("strat;arduino;angle;157\n");
     awaitRobotIdle();
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y + 200)) + "\n";
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
     this->broadcastMessage("strat;arduino;angle;314\n");
     awaitRobotIdle();
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x - 150)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x - 150)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
@@ -556,7 +556,7 @@ void TCPServer::startGameBlueTeam() {
             usleep(100'000);
         }
 
-        toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x + 150)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
+        toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x + 150)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
         this->broadcastMessage(toSend);
     }
 
@@ -590,196 +590,396 @@ void TCPServer::startGameBlueTeam() {
         }
     }
 
-    /*this->broadcastMessage("strat;aruco;get aruco;1\n");
+    /*
+     *  TODO
+     *  here add the whole strategy, for the moment the robot only took 3 plants and drop them
+     *  Handle the second plant spot
+     */
 
-    int timeout = 0;
-    ArucoTag tag;
-    bool found = false;
-    while (!found) {
-        for (const auto & arucoTag : this->arucoTags) {
-            if (TCPUtils::endsWith(arucoTag.name(), "flower")) {
-                tag = arucoTag;
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            this->broadcastMessage("start;aruco;get aruco;1");
-            usleep(500'000);
-            timeout++;
-            if (timeout > 10) {
-                return;
-            }
-        }
-    }
-
-    // goToAruco(tag, 1);
-
-    if (pinceState[1] == NONE) {
-        goToAruco(tag, 1);
-    } else if (pinceState[2] == NONE) {
-        goToAruco(tag, 2);
-    } else if (pinceState[0] == NONE) {
-        goToAruco(tag, 0);
-    } else {
-        return;
-    }
-
-    // pi/4
-    this->broadcastMessage("strat;arduino;angle;314\n");
-    isRobotIdle = 0;
-    while (this->isRobotIdle < 3) {
-        usleep(200'000);
-        this->broadcastMessage("strat;arduino;get state;1\n");
-    }
-
-    // ReSharper disable once CppDFAUnreachableCode
-
-    this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
-
-    usleep(2'000'000);
-    arucoTags.clear();
-    this->broadcastMessage("strat;aruco;get aruco;1\n");
-
-    found = false;
-    timeout = 0;
-    while (!found) {
-        for (const auto & arucoTag : this->arucoTags) {
-            if (TCPUtils::endsWith(arucoTag.name(), "flower")) {
-                tag = arucoTag;
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            this->broadcastMessage("start;aruco;get aruco;1");
-            usleep(500'000);
-            timeout++;
-            if (timeout > 10) {
-                return;
-            }
-        }
-    }
-
-    if (pinceState[1] == NONE) {
-        goToAruco(tag, 1);
-    } else if (pinceState[2] == NONE) {
-        goToAruco(tag, 2);
-    } else if (pinceState[0] == NONE) {
-        goToAruco(tag, 0);
-    } else {
-        return;
-    }
-
-    this->broadcastMessage("strat;arduino;angle;157\n");
-    isRobotIdle = 0;
-    while (this->isRobotIdle < 3) {
-        usleep(200'000);
-        this->broadcastMessage("strat;arduino;get state;1\n");
-    }
-
-    // ReSharper disable once CppDFAUnreachableCode
-
-    this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
-
-    usleep(2'000'000);
-    arucoTags.clear();
-    this->broadcastMessage("strat;aruco;get aruco;1\n");
-
-    found = false;
-    timeout = 0;
-    while (!found) {
-        for (const auto & arucoTag : this->arucoTags) {
-            if (TCPUtils::endsWith(arucoTag.name(), "flower")) {
-                tag = arucoTag;
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            this->broadcastMessage("start;aruco;get aruco;1");
-            usleep(500'000);
-            timeout++;
-            if (timeout > 10) {
-                return;
-            }
-        }
-    }
-
-    if (pinceState[1] == NONE) {
-        goToAruco(tag, 1);
-    } else if (pinceState[2] == NONE) {
-        goToAruco(tag, 2);
-    } else if (pinceState[0] == NONE) {
-        goToAruco(tag, 0);
-    } else {
-        return;
-    }
-
-    // go to jardinière
-
-    this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
-
-    std::string toSend = "strat;arduino;go;762,300\n";
+    /*toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
     this->broadcastMessage(toSend);
-    usleep(200'000);
-    isRobotIdle = 0;
-    while (this->isRobotIdle < 3) {
-        usleep(200'000);
-        this->broadcastMessage("strat;arduino;get state;1\n");
+    awaitRobotIdle();
+
+    this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
+
+    this->broadcastMessage("strat;arduino;angle;-157\n");
+    awaitRobotIdle();
+
+    timeout = 0;
+    found = false;
+    while (!found) {
+        for (const auto & arucoTag : this->arucoTags) {
+            if (TCPUtils::endsWith(arucoTag.name(), "flower")) {
+                if (arucoTag.pos().first[0] < 800 && arucoTag.pos().first[0] > 300 && arucoTag.pos().first[1] < 300 && arucoTag.pos().first[1] > -300) {
+                    tag = arucoTag;
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            this->broadcastMessage("start;aruco;get aruco;1\n");
+            usleep(500'000);
+            timeout++;
+            if (timeout > 10) {
+                return;
+            }
+        }
     }
+
+    if (pinceState[1] == NONE) {
+        goToAruco(tag, 1);
+    } else if (pinceState[2] == NONE) {
+        goToAruco(tag, 2);
+    } else if (pinceState[0] == NONE) {
+        goToAruco(tag, 0);
+    } else {
+        return;
+    }
+
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y - 350)) + "\n";
+    this->broadcastMessage(toSend);
+    awaitRobotIdle();
 
     this->broadcastMessage("strat;arduino;angle;157\n");
-    usleep(200'000);
-    isRobotIdle = 0;
-    while (this->isRobotIdle < 3) {
-        usleep(200'000);
-        this->broadcastMessage("strat;arduino;get state;1\n");
+    awaitRobotIdle();
+
+    timeout = 0;
+    found = false;
+    while (!found) {
+        for (const auto & arucoTag : this->arucoTags) {
+            if (TCPUtils::endsWith(arucoTag.name(), "flower")) {
+                if (arucoTag.pos().first[0] < 800 && arucoTag.pos().first[0] > 300 && arucoTag.pos().first[1] < 300 && arucoTag.pos().first[1] > -300) {
+                    tag = arucoTag;
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            this->broadcastMessage("start;aruco;get aruco;1\n");
+            usleep(500'000);
+            timeout++;
+            if (timeout > 10) {
+                return;
+            }
+        }
     }
 
-    this->broadcastMessage("strat;arduino;speed;130\n");
-    this->broadcastMessage("strat;arduino;go;762,0\n");
-    usleep(1'000'000);
+    if (pinceState[1] == NONE) {
+        goToAruco(tag, 1);
+    } else if (pinceState[2] == NONE) {
+        goToAruco(tag, 2);
+    } else if (pinceState[0] == NONE) {
+        goToAruco(tag, 0);
+    } else {
+        return;
+    }
 
-    this->broadcastMessage("strat;servo_moteur;ouvrir pince;0\n");
-    pinceState[0] = NONE;
-    this->broadcastMessage("strat;servo_moteur;ouvrir pince;2\n");
-    pinceState[2] = NONE;
-    usleep(200'000);
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y - 350)) + "\n";
+    this->broadcastMessage(toSend);
+    awaitRobotIdle();
 
-    this->broadcastMessage("strat;servo_moteur;fermer pince;0\n");
-    this->broadcastMessage("strat;servo_moteur;fermer pince;2\n");
-    this->broadcastMessage("strat;servo_moteur;ouvrir pince;1\n");
-    pinceState[1] = NONE;
-    usleep(200'000);
+    this->broadcastMessage("strat;arduino;angle;157\n");
+    awaitRobotIdle();
 
-    this->broadcastMessage("strat;arduino;speed;200\n");
+    timeout = 0;
+    found = false;
+    while (!found) {
+        for (const auto & arucoTag : this->arucoTags) {
+            if (TCPUtils::endsWith(arucoTag.name(), "flower")) {
+                if (arucoTag.pos().first[0] < 800 && arucoTag.pos().first[0] > 300 && arucoTag.pos().first[1] < 300 && arucoTag.pos().first[1] > -300) {
+                    tag = arucoTag;
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            this->broadcastMessage("start;aruco;get aruco;1\n");
+            usleep(500'000);
+            timeout++;
+            if (timeout > 10) {
+                return;
+            }
+        }
+    }
+
+    if (pinceState[1] == NONE) {
+        goToAruco(tag, 1);
+    } else if (pinceState[2] == NONE) {
+        goToAruco(tag, 2);
+    } else if (pinceState[0] == NONE) {
+        goToAruco(tag, 0);
+    } else {
+        return;
+    }
+
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y - 200)) + "\n";
+    this->broadcastMessage(toSend);
+    awaitRobotIdle();
+
+    this->broadcastMessage("strat;arduino;angle;314\n");
+    awaitRobotIdle();
+
+    std::vector<int> pinceHavePurpleFlower;
+    for (int i = 0; i < 3; i++) {
+        if (pinceState[i] == PURPLE_FLOWER) {
+            pinceHavePurpleFlower.push_back(i);
+        }
+    }
+
+    if (!pinceHavePurpleFlower.empty()) {
+        this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
+
+        this->broadcastMessage("strat;aduino;go;225,225\n");
+        awaitRobotIdle();
+        this->broadcastMessage("strat;arduino;angle;314\n");
+        awaitRobotIdle();
+
+        for (auto & toDrop : pinceHavePurpleFlower) {
+            toSend = "strat;servo_moteur;ouvrir pince;" + std::to_string(toDrop) + "\n";
+            this->broadcastMessage(toSend);
+            usleep(200'000);
+            pinceState[toDrop] = NONE;
+            toSend = "strat;servo_moteur;fermer pince;" + std::to_string(toDrop) + "\n";
+            this->broadcastMessage(toSend);
+            usleep(100'000);
+        }
+
+        toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x + 150)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
+        this->broadcastMessage(toSend);
+    }
+
+
+    if (pinceHavePurpleFlower.size() < 3) {
+        this->broadcastMessage("strat;arduino;go;762,300\n");
+        usleep(200'000);
+        awaitRobotIdle();
+
+        this->broadcastMessage("strat;arduino;angle;157\n");
+        usleep(200'000);
+        awaitRobotIdle();
+
+        // TODO set to 150 when the robot is ready
+        this->broadcastMessage("strat;arduino;speed;130\n");
+        this->broadcastMessage("strat;arduino;go;762,0\n");
+        usleep(1'000'000);
+        // TODO set to 200 when the robot is ready
+        this->broadcastMessage("strat;arduino;speed;150\n");
+
+        for (int i = 0; i < 3; i++) {
+            if (pinceState[i] == WHITE_FLOWER) {
+                toSend = "strat;servo_moteur;ouvrir pince;" + std::to_string(i) + "\n";
+                this->broadcastMessage(toSend);
+                usleep(200'000);
+                pinceState[i] = NONE;
+                toSend = "strat;servo_moteur;fermer pince;" + std::to_string(i) + "\n";
+                this->broadcastMessage(toSend);
+                usleep(100'000);
+            }
+        }
+    }*/
+
+        /*toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
+    this->broadcastMessage(toSend);
+    awaitRobotIdle();
+
+    this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
+
+    this->broadcastMessage("strat;arduino;angle;-157\n");
+    awaitRobotIdle();
+
+    timeout = 0;
+    found = false;
+    while (!found) {
+        for (const auto & arucoTag : this->arucoTags) {
+            if (TCPUtils::endsWith(arucoTag.name(), "flower")) {
+                if (arucoTag.pos().first[0] < 800 && arucoTag.pos().first[0] > 300 && arucoTag.pos().first[1] < 300 && arucoTag.pos().first[1] > -300) {
+                    tag = arucoTag;
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            this->broadcastMessage("start;aruco;get aruco;1\n");
+            usleep(500'000);
+            timeout++;
+            if (timeout > 10) {
+                return;
+            }
+        }
+    }
+
+    if (pinceState[1] == NONE) {
+        goToAruco(tag, 1);
+    } else if (pinceState[2] == NONE) {
+        goToAruco(tag, 2);
+    } else if (pinceState[0] == NONE) {
+        goToAruco(tag, 0);
+    } else {
+        return;
+    }
+
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y - 350)) + "\n";
+    this->broadcastMessage(toSend);
+    awaitRobotIdle();
+
+    this->broadcastMessage("strat;arduino;angle;157\n");
+    awaitRobotIdle();
+
+    timeout = 0;
+    found = false;
+    while (!found) {
+        for (const auto & arucoTag : this->arucoTags) {
+            if (TCPUtils::endsWith(arucoTag.name(), "flower")) {
+                if (arucoTag.pos().first[0] < 800 && arucoTag.pos().first[0] > 300 && arucoTag.pos().first[1] < 300 && arucoTag.pos().first[1] > -300) {
+                    tag = arucoTag;
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            this->broadcastMessage("start;aruco;get aruco;1\n");
+            usleep(500'000);
+            timeout++;
+            if (timeout > 10) {
+                return;
+            }
+        }
+    }
+
+    if (pinceState[1] == NONE) {
+        goToAruco(tag, 1);
+    } else if (pinceState[2] == NONE) {
+        goToAruco(tag, 2);
+    } else if (pinceState[0] == NONE) {
+        goToAruco(tag, 0);
+    } else {
+        return;
+    }
+
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y - 350)) + "\n";
+    this->broadcastMessage(toSend);
+    awaitRobotIdle();
+
+    this->broadcastMessage("strat;arduino;angle;157\n");
+    awaitRobotIdle();
+
+    timeout = 0;
+    found = false;
+    while (!found) {
+        for (const auto & arucoTag : this->arucoTags) {
+            if (TCPUtils::endsWith(arucoTag.name(), "flower")) {
+                if (arucoTag.pos().first[0] < 800 && arucoTag.pos().first[0] > 300 && arucoTag.pos().first[1] < 300 && arucoTag.pos().first[1] > -300) {
+                    tag = arucoTag;
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            this->broadcastMessage("start;aruco;get aruco;1\n");
+            usleep(500'000);
+            timeout++;
+            if (timeout > 10) {
+                return;
+            }
+        }
+    }
+
+    if (pinceState[1] == NONE) {
+        goToAruco(tag, 1);
+    } else if (pinceState[2] == NONE) {
+        goToAruco(tag, 2);
+    } else if (pinceState[0] == NONE) {
+        goToAruco(tag, 0);
+    } else {
+        return;
+    }
+
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y - 200)) + "\n";
+    this->broadcastMessage(toSend);
+    awaitRobotIdle();
+
+    this->broadcastMessage("strat;arduino;angle;314\n");
+    awaitRobotIdle();
+
+    std::vector<int> pinceHavePurpleFlower;
+    for (int i = 0; i < 3; i++) {
+        if (pinceState[i] == PURPLE_FLOWER) {
+            pinceHavePurpleFlower.push_back(i);
+        }
+    }
+
+    if (!pinceHavePurpleFlower.empty()) {
+        this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
+
+        this->broadcastMessage("strat;aduino;go;225,225\n");
+        awaitRobotIdle();
+        this->broadcastMessage("strat;arduino;angle;314\n");
+        awaitRobotIdle();
+
+        for (auto & toDrop : pinceHavePurpleFlower) {
+            toSend = "strat;servo_moteur;ouvrir pince;" + std::to_string(toDrop) + "\n";
+            this->broadcastMessage(toSend);
+            usleep(200'000);
+            pinceState[toDrop] = NONE;
+            toSend = "strat;servo_moteur;fermer pince;" + std::to_string(toDrop) + "\n";
+            this->broadcastMessage(toSend);
+            usleep(100'000);
+        }
+
+        toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x + 150)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
+        this->broadcastMessage(toSend);
+    }
+
+
+    if (pinceHavePurpleFlower.size() < 3) {
+        this->broadcastMessage("strat;arduino;go;762,300\n");
+        usleep(200'000);
+        awaitRobotIdle();
+
+        this->broadcastMessage("strat;arduino;angle;157\n");
+        usleep(200'000);
+        awaitRobotIdle();
+
+        // TODO set to 150 when the robot is ready
+        this->broadcastMessage("strat;arduino;speed;130\n");
+        this->broadcastMessage("strat;arduino;go;762,0\n");
+        usleep(1'000'000);
+        // TODO set to 200 when the robot is ready
+        this->broadcastMessage("strat;arduino;speed;150\n");
+
+        for (int i = 0; i < 3; i++) {
+            if (pinceState[i] == WHITE_FLOWER) {
+                toSend = "strat;servo_moteur;ouvrir pince;" + std::to_string(i) + "\n";
+                this->broadcastMessage(toSend);
+                usleep(200'000);
+                pinceState[i] = NONE;
+                toSend = "strat;servo_moteur;fermer pince;" + std::to_string(i) + "\n";
+                this->broadcastMessage(toSend);
+                usleep(100'000);
+            }
+        }
+    }*/
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
-    isRobotIdle = 0;
-    while (this->isRobotIdle < 3) {
-        usleep(200'000);
-        this->broadcastMessage("strat;arduino;get state;1\n");
-    }
-
-    toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>(this->endRobotPose.theta * 100)) + "\n";
+    awaitRobotIdle();
+    toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>(this->endRobotPose.theta * 100));
     this->broadcastMessage(toSend);
-    isRobotIdle = 0;
-    while (this->isRobotIdle < 3) {
-        usleep(200'000);
-        this->broadcastMessage("strat;arduino;get state;1\n");
-    }
+    awaitRobotIdle();
 
-    // toSend = "start;arduino;angle;" + std::to_string(this->endRobotPose.theta * 100) + "\n";
-    // this->broadcastMessage(toSend);
-
-    this->broadcastMessage("strat;servo_moteur;baisser bras;1");*/
     this->broadcastMessage("strat;servo_moteur;clear;1");
-
 }
 
 
@@ -788,9 +988,16 @@ void TCPServer::startGameYellowTeam() {
     this->broadcastMessage("strat;arduino;speed;150\n");
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
     usleep(100'000);
-    this->broadcastMessage("strat;arduino;go;");
+    std::string toSend = "strat;arduino;go;";
+    this->broadcastMessage(toSend);
 
 
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
+    this->broadcastMessage(toSend);
+    awaitRobotIdle();
+    toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>(this->endRobotPose.theta * 100));
+    this->broadcastMessage(toSend);
+    awaitRobotIdle();
 
     this->broadcastMessage("strat;servo_moteur;clear;1");
 }
@@ -893,7 +1100,7 @@ void TCPServer::askArduinoPos() {
 
     while (!this->_shouldStop) {
         this->sendToClient("strat;arduino;get pos;1\n", arduino.socket);
-        usleep(500'000);
+        usleep(200'000);
     }
 }
 
