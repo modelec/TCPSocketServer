@@ -430,7 +430,7 @@ void TCPServer::startGameBlueTeam() {
     while (!found) {
         for (const auto & arucoTag : this->arucoTags) {
             if (TCPUtils::endWith(arucoTag.name(), "flower")) {
-                if (arucoTag.pos().first[0] < 800 && arucoTag.pos().first[0] > 300 && arucoTag.pos().first[1] < 300 && arucoTag.pos().first[1] > -300) {
+                if (arucoTag.pos().first[0] < 800 && arucoTag.pos().first[0] > 100 && arucoTag.pos().first[1] < 300 && arucoTag.pos().first[1] > -300) {
                     tag = arucoTag;
                     found = true;
                     break;
