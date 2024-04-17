@@ -577,16 +577,16 @@ void TCPServer::startGameBlueTeam() {
         this->broadcastMessage("strat;arduino;angle;157\n");
         awaitRobotIdle();
 
-        this->broadcastMessage("strat;arduino;speed;150\n");
+        this->broadcastMessage("strat;arduino;speed;130\n");
         this->broadcastMessage("strat;arduino;go;762,0\n");
-        usleep(1'000'000);
+        usleep(3'000'000);
         this->broadcastMessage("strat;arduino;speed;200\n");
 
         for (int i = 0; i < 3; i++) {
             if (pinceState[i] == WHITE_FLOWER) {
                 toSend = "strat;servo_moteur;ouvrir pince;" + std::to_string(i) + "\n";
                 this->broadcastMessage(toSend);
-                usleep(200'000);
+                usleep(500'000);
                 pinceState[i] = NONE;
                 toSend = "strat;servo_moteur;fermer pince;" + std::to_string(i) + "\n";
                 this->broadcastMessage(toSend);
