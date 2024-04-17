@@ -413,10 +413,10 @@ void TCPServer::startGameBlueTeam() {
 
     this->broadcastMessage("strat;servo_moteur;uncheck panneau;7\n");
 
+    this->broadcastMessage("strat;arduino;speed;200\n");
+
     this->broadcastMessage("strat;arduino;angle;104\n");
     awaitRobotIdle();
-
-    this->broadcastMessage("strat;arduino;speed;200\n");
 
     int timeout = 0;
     ArucoTag tag;
@@ -452,8 +452,7 @@ void TCPServer::startGameBlueTeam() {
         return;
     }
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 400)) + "\n";
-    this->broadcastMessage("strat;arduino;go;1000,");
+    this->broadcastMessage("strat;arduino;go;1000,1700");
     awaitRobotIdle();
 
     this->broadcastMessage("strat;arduino;angle;157\n");
@@ -492,8 +491,7 @@ void TCPServer::startGameBlueTeam() {
         return;
     }
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 400)) + "\n";
-    this->broadcastMessage(toSend);
+    this->broadcastMessage("strat;arduino;go;1000,1700");
     awaitRobotIdle();
 
     this->broadcastMessage("strat;arduino;angle;157\n");
@@ -532,21 +530,13 @@ void TCPServer::startGameBlueTeam() {
         return;
     }
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
-    this->broadcastMessage(toSend);
-    awaitRobotIdle();
-
-    this->broadcastMessage("strat;arduino;angle;157\n");
-    awaitRobotIdle();
-
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
-    this->broadcastMessage(toSend);
+    this->broadcastMessage("strat;arduino;go;1000,1700");
     awaitRobotIdle();
 
     this->broadcastMessage("strat;arduino;angle;314\n");
     awaitRobotIdle();
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x - 150)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x - 350)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
