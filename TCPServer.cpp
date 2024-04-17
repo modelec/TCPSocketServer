@@ -421,7 +421,7 @@ void TCPServer::startGameBlueTeam() {
 
     this->broadcastMessage("strat;arduino;speed;200\n");
 
-    this->broadcastMessage("strat;arduino;angle;104\n");
+    this->broadcastMessage("strat;arduino;angle;0\n");
     awaitRobotIdle();
 
     int timeout = 0;
