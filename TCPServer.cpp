@@ -1078,7 +1078,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     toSend = "strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n";
     this->broadcastMessage(toSend);
     usleep(500'000);
-    this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
+    //this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
     // TODO set to 200 when the robot is ready
     this->broadcastMessage("strat;arduino;speed;150\n");
     pinceState[pince] = TCPUtils::startWith(arucoTag.name(), "Purple_flower") ? PURPLE_FLOWER : WHITE_FLOWER;
