@@ -95,15 +95,17 @@ public:
 
     void checkIfAllClientsReady();
 
-    void startGame();
+    void startGameBlueTeam();
+
+    void startGameYellowTeam();
 
     void goToAruco(const ArucoTag &arucoTag, int pince);
-
-    void turnSolarPanel(const ArucoTag &arucoTag);
 
     void askArduinoPos();
 
     [[nodiscard]] bool shouldStop() const;
+
+    void awaitRobotIdle();
 
     ~TCPServer();
 };
