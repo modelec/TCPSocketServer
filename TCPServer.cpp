@@ -362,10 +362,8 @@ void TCPServer::checkIfAllClientsReady()
 }
 
 void TCPServer::startGameBlueTeam() {
-    // TODO set to 200 when the robot is ready
-
     // TODO redo that part because that give point to the other team
-    this->broadcastMessage("strat;arduino;speed;150\n");
+    this->broadcastMessage("strat;arduino;speed;200\n");
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
     usleep(100'000);
     std::string toSend;
@@ -572,12 +570,10 @@ void TCPServer::startGameBlueTeam() {
         this->broadcastMessage("strat;arduino;angle;157\n");
         awaitRobotIdle();
 
-        // TODO set to 150 when the robot is ready
-        this->broadcastMessage("strat;arduino;speed;130\n");
+        this->broadcastMessage("strat;arduino;speed;150\n");
         this->broadcastMessage("strat;arduino;go;762,0\n");
         usleep(1'000'000);
-        // TODO set to 200 when the robot is ready
-        this->broadcastMessage("strat;arduino;speed;150\n");
+        this->broadcastMessage("strat;arduino;speed;200\n");
 
         for (int i = 0; i < 3; i++) {
             if (pinceState[i] == WHITE_FLOWER) {
@@ -764,12 +760,12 @@ void TCPServer::startGameBlueTeam() {
         this->broadcastMessage("strat;arduino;angle;157\n");
         awaitRobotIdle();
 
-        // TODO set to 150 when the robot is ready
-        this->broadcastMessage("strat;arduino;speed;130\n");
+
+        this->broadcastMessage("strat;arduino;speed;150\n");
         this->broadcastMessage("strat;arduino;go;762,0\n");
         usleep(1'000'000);
-        // TODO set to 200 when the robot is ready
-        this->broadcastMessage("strat;arduino;speed;150\n");
+
+        this->broadcastMessage("strat;arduino;speed;200\n");
 
         for (int i = 0; i < 3; i++) {
             if (pinceState[i] == WHITE_FLOWER) {
@@ -951,12 +947,11 @@ void TCPServer::startGameBlueTeam() {
         this->broadcastMessage("strat;arduino;angle;157\n");
         awaitRobotIdle();
 
-        // TODO set to 150 when the robot is ready
-        this->broadcastMessage("strat;arduino;speed;130\n");
+        this->broadcastMessage("strat;arduino;speed;150\n");
         this->broadcastMessage("strat;arduino;go;762,0\n");
         usleep(1'000'000);
-        // TODO set to 200 when the robot is ready
-        this->broadcastMessage("strat;arduino;speed;150\n");
+
+        this->broadcastMessage("strat;arduino;speed;200\n");
 
         for (int i = 0; i < 3; i++) {
             if (pinceState[i] == WHITE_FLOWER) {
@@ -983,8 +978,7 @@ void TCPServer::startGameBlueTeam() {
 
 
 void TCPServer::startGameYellowTeam() {
-    // TODO set to 200 when the robot is ready
-    this->broadcastMessage("strat;arduino;speed;150\n");
+    this->broadcastMessage("strat;arduino;speed;200\n");
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
     usleep(100'000);
     std::string toSend = "strat;arduino;go;";
@@ -1062,8 +1056,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
-    // TODO set to 150 when the robot is ready
-    this->broadcastMessage("strat;arduino;speed;130\n");
+    this->broadcastMessage("strat;arduino;speed;150\n");
 
     xPrime += x15Percent;
     yPrime += y15Percent;
@@ -1079,8 +1072,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     this->broadcastMessage(toSend);
     usleep(500'000);
     //this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
-    // TODO set to 200 when the robot is ready
-    this->broadcastMessage("strat;arduino;speed;150\n");
+    this->broadcastMessage("strat;arduino;speed;200\n");
     pinceState[pince] = TCPUtils::startWith(arucoTag.name(), "Purple_flower") ? PURPLE_FLOWER : WHITE_FLOWER;
 }
 
