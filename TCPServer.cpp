@@ -563,11 +563,9 @@ void TCPServer::startGameBlueTeam() {
 
     if (pinceHavePurpleFlower.size() < 3) {
         this->broadcastMessage("strat;arduino;go;762,300\n");
-        usleep(200'000);
         awaitRobotIdle();
 
         this->broadcastMessage("strat;arduino;angle;157\n");
-        usleep(200'000);
         awaitRobotIdle();
 
         // TODO set to 150 when the robot is ready
@@ -757,11 +755,9 @@ void TCPServer::startGameBlueTeam() {
 
     if (pinceHavePurpleFlower.size() < 3) {
         this->broadcastMessage("strat;arduino;go;762,300\n");
-        usleep(200'000);
         awaitRobotIdle();
 
         this->broadcastMessage("strat;arduino;angle;157\n");
-        usleep(200'000);
         awaitRobotIdle();
 
         // TODO set to 150 when the robot is ready
@@ -784,7 +780,7 @@ void TCPServer::startGameBlueTeam() {
         }
     }*/
 
-        /*toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
+    /*toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
@@ -940,16 +936,15 @@ void TCPServer::startGameBlueTeam() {
 
         toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x + 150)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
         this->broadcastMessage(toSend);
+        awaitRobotIdle();
     }
 
 
     if (pinceHavePurpleFlower.size() < 3) {
         this->broadcastMessage("strat;arduino;go;762,300\n");
-        usleep(200'000);
         awaitRobotIdle();
 
         this->broadcastMessage("strat;arduino;angle;157\n");
-        usleep(200'000);
         awaitRobotIdle();
 
         // TODO set to 150 when the robot is ready
