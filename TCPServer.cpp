@@ -424,6 +424,9 @@ void TCPServer::startGameBlueTeam() {
     this->broadcastMessage("strat;arduino;angle;157\n");
     awaitRobotIdle();
 
+    arucoTags.clear();
+    this->broadcastMessage("strat;aruco;get aruco;1\n");
+
     int timeout = 0;
     ArucoTag tag;
     bool found = false;
@@ -464,11 +467,15 @@ void TCPServer::startGameBlueTeam() {
     this->broadcastMessage("strat;arduino;angle;157\n");
     awaitRobotIdle();
 
+    arucoTags.clear();
+    this->broadcastMessage("strat;aruco;get aruco;1\n");
+
     timeout = 0;
     found = false;
+    this->arucoTags.clear();
     while (!found) {
         for (const auto & arucoTag : this->arucoTags) {
-            if (TCPUtils::endWith(arucoTag.name(), "flower")) {
+            if (TCPUtils::contains(arucoTag.name(), "flower")) {
                 if (arucoTag.pos().first[0] < 800 && arucoTag.pos().first[0] > 300 && arucoTag.pos().first[1] < 300 && arucoTag.pos().first[1] > -300) {
                     tag = arucoTag;
                     found = true;
@@ -502,6 +509,9 @@ void TCPServer::startGameBlueTeam() {
 
     this->broadcastMessage("strat;arduino;angle;157\n");
     awaitRobotIdle();
+
+    arucoTags.clear();
+    this->broadcastMessage("strat;aruco;get aruco;1\n");
 
     timeout = 0;
     found = false;
@@ -1016,6 +1026,7 @@ void TCPServer::startGameTest() {
     // TODO set to 200 when the robot is ready
     this->broadcastMessage("strat;arduino;speed;200\n");
 
+    arucoTags.clear();
     this->broadcastMessage("strat;aruco;get aruco;1\n");
 
     int timeout = 0;
@@ -1195,7 +1206,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     switch (pince) {
         case 0:
             decalage = 60;
-            rotate = 0.2;
+            rotate = -0.1;
             break;
         case 1:
             decalage = 0;
@@ -1203,7 +1214,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
             break;
         case 2:
             decalage = -60;
-            rotate = -0.2;
+            rotate = 0.1;
             break;
         default:
             decalage = 0;
