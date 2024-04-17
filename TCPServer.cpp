@@ -363,6 +363,8 @@ void TCPServer::checkIfAllClientsReady()
 
 void TCPServer::startGameBlueTeam() {
     // TODO set to 200 when the robot is ready
+
+    // TODO redo that part because that give point to the other team
     this->broadcastMessage("strat;arduino;speed;150\n");
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
     usleep(100'000);
