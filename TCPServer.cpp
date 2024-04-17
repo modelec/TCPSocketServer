@@ -183,7 +183,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             case 3:
                 this->team = BLUE;
                 spawnPoint[0] = 200;
-                spawnPoint[1] = 1934;
+                spawnPoint[1] = 1781;
                 spawnPoint[2] = 0;
                 finishPoint[0] = 400;
                 finishPoint[1] = 400;
@@ -193,7 +193,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             case 6:
                 this->team = YELLOW;
                 spawnPoint[0] = 1800;
-                spawnPoint[1] = 1934;
+                spawnPoint[1] = 1781;
                 spawnPoint[2] = 3.1415;
                 finishPoint[0] = 2600;
                 finishPoint[1] = 400;
