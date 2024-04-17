@@ -1232,7 +1232,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     double robotPosForPotX = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
     double robotPosForPotY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
 
-    toSend = "strat;arduino;transit;" + std::to_string(static_cast<int>(robotPosForPotX)) + "," + std::to_string(static_cast<int>(robotPosForPotY)) + ",110\n";
+    toSend = "strat;arduino;transit;" + std::to_string(static_cast<int>(robotPosForPotX)) + "," + std::to_string(static_cast<int>(robotPosForPotY)) + ",130\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
