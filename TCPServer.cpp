@@ -207,7 +207,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 finishPoint[0] = 1200;
                 finishPoint[1] = 1800;
                 finishPoint[2] = 0;
-                return;
+                break;
         }
 
         std::ofstream file("end_point.txt");
