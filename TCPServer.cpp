@@ -203,10 +203,10 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 this->team = TEST;
                 spawnPoint[0] = 1200;
                 spawnPoint[1] = 1800;
-                spawnPoint[2] = 0;
+                spawnPoint[2] = 1.57;
                 finishPoint[0] = 1200;
                 finishPoint[1] = 1800;
-                finishPoint[2] = 0;
+                finishPoint[2] = 1.57;
                 break;
         }
 
