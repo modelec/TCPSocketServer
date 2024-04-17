@@ -1109,7 +1109,7 @@ void TCPServer::awaitRobotIdle() {
     // ReSharper disable once CppDFAConstantConditions
     // ReSharper disable once CppDFAEndlessLoop
     while (this->isRobotIdle < 3) {
-        usleep(200'000);
+        usleep(100'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
 }
