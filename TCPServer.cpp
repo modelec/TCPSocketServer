@@ -562,6 +562,9 @@ void TCPServer::startGameBlueTeam() {
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
+    this->broadcastMessage("strat;arduino;go;500,500\n");
+    awaitRobotIdle();
+
     std::vector<int> pinceHavePurpleFlower;
     for (int i = 0; i < 3; i++) {
         if (pinceState[i] == PURPLE_FLOWER) {
