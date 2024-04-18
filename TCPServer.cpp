@@ -264,7 +264,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
     }
     else if (tokens[0] == "arduino" && tokens[2] == "set state") {
-        this->isRobotIdle = TCPUtils::startWith(tokens[3], "0");
+        if (TCPUtils::startWith(tokens[3], "0")) {
+            this->isRobotIdle++;
+        }
     }
     std::cout << "Received: " << message << std::endl;
 }
@@ -1315,11 +1317,12 @@ void TCPServer::askArduinoPos() {
 }
 
 void TCPServer::awaitRobotIdle() {
-    isRobotIdle = false;
+    isRobotIdle = 0;
     // ReSharper disable once CppDFAConstantConditions
     // ReSharper disable once CppDFAEndlessLoop
-    while (!isRobotIdle) {
-        usleep(100'000);
+    usleep(200'000);
+    while (isRobotIdle < 3) {
+        usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
 }
