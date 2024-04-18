@@ -188,7 +188,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
                 // For test
                 finishPoint[0] = 400;
-                spawnPoint[1] = 1790;
+                finishPoint[1] = 1790;
                 finishPoint[2] = 0;
 
                 /*finishPoint[0] = 400;
