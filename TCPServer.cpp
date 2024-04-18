@@ -603,10 +603,10 @@ void TCPServer::startGameBlueTeam() {
         this->broadcastMessage("strat;arduino;angle;157\n");
         awaitRobotIdle();
 
+        this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
+
         this->broadcastMessage("strat;arduino;go;762,0\n");
         usleep(3'000'000);
-
-        this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
 
         for (int i = 0; i < 3; i++) {
             if (pinceState[i] == WHITE_FLOWER) {
@@ -633,7 +633,7 @@ void TCPServer::startGameBlueTeam() {
      *  Handle the second plant spot
      */
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
+    /*toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
