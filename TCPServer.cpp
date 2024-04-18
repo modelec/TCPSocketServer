@@ -476,7 +476,6 @@ void TCPServer::startGameBlueTeam() {
 
     timeout = 0;
     found = false;
-    this->arucoTags.clear();
     while (!found) {
         for (const auto & arucoTag : this->arucoTags) {
             if (TCPUtils::contains(arucoTag.name(), "flower")) {
@@ -523,7 +522,7 @@ void TCPServer::startGameBlueTeam() {
     found = false;
     while (!found) {
         for (const auto & arucoTag : this->arucoTags) {
-            if (TCPUtils::endWith(arucoTag.name(), "flower")) {
+            if (TCPUtils::contains(arucoTag.name(), "flower")) {
                 if (arucoTag.pos().first[0] < 800 && arucoTag.pos().first[0] > 300 && arucoTag.pos().first[1] < 300 && arucoTag.pos().first[1] > -300) {
                     tag = arucoTag;
                     found = true;
@@ -1291,8 +1290,8 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     //this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
     this->broadcastMessage("strat;arduino;speed;200\n");
     pinceState[pince] = TCPUtils::startWith(arucoTag.name(), "Purple_flower") ? PURPLE_FLOWER : WHITE_FLOWER;
-    toSend = "strat;client;have aruco;" + std::to_string(pince) + "," + arucoTag.name() + "," + (pinceState[pince] == PURPLE_FLOWER ? "purple" : "white") + "\n";
-    this->broadcastMessage(toSend);
+    // toSend = "strat;client;have aruco;" + std::to_string(pince) + "," + arucoTag.name() + "," + (pinceState[pince] == PURPLE_FLOWER ? "purple" : "white") + "\n";
+    // this->broadcastMessage(toSend);
 }
 
 void TCPServer::askArduinoPos() {
