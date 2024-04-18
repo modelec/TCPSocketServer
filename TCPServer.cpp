@@ -633,7 +633,7 @@ void TCPServer::startGameBlueTeam() {
      *  Handle the second plant spot
      */
 
-    /*toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
@@ -678,7 +678,52 @@ void TCPServer::startGameBlueTeam() {
         return;
     }
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y - 350)) + "\n";
+    toSend = "strat;arduino;go;1000,250\n";
+    this->broadcastMessage(toSend);
+    awaitRobotIdle();
+
+    this->broadcastMessage("strat;arduino;speed;150\n");
+    this->broadcastMessage("strat;arduino;angle;-157\n");
+    awaitRobotIdle();
+    this->broadcastMessage("strat;arduino;speed;200\n");
+
+    arucoTags.clear();
+    this->broadcastMessage("strat;aruco;get aruco;1\n");
+
+    timeout = 0;
+    found = false;
+    while (!found) {
+        for (const auto & arucoTag : this->arucoTags) {
+            if (TCPUtils::endWith(arucoTag.name(), "flower")) {
+                if (arucoTag.pos().first[0] < 800 && arucoTag.pos().first[0] > 300 && arucoTag.pos().first[1] < 300 && arucoTag.pos().first[1] > -300) {
+                    tag = arucoTag;
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            this->broadcastMessage("start;aruco;get aruco;1\n");
+            usleep(500'000);
+            timeout++;
+            if (timeout > 10) {
+                return;
+            }
+        }
+    }
+
+    if (pinceState[1] == NONE) {
+        goToAruco(tag, 1);
+    } else if (pinceState[2] == NONE) {
+        goToAruco(tag, 2);
+    } else if (pinceState[0] == NONE) {
+        goToAruco(tag, 0);
+    } else {
+        return;
+    }
+
+    toSend = "strat;arduino;go;1000,250\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
@@ -721,50 +766,7 @@ void TCPServer::startGameBlueTeam() {
         return;
     }
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y - 350)) + "\n";
-    this->broadcastMessage(toSend);
-    awaitRobotIdle();
-
-    this->broadcastMessage("strat;arduino;angle;157\n");
-    awaitRobotIdle();
-
-    arucoTags.clear();
-    this->broadcastMessage("strat;aruco;get aruco;1\n");
-
-    timeout = 0;
-    found = false;
-    while (!found) {
-        for (const auto & arucoTag : this->arucoTags) {
-            if (TCPUtils::endWith(arucoTag.name(), "flower")) {
-                if (arucoTag.pos().first[0] < 800 && arucoTag.pos().first[0] > 300 && arucoTag.pos().first[1] < 300 && arucoTag.pos().first[1] > -300) {
-                    tag = arucoTag;
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        if (!found) {
-            this->broadcastMessage("start;aruco;get aruco;1\n");
-            usleep(500'000);
-            timeout++;
-            if (timeout > 10) {
-                return;
-            }
-        }
-    }
-
-    if (pinceState[1] == NONE) {
-        goToAruco(tag, 1);
-    } else if (pinceState[2] == NONE) {
-        goToAruco(tag, 2);
-    } else if (pinceState[0] == NONE) {
-        goToAruco(tag, 0);
-    } else {
-        return;
-    }
-
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y - 200)) + "\n";
+    toSend = "strat;arduino;go;1000,250\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
@@ -1269,7 +1271,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     this->broadcastMessage(toSend);
 
-    double xPrime = arucoTag.pos().first[0];
+    double xPrime = arucoTag.pos().first[0] - 20;
     double yPrime = arucoTag.pos().first[1] + decalage;
 
     double thetaPrime = std::atan2(yPrime, xPrime);
