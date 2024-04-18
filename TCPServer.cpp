@@ -202,7 +202,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 spawnPoint[2] = 3.1415;
                 finishPoint[0] = 2600;
                 finishPoint[1] = 400;
-                finishPoint[1] = 0;
+                finishPoint[2] = 0;
                 break;
 
             default:
@@ -374,6 +374,7 @@ void TCPServer::startGameBlueTeam() {
     // TODO redo that part because that give point to the other team
     this->broadcastMessage("strat;arduino;speed;130\n");
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
+    usleep(100'000);
     std::string toSend = "strat;arduino;go;380," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
@@ -387,6 +388,7 @@ void TCPServer::startGameBlueTeam() {
     awaitRobotIdle();
 
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
+    usleep(100'000);
 
     toSend = "strat;arduino;go;620," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
@@ -401,6 +403,7 @@ void TCPServer::startGameBlueTeam() {
     awaitRobotIdle();
 
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
+    usleep(100'000);
 
     toSend = "strat;arduino;go;805," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
