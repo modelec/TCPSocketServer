@@ -407,8 +407,7 @@ void TCPServer::startGameBlueTeam() {
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
     usleep(100'000);
 
-    toSend = "strat;arduino;go;805," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
-    this->broadcastMessage(toSend);
+    this->broadcastMessage("strat;arduino;go;1000,1700\n");
     awaitRobotIdle();
 
     this->broadcastMessage("strat;servo_moteur;uncheck panneau;7\n");
