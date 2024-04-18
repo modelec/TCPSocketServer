@@ -182,12 +182,12 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         switch (spawnPointNb) {
             case 3:
                 this->team = BLUE;
-                spawnPoint[0] = 200;
+                spawnPoint[0] = 250;
                 spawnPoint[1] = 1781;
                 spawnPoint[2] = 0;
 
                 // For test
-                finishPoint[0] = 200;
+                finishPoint[0] = 400;
                 finishPoint[1] = 1781;
                 finishPoint[2] = 0;
 
@@ -197,7 +197,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 break;
             case 6:
                 this->team = YELLOW;
-                spawnPoint[0] = 1800;
+                spawnPoint[0] = 1750;
                 spawnPoint[1] = 1781;
                 spawnPoint[2] = 3.1415;
                 finishPoint[0] = 2600;
@@ -424,6 +424,8 @@ void TCPServer::startGameBlueTeam() {
     this->broadcastMessage("strat;arduino;angle;157\n");
     awaitRobotIdle();
 
+    usleep(1'000'000);
+
     arucoTags.clear();
     this->broadcastMessage("strat;aruco;get aruco;1\n");
 
@@ -467,6 +469,8 @@ void TCPServer::startGameBlueTeam() {
     this->broadcastMessage("strat;arduino;angle;157\n");
     awaitRobotIdle();
 
+    usleep(1'000'000);
+
     arucoTags.clear();
     this->broadcastMessage("strat;aruco;get aruco;1\n");
 
@@ -509,6 +513,8 @@ void TCPServer::startGameBlueTeam() {
 
     this->broadcastMessage("strat;arduino;angle;157\n");
     awaitRobotIdle();
+
+    usleep(1'000'000);
 
     arucoTags.clear();
     this->broadcastMessage("strat;aruco;get aruco;1\n");
