@@ -572,17 +572,22 @@ void TCPServer::startGameBlueTeam() {
     }
 
     if (!pinceHavePurpleFlower.empty()) {
-        this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
-
-        this->broadcastMessage("strat;arduino;go;225,225\n");
+        this->broadcastMessage("strat;arduino;go;200,200\n");
         awaitRobotIdle();
-        this->broadcastMessage("strat;arduino;angle;314\n");
+        this->broadcastMessage("strat;arduino;angle;157\n");
         awaitRobotIdle();
+        this->broadcastMessage("strat;arduino;speed;130\n");
+        this->broadcastMessage("strat;arduino;go;200,0\n");
+        usleep(3'000'000);
 
         for (auto & toDrop : pinceHavePurpleFlower) {
             toSend = "strat;servo_moteur;ouvrir pince;" + std::to_string(toDrop) + "\n";
             this->broadcastMessage(toSend);
-            usleep(500'000);
+
+            toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 150)) + "\n";
+            this->broadcastMessage(toSend);
+            awaitRobotIdle();
+
             pinceState[toDrop] = NONE;
             toSend = "strat;servo_moteur;fermer pince;" + std::to_string(toDrop) + "\n";
             this->broadcastMessage(toSend);
@@ -591,6 +596,7 @@ void TCPServer::startGameBlueTeam() {
 
         toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x + 150)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
         this->broadcastMessage(toSend);
+        awaitRobotIdle();
     }
 
 
@@ -600,6 +606,8 @@ void TCPServer::startGameBlueTeam() {
 
         this->broadcastMessage("strat;arduino;angle;157\n");
         awaitRobotIdle();
+
+        this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
 
         this->broadcastMessage("strat;arduino;speed;130\n");
         this->broadcastMessage("strat;arduino;go;762,0\n");
