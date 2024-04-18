@@ -626,10 +626,6 @@ void TCPServer::startGameBlueTeam() {
         }
 
         this->broadcastMessage("strat;arduino;speed;200\n");
-
-        toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 350)) + "\n";
-        this->broadcastMessage(toSend);
-        awaitRobotIdle();
     }
 
     /*
@@ -638,8 +634,7 @@ void TCPServer::startGameBlueTeam() {
      *  Handle the second plant spot
      */
 
-    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
-    this->broadcastMessage(toSend);
+    this->broadcastMessage("strat;arduino;go;1000,250\n");
     awaitRobotIdle();
 
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
@@ -683,8 +678,7 @@ void TCPServer::startGameBlueTeam() {
         return;
     }
 
-    toSend = "strat;arduino;go;1000,250\n";
-    this->broadcastMessage(toSend);
+    this->broadcastMessage("strat;arduino;go;1000,250\n");
     awaitRobotIdle();
 
     this->broadcastMessage("strat;arduino;speed;150\n");
