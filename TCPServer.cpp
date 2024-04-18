@@ -558,6 +558,8 @@ void TCPServer::startGameBlueTeam() {
     this->broadcastMessage("strat;arduino;angle;314\n");
     awaitRobotIdle();
 
+    usleep(1'000'000);
+
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x - 350)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
