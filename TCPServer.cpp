@@ -639,7 +639,7 @@ void TCPServer::startGameBlueTeam() {
 
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
 
-    this->broadcastMessage("strat;arduino;angle;-157\n");
+    this->broadcastMessage("strat;arduino;angle;-78\n");
     awaitRobotIdle();
 
     arucoTags.clear();
