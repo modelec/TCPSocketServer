@@ -633,7 +633,7 @@ void TCPServer::startGameBlueTeam() {
      *  Handle the second plant spot
      */
 
-    /*toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
+    toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
@@ -832,7 +832,7 @@ void TCPServer::startGameBlueTeam() {
             this->broadcastMessage(toSend);
             awaitRobotIdle();
         }
-    }*/
+    }
 
     /*toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y + 200)) + "\n";
     this->broadcastMessage(toSend);
