@@ -365,7 +365,7 @@ void TCPServer::checkIfAllClientsReady()
 
     if (allReady)
     {
-        this->broadcastMessage("strat;all;ready;1");
+        this->broadcastMessage("strat;all;ready;1\n");
         std::thread([this]() { askArduinoPos(); }).detach();
     }
 }
@@ -383,7 +383,7 @@ void TCPServer::startGameBlueTeam() {
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
-    this->broadcastMessage("strat;arduino;angle;0");
+    this->broadcastMessage("strat;arduino;angle;0\n");
     awaitRobotIdle();
 
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
@@ -397,10 +397,8 @@ void TCPServer::startGameBlueTeam() {
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
-    this->broadcastMessage("strat;arduino;speed;150\n");
-    this->broadcastMessage("strat;arduino;angle;0");
+    this->broadcastMessage("strat;arduino;angle;0\n");
     awaitRobotIdle();
-    this->broadcastMessage("strat;arduino;speed;200\n");
 
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
 
@@ -410,10 +408,8 @@ void TCPServer::startGameBlueTeam() {
 
     this->broadcastMessage("strat;servo_moteur;uncheck panneau;7\n");
 
-    this->broadcastMessage("strat;arduino;speed;150\n");
     this->broadcastMessage("strat;arduino;angle;157\n");
     awaitRobotIdle();
-    this->broadcastMessage("strat;arduino;speed;200\n");
 
     usleep(1'000'000);
 
@@ -454,7 +450,7 @@ void TCPServer::startGameBlueTeam() {
         return;
     }
 
-    this->broadcastMessage("strat;arduino;go;1000,1700");
+    this->broadcastMessage("strat;arduino;go;1000,1700\n");
     awaitRobotIdle();
 
     this->broadcastMessage("strat;arduino;speed;150\n");
@@ -500,7 +496,7 @@ void TCPServer::startGameBlueTeam() {
         return;
     }
 
-    this->broadcastMessage("strat;arduino;go;1000,1700");
+    this->broadcastMessage("strat;arduino;go;1000,1700\n");
     awaitRobotIdle();
 
     this->broadcastMessage("strat;arduino;speed;150\n");
@@ -546,7 +542,7 @@ void TCPServer::startGameBlueTeam() {
         return;
     }
 
-    this->broadcastMessage("strat;arduino;go;1000,1700");
+    this->broadcastMessage("strat;arduino;go;1000,1700\n");
     awaitRobotIdle();
 
     this->broadcastMessage("strat;arduino;speed;150\n");
