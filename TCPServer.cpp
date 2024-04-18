@@ -397,8 +397,10 @@ void TCPServer::startGameBlueTeam() {
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
+    this->broadcastMessage("strat;arduino;speed;150\n");
     this->broadcastMessage("strat;arduino;angle;0");
     awaitRobotIdle();
+    this->broadcastMessage("strat;arduino;speed;200\n");
 
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
 
@@ -408,10 +410,10 @@ void TCPServer::startGameBlueTeam() {
 
     this->broadcastMessage("strat;servo_moteur;uncheck panneau;7\n");
 
-    this->broadcastMessage("strat;arduino;speed;200\n");
-
+    this->broadcastMessage("strat;arduino;speed;150\n");
     this->broadcastMessage("strat;arduino;angle;157\n");
     awaitRobotIdle();
+    this->broadcastMessage("strat;arduino;speed;200\n");
 
     usleep(1'000'000);
 
@@ -455,8 +457,10 @@ void TCPServer::startGameBlueTeam() {
     this->broadcastMessage("strat;arduino;go;1000,1700");
     awaitRobotIdle();
 
+    this->broadcastMessage("strat;arduino;speed;150\n");
     this->broadcastMessage("strat;arduino;angle;157\n");
     awaitRobotIdle();
+    this->broadcastMessage("strat;arduino;speed;200\n");
 
     usleep(1'000'000);
 
@@ -499,8 +503,10 @@ void TCPServer::startGameBlueTeam() {
     this->broadcastMessage("strat;arduino;go;1000,1700");
     awaitRobotIdle();
 
+    this->broadcastMessage("strat;arduino;speed;150\n");
     this->broadcastMessage("strat;arduino;angle;157\n");
     awaitRobotIdle();
+    this->broadcastMessage("strat;arduino;speed;200\n");
 
     usleep(1'000'000);
 
@@ -543,8 +549,10 @@ void TCPServer::startGameBlueTeam() {
     this->broadcastMessage("strat;arduino;go;1000,1700");
     awaitRobotIdle();
 
+    this->broadcastMessage("strat;arduino;speed;150\n");
     this->broadcastMessage("strat;arduino;angle;314\n");
     awaitRobotIdle();
+    this->broadcastMessage("strat;arduino;speed;200\n");
 
     usleep(1'000'000);
 
@@ -592,8 +600,10 @@ void TCPServer::startGameBlueTeam() {
         this->broadcastMessage("strat;arduino;go;762,300\n");
         awaitRobotIdle();
 
+        this->broadcastMessage("strat;arduino;speed;150\n");
         this->broadcastMessage("strat;arduino;angle;157\n");
         awaitRobotIdle();
+        this->broadcastMessage("strat;arduino;speed;200\n");
 
         this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
 
@@ -1018,9 +1028,12 @@ void TCPServer::startGameBlueTeam() {
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
+
+    this->broadcastMessage("strat;arduino;speed;150\n");
     toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>(this->endRobotPose.theta * 100));
     this->broadcastMessage(toSend);
     awaitRobotIdle();
+    this->broadcastMessage("strat;arduino;speed;200\n");
 
     this->broadcastMessage("strat;servo_moteur;clear;1");
 }
@@ -1038,8 +1051,10 @@ void TCPServer::startGameYellowTeam() {
     this->broadcastMessage(toSend);
     awaitRobotIdle();
     toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>(this->endRobotPose.theta * 100));
+    this->broadcastMessage("strat;arduino;speed;150\n");
     this->broadcastMessage(toSend);
     awaitRobotIdle();
+    this->broadcastMessage("strat;arduino;speed;200\n");
 
     this->broadcastMessage("strat;servo_moteur;clear;1");
 }
@@ -1232,7 +1247,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     switch (pince) {
         case 0:
             decalage = 60;
-            rotate = -0.1;
+            rotate = -0.07;
             break;
         case 1:
             decalage = 0;
@@ -1240,7 +1255,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
             break;
         case 2:
             decalage = -60;
-            rotate = 0.1;
+            rotate = 0.07;
             break;
         default:
             decalage = 0;
@@ -1259,8 +1274,10 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     double thetaPrime = std::atan2(yPrime, xPrime);
 
     toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>((this->robotPose.theta + rotate - thetaPrime) * 100)) + "\n";
+    this->broadcastMessage("strat;arduino;speed;150\n");
     this->broadcastMessage(toSend);
     awaitRobotIdle();
+    this->broadcastMessage("strat;arduino;speed;200\n");
 
     double robotPosForPotX = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
     double robotPosForPotY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
