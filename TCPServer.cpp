@@ -410,6 +410,7 @@ void TCPServer::startGameBlueTeam() {
 
     this->broadcastMessage("strat;arduino;angle;157\n");
     awaitRobotIdle();
+    this->broadcastMessage("strat;arduino;speed;200\n");
 
     usleep(1'000'000);
 
