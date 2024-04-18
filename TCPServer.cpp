@@ -416,6 +416,9 @@ void TCPServer::startGameBlueTeam() {
     awaitRobotIdle();
     this->broadcastMessage("strat;arduino;speed;200\n");
 
+    this->broadcastMessage("strat;arduino;go;1000,1900\n");
+    awaitRobotIdle();
+
     usleep(1'000'000);
 
     arucoTags.clear();
