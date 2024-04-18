@@ -256,11 +256,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 tag.setId(std::stoi(aruco[i]));
                 tag.setName(aruco[i + 1]);
 
-                float pos[2] = {std::stof(aruco[i + 2]), std::stof(aruco[i + 3])};
-                float rot[3] = {std::stof(aruco[i + 4]), std::stof(aruco[i + 5]), std::stof(aruco[i + 6])};
-
-                tag.setPos(pos[0], pos[1]);
-                tag.setRot(rot[0], rot[1], rot[2]);
+                tag.setPos(std::stof(aruco[i + 2]), std::stof(aruco[i + 3]));
+                tag.setRot(std::stof(aruco[i + 4]), std::stof(aruco[i + 5]), std::stof(aruco[i + 6]));
 
                 this->arucoTags.push_back(tag);
             }
