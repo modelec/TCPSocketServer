@@ -267,13 +267,10 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
     }
     else if (tokens[0] == "arduino" && tokens[2] == "set state") {
-        if (TCPUtils::startWith(tokens[3], "0")) {
-            this->isRobotIdle++;
-        }
+        this->isRobotIdle = TCPUtils::startWith(tokens[3], "0");
     }
     std::cout << "Received: " << message << std::endl;
 }
-
 
 void TCPServer::broadcastMessage(const char* message, int senderSocket)
 {
@@ -380,10 +377,7 @@ void TCPServer::startGameBlueTeam() {
     // TODO redo that part because that give point to the other team
     this->broadcastMessage("strat;arduino;speed;130\n");
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
-    usleep(100'000);
-    std::string toSend;
-
-    toSend = "strat;arduino;go;380," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
+    std::string toSend = "strat;arduino;go;380," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
     awaitRobotIdle();
 
@@ -396,7 +390,6 @@ void TCPServer::startGameBlueTeam() {
     awaitRobotIdle();
 
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
-    usleep(100'000);
 
     toSend = "strat;arduino;go;620," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
@@ -411,7 +404,6 @@ void TCPServer::startGameBlueTeam() {
     awaitRobotIdle();
 
     this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
-    usleep(100'000);
 
     toSend = "strat;arduino;go;805," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
@@ -607,10 +599,6 @@ void TCPServer::startGameBlueTeam() {
         awaitRobotIdle();
 
         this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
-
-        this->broadcastMessage("strat;arduino;speed;130\n");
-        this->broadcastMessage("strat;arduino;go;762,0\n");
-        usleep(3'000'000);
 
         for (int i = 0; i < 3; i++) {
             if (pinceState[i] == WHITE_FLOWER) {
@@ -1314,11 +1302,11 @@ void TCPServer::askArduinoPos() {
 }
 
 void TCPServer::awaitRobotIdle() {
-    isRobotIdle = 0;
+    isRobotIdle = false;
     // ReSharper disable once CppDFAConstantConditions
     // ReSharper disable once CppDFAEndlessLoop
-    while (this->isRobotIdle < 3) {
-        usleep(200'000);
+    while (!isRobotIdle) {
+        usleep(100'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
     }
 }
