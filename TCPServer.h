@@ -8,6 +8,7 @@
 #include <thread>
 #include <vector>
 #include <algorithm>
+#include <atomic>
 #include <map>
 
 #include "utils.h"
@@ -48,7 +49,7 @@ private:
     std::vector<std::thread> clientThreads;
     std::vector<int> clientSockets; // Store connected client sockets
     int connectedClients = 0; // Track the number of connected clients
-    bool _shouldStop = false; // Flag to indicate if the server should stop
+    std::atomic<bool> _shouldStop = false; // Flag to indicate if the server should stop
     std::vector<ClientTCP> clients; // Store connected clients
 
     PinceState pinceState[3] = {NONE, NONE, NONE};
@@ -109,6 +110,8 @@ public:
     [[nodiscard]] bool shouldStop() const;
 
     void awaitRobotIdle();
+
+    void sleepServer(int ms);
 
     ~TCPServer();
 };
