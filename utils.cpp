@@ -35,7 +35,7 @@ std::vector<std::string> TCPUtils::split(const std::string& str, const std::stri
 }
 
 
-ArucoTag::ArucoTag(int id, std::string name, std::pair<float[2], float[3]> pos) : _id(id), _name(std::move(name)), _pos(pos) {}
+ArucoTag::ArucoTag(int id, std::string name, std::array<float, 2> pos, std::array<float, 3> rot) : _id(id), _name(std::move(name)), _pos(pos), _rot(rot) {}
 
 int ArucoTag::id() const {
     return _id;
@@ -45,8 +45,12 @@ std::string ArucoTag::name() const {
     return _name;
 }
 
-std::pair<float[2], float[3]> ArucoTag::pos() const {
+std::array<float, 2> ArucoTag::pos() const {
     return _pos;
+}
+
+std::array<float, 3> ArucoTag::rot() const {
+    return _rot;
 }
 
 void ArucoTag::setId(int id) {
@@ -58,23 +62,36 @@ void ArucoTag::setName(const std::string& name) {
 }
 
 void ArucoTag::setPos(float x, float y) {
-    _pos.first[0] = x;
-    _pos.first[1] = y;
+    this->_pos[0] = x;
+    this->_pos[1] = y;
 }
 
 void ArucoTag::setRot(float x, float y, float z) {
-    _pos.second[0] = x;
-    _pos.second[1] = y;
-    _pos.second[2] = z;
+    this->_rot[0] = x;
+    this->_rot[1] = y;
+    this->_rot[2] = z;
 }
 
 ArucoTag& ArucoTag::operator=(const ArucoTag& tag) {
     _id = tag.id();
     _name = tag.name();
-    _pos.first[0] = tag.pos().first[0];
-    _pos.first[1] = tag.pos().first[1];
-    _pos.second[0] = tag.pos().second[0];
-    _pos.second[1] = tag.pos().second[1];
-    _pos.second[2] = tag.pos().second[2];
+    _pos = tag.pos();
+    _rot = tag.rot();
     return *this;
+}
+
+FlowerAruco::FlowerAruco() : tag(nullptr), _realPos({0, 0}) {
+
+}
+
+FlowerAruco::FlowerAruco(ArucoTag *tag) : tag(tag), _realPos({0, 0}) {
+
+}
+
+ArucoTag *FlowerAruco::getTag() const {
+    return tag;
+}
+
+std::array<float, 2> FlowerAruco::getPos() const {
+    return _realPos;
 }

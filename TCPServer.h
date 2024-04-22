@@ -10,6 +10,9 @@
 #include <algorithm>
 #include <atomic>
 #include <map>
+#include <cmath>
+#include <fstream>
+#include <optional>
 
 #include "utils.h"
 
@@ -55,6 +58,8 @@ private:
     PinceState pinceState[3] = {NONE, NONE, NONE};
     int isRobotIdle = 0;
 
+    int speed = 0;
+
     struct Position {
         struct {
             float x;
@@ -79,13 +84,13 @@ public:
 
     // Broadcast message to all connected clients
     void broadcastMessage(const char* message, int senderSocket = -1); // Modified method signature
-    void broadcastMessage(std::string &message, int senderSocket = -1); // Modified method signature
+    void broadcastMessage(const std::string &message, int senderSocket = -1); // Modified method signature
 
     void sendToClient(const char* message, int clientSocket); // New method to send message to a specific client
-    void sendToClient(std::string &message, int clientSocket); // New method to send message to a specific client
+    void sendToClient(const std::string &message, int clientSocket); // New method to send message to a specific client
 
     void sendToClient(const char* message, const std::string& clientName); // New method to send message to a specific client
-    void sendToClient(std::string &message, const std::string& clientName); // New method to send message to a specific client
+    void sendToClient(const std::string &message, const std::string& clientName); // New method to send message to a specific client
 
     void handleMessage(const std::string& message, int clientSocket = -1);
 
@@ -111,7 +116,21 @@ public:
 
     void awaitRobotIdle();
 
-    void sleepServer(int ms);
+    void handleArucoTag(ArucoTag &tag);
+
+    std::optional<ArucoTag> getBiggestArucoTag(float borneMinX, float borneMaxX, float borneMinY, float borneMaxY);
+
+    // Call to broadcast
+    void setSpeed(int speed);
+
+    template<class X, class Y>
+    void go(X x, Y y);
+
+    template<class X>
+    void rotate(X angle);
+
+    template<class X, class Y>
+    void transit(X x,Y y, int endSpeed);
 
     ~TCPServer();
 };

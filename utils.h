@@ -1,8 +1,11 @@
 #pragma once
 
+#include <array>
 #include <utility>
 #include <vector>
 #include <string>
+
+#define PI 3.14159265358979323846
 
 enum PinceState {
     WHITE_FLOWER,
@@ -23,7 +26,7 @@ namespace TCPUtils {
 class ArucoTag {
 
 public:
-    ArucoTag(int id, std::string  name, std::pair<float[2], float[3]> pos);
+    ArucoTag(int id, std::string  name, std::array<float, 2> pos, std::array<float, 3> rot);
 
     ArucoTag() = default;
 
@@ -31,7 +34,9 @@ public:
 
     [[nodiscard]] std::string name() const;
 
-    [[nodiscard]] std::pair<float[2], float[3]> pos() const;
+    [[nodiscard]] std::array<float, 2> pos() const;
+
+    [[nodiscard]] std::array<float, 3> rot() const;
 
     void setId(int id);
 
@@ -43,8 +48,31 @@ public:
 
     ArucoTag& operator=(const ArucoTag& tag);
 
+    void find() { nbFind++; }
+
+    [[nodiscard]] int getNbFind() const { return nbFind; }
+
 private:
-    int _id = 0;
+    int _id = -1;
     std::string _name;
-    std::pair<float[2], float[3]> _pos;
+    std::array<float, 2> _pos;
+    std::array<float, 3> _rot;
+    int nbFind = 0;
+};
+
+class FlowerAruco {
+
+public:
+    FlowerAruco();
+
+    explicit FlowerAruco(ArucoTag* tag);
+
+    [[nodiscard]] ArucoTag* getTag() const;
+
+    [[nodiscard]] std::array<float, 2> getPos() const;
+
+private:
+    ArucoTag* tag;
+
+    std::array<float, 2> _realPos;
 };
