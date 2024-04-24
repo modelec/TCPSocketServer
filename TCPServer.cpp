@@ -260,10 +260,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 tag.setRot(std::stof(aruco[i + 4]), std::stof(aruco[i + 5]), std::stof(aruco[i + 6]));
 
                 handleArucoTag(tag);
-
-                // Broadcast the aruco tag to all clients
-                this->broadcastMessage(message.c_str(), clientSocket);
             }
+            // Broadcast the aruco tag to all clients
+            this->broadcastMessage(message.c_str(), clientSocket);
         }
     }
     else if (tokens[0] == "arduino") {
