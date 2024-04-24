@@ -80,6 +80,14 @@ ArucoTag& ArucoTag::operator=(const ArucoTag& tag) {
     return *this;
 }
 
+void ArucoTag::find() {
+    nbFind++;
+}
+
+int ArucoTag::getNbFind() const {
+    return nbFind;
+}
+
 FlowerAruco::FlowerAruco() : tag(nullptr), _realPos({0, 0}) {
 
 }

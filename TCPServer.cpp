@@ -269,6 +269,10 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
     } else if (tokens[2] == "get speed") {
         this->sendToClient("strat;" + tokens[0] + ";set speed;" + std::to_string(this->speed) + "\n", clientSocket);
+    } else if (tokens[2] == "test aruco") {
+        int pince = std::stoi(tokens[3]);
+
+        std::thread([this, pince]() { this->startTestAruco(pince); }).detach();
     }
     std::cout << "Received: " << message << std::endl;
 }
@@ -952,22 +956,24 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     this->broadcastMessage(toSend);
 
-    double xPrime = arucoTag.pos()[0] - 50;
-    double yPrime = arucoTag.pos()[1] + decalage;
+    double xPrime = arucoTag.pos()[0];
+    double yPrime = arucoTag.pos()[1];
+    double roll = arucoTag.rot()[1];
 
-    // TODO : changement de base pour prendre en compte le centre de la plante avec la matrice de rotation,
+    auto centerPlantX = (20 * std::cos(roll)) + xPrime/* - 50*/;
+    auto centerPlantY = (-20 * std::sin(roll)) + yPrime + decalage;
 
-    double thetaPrime = std::atan2(yPrime, xPrime);
+    double thetaPrime = std::atan2(centerPlantY, centerPlantX);
 
     this->rotate(this->robotPose.theta + rotate - thetaPrime);
     awaitRobotIdle();
 
-    double robotPosForPotX = (xPrime * std::cos(theta) + yPrime * std::sin(theta)) + robotPosX;
-    double robotPosForPotY = (-xPrime * std::sin(theta) + yPrime * std::cos(theta)) + robotPosY;
+    double robotPosForPotX = (centerPlantX * std::cos(theta) + centerPlantY * std::sin(theta)) + robotPosX;
+    double robotPosForPotY = (-centerPlantX * std::sin(theta) + centerPlantY * std::cos(theta)) + robotPosY;
 
     int previousSpeed = this->speed;
 
-    this->transit(robotPosX, robotPosY, 130);
+    this->transit(robotPosForPotX, robotPosForPotY, 130);
     awaitRobotIdle();
 
     toSend = "strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n";
@@ -1023,9 +1029,9 @@ void TCPServer::handleArucoTag(ArucoTag &tag) {
             float tPosY = t.pos()[1];
             float tagPosX = tag.pos()[0];
             float tagPosY = tag.pos()[1];
-            if (tagPosX > tPosX - 1 && tagPosX < tPosX + 1 && tagPosY > tPosY - 1 && tagPosY < tPosY + 1) {
+            if (tagPosX > tPosX - 10 && tagPosX < tPosX + 10 && tagPosY > tPosY - 10 && tagPosY < tPosY + 10) {
                 t.find();
-                break;
+                return;
             }
         }
     }
@@ -1045,9 +1051,24 @@ std::optional<ArucoTag> TCPServer::getBiggestArucoTag(float borneMinX, float bor
         }
     }
 
-    return found ? std::optional<ArucoTag>(biggestTag) : std::nullopt;
+    return found ? std::optional(biggestTag) : std::nullopt;
 }
 
+void TCPServer::startTestAruco(int pince) {
+
+    this->arucoTags.clear();
+    this->broadcastMessage("strat;aruco;get aruco;1\n");
+    for (int i = 0; i < 5; i++) {
+        usleep(500'000);
+        this->broadcastMessage("strat;aruco;get aruco;1\n");
+    }
+
+    std::optional<ArucoTag> tag = getBiggestArucoTag(300, 1500, -600, 600);
+
+    if (tag.has_value()) {
+        goToAruco(tag.value(), pince);
+    }
+}
 
 template<class X, class Y>
 void TCPServer::go(X x, Y y) {

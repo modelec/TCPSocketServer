@@ -120,6 +120,8 @@ public:
 
     std::optional<ArucoTag> getBiggestArucoTag(float borneMinX, float borneMaxX, float borneMinY, float borneMaxY);
 
+    void startTestAruco(int pince);
+
     // Call to broadcast
     void setSpeed(int speed);
 

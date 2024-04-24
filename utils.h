@@ -48,9 +48,9 @@ public:
 
     ArucoTag& operator=(const ArucoTag& tag);
 
-    void find() { nbFind++; }
+    void find();
 
-    [[nodiscard]] int getNbFind() const { return nbFind; }
+    [[nodiscard]] int getNbFind() const;
 
 private:
     int _id = -1;
