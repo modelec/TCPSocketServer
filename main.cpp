@@ -4,10 +4,7 @@
 std::atomic<bool> shouldStop = false;
 
 void signalHandler( int signum ) {
-
     shouldStop = true;
-
-    exit(signum);
 }
 
 int main(int argc, char* argv[]) {

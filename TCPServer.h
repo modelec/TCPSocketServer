@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <thread>
+#include <utility>
 #include <vector>
 #include <algorithm>
 #include <atomic>
@@ -21,12 +22,26 @@ struct ClientTCP
     std::string name;
     int socket = -1;
     bool isReady = false;
+
+    ClientTCP() = default;
+
+    explicit ClientTCP(std::string name, int socket = -1) : name(std::move(name)), socket(socket) {}
 };
 
 enum Team {
     YELLOW,
     BLUE,
     TEST
+};
+
+enum StratPattern {
+    TURN_SOLAR_PANNEL_1,
+    TURN_SOLAR_PANNEL_2,
+    TURN_SOLAR_PANNEL_3,
+    TAKE_FLOWER_BOTTOM,
+    TAKE_FLOWER_TOP,
+    DROP_FLOWER,
+    GO_END,
 };
 
 class TCPServer; // Forward declaration
@@ -55,7 +70,7 @@ private:
     std::atomic<bool> _shouldStop = false; // Flag to indicate if the server should stop
     std::vector<ClientTCP> clients; // Store connected clients
 
-    PinceState pinceState[3] = {NONE, NONE, NONE};
+    std::array<PinceState, 3> pinceState = {NONE, NONE, NONE};
     int isRobotIdle = 0;
 
     int speed = 0;
@@ -66,14 +81,36 @@ private:
             float y;
         } pos;
         float theta;
-    } robotPose{};
+    };
 
+    Position robotPose{};
     Position initRobotPose{};
     Position endRobotPose{};
 
     std::vector<ArucoTag> arucoTags;
 
     Team team;
+
+    std::vector<StratPattern> stratPatterns = {
+        TURN_SOLAR_PANNEL_1,
+        TURN_SOLAR_PANNEL_2,
+        TURN_SOLAR_PANNEL_3,
+        TAKE_FLOWER_BOTTOM,
+        TAKE_FLOWER_BOTTOM,
+        TAKE_FLOWER_BOTTOM,
+        DROP_FLOWER,
+        TAKE_FLOWER_TOP,
+        TAKE_FLOWER_TOP,
+        TAKE_FLOWER_TOP,
+        DROP_FLOWER,
+        GO_END
+    };
+
+    // This is the index of the current pattern
+    int whereAmI = 0;
+
+    bool stopEmergency = false;
+    bool handleEmergencyFlag = false;
 
 public:
     explicit TCPServer(int port);
@@ -102,6 +139,8 @@ public:
 
     void checkIfAllClientsReady();
 
+    void startGame();
+
     void startGameBlueTeam();
 
     void startGameYellowTeam();
@@ -120,6 +159,22 @@ public:
 
     std::optional<ArucoTag> getBiggestArucoTag(float borneMinX, float borneMaxX, float borneMinY, float borneMaxY);
 
+    void handleEmergency(int distance, double angle);
+
+    /*
+     * Start Strategy function
+    */
+    void goAndTurnSolarPannel(StratPattern sp);
+
+    void findAndGoFlower(StratPattern sp);
+
+    void goEnd();
+
+    void dropFlowers();
+    /*
+     *  End Strategy function
+     */
+
     void startTestAruco(int pince);
 
     // Call to broadcast
@@ -129,10 +184,28 @@ public:
     void go(X x, Y y);
 
     template<class X>
+    void go(std::array<X, 2> data);
+
+    template<class X>
     void rotate(X angle);
 
     template<class X, class Y>
     void transit(X x,Y y, int endSpeed);
+
+    template<class X>
+    void transit(std::array<X, 2> data, int endSpeed);
+
+    void openPince(int pince);
+
+    void middlePince(int pince);
+
+    void closePince(int pince);
+
+    void baisserBras();
+
+    void leverBras();
+
+    void transportBras();
 
     ~TCPServer();
 };

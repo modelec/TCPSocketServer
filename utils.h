@@ -26,7 +26,7 @@ namespace TCPUtils {
 class ArucoTag {
 
 public:
-    ArucoTag(int id, std::string  name, std::array<float, 2> pos, std::array<float, 3> rot);
+    ArucoTag(int id, std::string name, std::array<float, 2> pos, std::array<float, 3> rot);
 
     ArucoTag() = default;
 
@@ -55,24 +55,7 @@ public:
 private:
     int _id = -1;
     std::string _name;
-    std::array<float, 2> _pos;
-    std::array<float, 3> _rot;
+    std::array<float, 2> _pos = {0, 0};
+    std::array<float, 3> _rot = {0, 0, 0};
     int nbFind = 0;
-};
-
-class FlowerAruco {
-
-public:
-    FlowerAruco();
-
-    explicit FlowerAruco(ArucoTag* tag);
-
-    [[nodiscard]] ArucoTag* getTag() const;
-
-    [[nodiscard]] std::array<float, 2> getPos() const;
-
-private:
-    ArucoTag* tag;
-
-    std::array<float, 2> _realPos;
 };

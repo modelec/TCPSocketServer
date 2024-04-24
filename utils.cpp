@@ -87,19 +87,3 @@ void ArucoTag::find() {
 int ArucoTag::getNbFind() const {
     return nbFind;
 }
-
-FlowerAruco::FlowerAruco() : tag(nullptr), _realPos({0, 0}) {
-
-}
-
-FlowerAruco::FlowerAruco(ArucoTag *tag) : tag(tag), _realPos({0, 0}) {
-
-}
-
-ArucoTag *FlowerAruco::getTag() const {
-    return tag;
-}
-
-std::array<float, 2> FlowerAruco::getPos() const {
-    return _realPos;
-}
