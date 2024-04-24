@@ -70,7 +70,7 @@ TCPServer::TCPServer(int port)
     std::cout << "Server started on port " << port << std::endl;
 
 
-    clients.reserve(6);
+    clients.reserve(7);
     ClientTCP tirette;
     tirette.name = "tirette";
 
@@ -89,12 +89,16 @@ TCPServer::TCPServer(int port)
     ClientTCP servo_moteur;
     servo_moteur.name = "servo_moteur";
 
+    ClientTCP points;
+    points.name = "points";
+
     clients.push_back(tirette);
     clients.push_back(aruco);
     clients.push_back(ihm);
     clients.push_back(lidar);
     clients.push_back(arduino);
     clients.push_back(servo_moteur);
+    clients.push_back(points);
 }
 
 void TCPServer::acceptConnections()
@@ -256,6 +260,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 tag.setRot(std::stof(aruco[i + 4]), std::stof(aruco[i + 5]), std::stof(aruco[i + 6]));
 
                 handleArucoTag(tag);
+
+                // Broadcast the aruco tag to all clients
+                this->broadcastMessage(message.c_str(), clientSocket);
             }
         }
     }
