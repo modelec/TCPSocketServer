@@ -89,8 +89,8 @@ TCPServer::TCPServer(int port)
     ClientTCP servo_moteur;
     servo_moteur.name = "servo_moteur";
 
-    ClientTCP points;
-    points.name = "points";
+    ClientTCP point;
+    point.name = "point";
 
     clients.push_back(tirette);
     clients.push_back(aruco);
@@ -98,7 +98,7 @@ TCPServer::TCPServer(int port)
     clients.push_back(lidar);
     clients.push_back(arduino);
     clients.push_back(servo_moteur);
-    clients.push_back(points);
+    clients.push_back(point);
 }
 
 void TCPServer::acceptConnections()
