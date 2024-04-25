@@ -75,6 +75,8 @@ private:
 
     bool gameStarted = false;
 
+    std::chrono::time_point<std::chrono::system_clock> gameStart;
+
     int speed = 0;
 
     struct Position {
@@ -93,6 +95,7 @@ private:
 
     Team team;
 
+    // TODO drop white flower in other jardienière (if time)
     std::vector<StratPattern> stratPatterns = {
         TURN_SOLAR_PANNEL_1,
         TURN_SOLAR_PANNEL_2,
@@ -105,6 +108,10 @@ private:
         TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,
         DROP_FLOWER,
+        /* TAKE_FLOWER_TOP,
+        TAKE_FLOWER_TOP,
+        TAKE_FLOWER_TOP,
+        DROP_FLOWER, */
         GO_END
     };
 

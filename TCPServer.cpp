@@ -374,6 +374,12 @@ void TCPServer::startGame() {
     for (int i = whereAmI; i < stratPatterns.size(); i++) {
         if (stopEmergency) std::terminate();
 
+        auto time = std::chrono::system_clock::now();
+        if (time - gameStart > std::chrono::seconds(85)) {
+            this->goEnd();
+            return;
+        }
+
         switch (stratPatterns[i]) {
             case TURN_SOLAR_PANNEL_1:
                 goAndTurnSolarPannel(TURN_SOLAR_PANNEL_1);
@@ -797,6 +803,7 @@ void TCPServer::startTestAruco(int pince) {
 }
 
 void TCPServer::goEnd() {
+    // TODO checkpoint
     this->go(this->endRobotPose.pos.x, this->endRobotPose.pos.y);
     awaitRobotIdle();
     this->rotate(this->endRobotPose.theta);
@@ -804,6 +811,7 @@ void TCPServer::goEnd() {
 }
 
 void TCPServer::findAndGoFlower(StratPattern sp) {
+    this->setSpeed(200);
     if (team == BLUE) {
         if (sp == TAKE_FLOWER_TOP) {
             this->go(1000, 250);
@@ -910,6 +918,8 @@ void TCPServer::dropFlowers() {
         awaitRobotIdle();
     }
 
+    this->setSpeed(200);
+
     if (!pinceHavePurpleFlower.empty()) {
         this->go(purpleDropPosition);
         awaitRobotIdle();
@@ -918,17 +928,18 @@ void TCPServer::dropFlowers() {
 
         this->leverBras();
 
+        this->setSpeed(150);
+
         for (auto & toDrop : pinceHavePurpleFlower) {
             this->openPince(toDrop);
             usleep(500'000);
 
+            this->go(this->robotPose.pos.x, this->robotPose.pos.y + 50);
+            awaitRobotIdle();
+
             pinceState[toDrop] = NONE;
             this->closePince(toDrop);
             usleep(100'000);
-        }
-
-        for (int i = 0; i < 3; i++) {
-            this->middlePince(i);
         }
 
         this->go(this->robotPose.pos.x, this->robotPose.pos.y + 150);
@@ -945,7 +956,7 @@ void TCPServer::dropFlowers() {
         awaitRobotIdle();
 
         this->leverBras();
-        usleep(1'000'000);
+        usleep(500'000);
 
         this->setSpeed(130);
 
@@ -968,15 +979,17 @@ void TCPServer::dropFlowers() {
         }
 
         this->setSpeed(200);
+
+        this->go(whiteDropPosition);
+        awaitRobotIdle();
+
+        this->baisserBras();
     }
-
-    this->go(whiteDropPosition);
-    awaitRobotIdle();
-
-    this->baisserBras();
 }
 
 void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
+    int previousSpeed = this->speed;
+    this->setSpeed(150);
     if (team == BLUE) {
         switch (sp) {
             case TURN_SOLAR_PANNEL_1:
@@ -1078,6 +1091,8 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 break;
         }
     }
+
+    this->setSpeed(previousSpeed);
 }
 
 template<class X, class Y>
