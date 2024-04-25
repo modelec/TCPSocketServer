@@ -73,6 +73,8 @@ private:
     std::array<PinceState, 3> pinceState = {NONE, NONE, NONE};
     int isRobotIdle = 0;
 
+    bool gameStarted = false;
+
     int speed = 0;
 
     struct Position {
@@ -206,6 +208,10 @@ public:
     void leverBras();
 
     void transportBras();
+
+    void checkPanneau(int servo_moteur);
+
+    void uncheckPanneau(int servo_moteur);
 
     ~TCPServer();
 };

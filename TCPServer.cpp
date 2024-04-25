@@ -126,6 +126,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
     // EMERGENCY
     if (tokens[2] == "stop proximity") {
+        if (!gameStarted) return;
+
         this->stopEmergency = true;
         this->broadcastMessage("strat;arduino;clear;1");
 
@@ -223,10 +225,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
         switch (this->team) {
             case BLUE:
-                std::thread([this]() { this->startGameBlueTeam(); }).detach();
-                break;
             case YELLOW:
-                std::thread([this]() { this->startGameYellowTeam(); }).detach();
+                this->gameStarted = true;
+                std::thread([this]() { this->startGame(); }).detach();
                 break;
             case TEST:
                 std::thread([this]() { this->startGameTest(); }).detach();
@@ -244,6 +245,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
                 tag.setPos(std::stof(aruco[i + 2]), std::stof(aruco[i + 3]));
                 tag.setRot(std::stof(aruco[i + 4]), std::stof(aruco[i + 5]), std::stof(aruco[i + 6]));
+
+                std::cout << tag << std::endl;
 
                 handleArucoTag(tag);
             }
@@ -394,6 +397,7 @@ void TCPServer::startGame() {
                 dropFlowers();
             break;
         }
+        whereAmI++;
     }
 }
 
@@ -749,7 +753,6 @@ void TCPServer::handleArucoTag(ArucoTag &tag) {
 
 std::optional<ArucoTag> TCPServer::getBiggestArucoTag(float borneMinX, float borneMaxX, float borneMinY,
                                                       float borneMaxY) {
-    // use optional
     bool found = false;
     ArucoTag biggestTag = ArucoTag();
     for (const auto & tag : arucoTags) {
@@ -835,6 +838,8 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
         } else {
             return;
         }
+    } else {
+        return;
     }
 
     this->arucoTags.clear();
@@ -862,24 +867,51 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
 
 void TCPServer::dropFlowers() {
     std::vector<int> pinceHavePurpleFlower;
+    std::vector<int> pinceHaveWhiteFlower;
+
+    std::vector<std::array<int, 2>> checkpoints;
+
+    pinceHavePurpleFlower.reserve(3);
+    pinceHaveWhiteFlower.reserve(3);
+
     for (int i = 0; i < 3; i++) {
-        if (pinceState[i] == PURPLE_FLOWER) {
-            pinceHavePurpleFlower.push_back(i);
+        switch (pinceState[i]) {
+            case PURPLE_FLOWER:
+                pinceHavePurpleFlower.push_back(i);
+                break;
+            case WHITE_FLOWER:
+                pinceHaveWhiteFlower.push_back(i);
+                break;
+            case NONE:
+                break;
         }
     }
 
-    std::array<int, 2> purpleDrop{};
-    std::array<int, 2> whiteDrop{};
+    std::array<int, 2> purpleDropPosition{};
+    std::array<int, 2> whiteDropPosition{};
     if (team == BLUE) {
-        purpleDrop = {300, 400};
-        whiteDrop = {762, 300};
+        purpleDropPosition = {300, 400};
+        whiteDropPosition = {762, 300};
+        if (this->robotPose.pos.y > 1000) {
+            checkpoints.emplace_back(std::array{500, 1700});
+            checkpoints.emplace_back(std::array{500, 500});
+        }
     } else if (team == YELLOW) {
-        purpleDrop = {2700, 400};
-        whiteDrop = {2237, 400};
+        purpleDropPosition = {2700, 400};
+        whiteDropPosition = {2237, 400};
+        if (this->robotPose.pos.y > 1000) {
+            checkpoints.emplace_back(std::array{2500, 1700});
+            checkpoints.emplace_back(std::array{2500, 500});
+        }
+    }
+
+    for (const auto& checkpoint : checkpoints) {
+        this->go(checkpoint);
+        awaitRobotIdle();
     }
 
     if (!pinceHavePurpleFlower.empty()) {
-        this->go(purpleDrop);
+        this->go(purpleDropPosition);
         awaitRobotIdle();
         this->rotate(PI / 2);
         awaitRobotIdle();
@@ -905,8 +937,8 @@ void TCPServer::dropFlowers() {
         this->baisserBras();
     }
 
-    if (pinceHavePurpleFlower.size() < 3) {
-        this->go(whiteDrop);
+    if (!pinceHaveWhiteFlower.empty()) {
+        this->go(whiteDropPosition);
         awaitRobotIdle();
 
         this->rotate(PI / 2);
@@ -917,7 +949,7 @@ void TCPServer::dropFlowers() {
 
         this->setSpeed(130);
 
-        this->go(whiteDrop[0], 0);
+        this->go(whiteDropPosition[0], 0);
         usleep(1'000'000);
 
         for (int i = 0; i < 3; i++) {
@@ -938,7 +970,7 @@ void TCPServer::dropFlowers() {
         this->setSpeed(200);
     }
 
-    this->go(whiteDrop);
+    this->go(whiteDropPosition);
     awaitRobotIdle();
 
     this->baisserBras();
@@ -954,13 +986,13 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 this->rotate(PI / 2);
                 awaitRobotIdle();
 
-                this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
+                this->checkPanneau(7);
                 usleep(100'000);
 
                 this->go(380, 1790);
                 awaitRobotIdle();
 
-                this->broadcastMessage("strat;servo_moteur;uncheck panneau;7\n");
+                this->uncheckPanneau(7);
                 break;
             case TURN_SOLAR_PANNEL_2:
                 this->go(475, 1790);
@@ -969,13 +1001,13 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 this->rotate(PI / 2);
                 awaitRobotIdle();
 
-                this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
+                this->checkPanneau(7);
                 usleep(100'000);
 
                 this->go(605, 1790);
                 awaitRobotIdle();
 
-                this->broadcastMessage("strat;servo_moteur;uncheck panneau;7\n");
+                this->uncheckPanneau(7);
                 break;
             case TURN_SOLAR_PANNEL_3:
                 this->go(700, 1790);
@@ -984,13 +1016,13 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 this->rotate(PI / 2);
                 awaitRobotIdle();
 
-                this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
+                this->checkPanneau(7);
                 usleep(100'000);
 
                 this->go(830, 1790);
                 awaitRobotIdle();
 
-                this->broadcastMessage("strat;servo_moteur;uncheck panneau;7\n");
+                this->uncheckPanneau(7);
                 break;
             default:
                 break;
@@ -1004,13 +1036,13 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 this->rotate(-PI / 2);
                 awaitRobotIdle();
 
-                this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
+                this->checkPanneau(8);
                 usleep(100'000);
 
                 this->go(2620, 1790);
                 awaitRobotIdle();
 
-                this->broadcastMessage("strat;servo_moteur;uncheck panneau;7\n");
+                this->uncheckPanneau(8);
                 break;
             case TURN_SOLAR_PANNEL_2:
                 this->go(2525, 1790);
@@ -1019,13 +1051,13 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 this->rotate(-PI / 2);
                 awaitRobotIdle();
 
-                this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
+                this->checkPanneau(8);
                 usleep(100'000);
 
                 this->go(2395, 1790);
                 awaitRobotIdle();
 
-                this->broadcastMessage("strat;servo_moteur;uncheck panneau;7\n");
+                this->uncheckPanneau(8);
                 break;
             case TURN_SOLAR_PANNEL_3:
                 this->go(2300, 1790);
@@ -1034,13 +1066,13 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 this->rotate(-PI / 2);
                 awaitRobotIdle();
 
-                this->broadcastMessage("strat;servo_moteur;check panneau;7\n");
+                this->checkPanneau(8);
                 usleep(100'000);
 
                 this->go(2170, 1790);
                 awaitRobotIdle();
 
-                this->broadcastMessage("strat;servo_moteur;uncheck panneau;7\n");
+                this->uncheckPanneau(8);
                 break;
             default:
                 break;
@@ -1100,4 +1132,12 @@ void TCPServer::middlePince(int pince) {
 
 void TCPServer::closePince(int pince) {
     this->broadcastMessage("strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n");
+}
+
+void TCPServer::checkPanneau(int servo_moteur) {
+    this->broadcastMessage("strat;servo_moteur;check panneau;" + std::to_string(servo_moteur) + "\n");
+}
+
+void TCPServer::uncheckPanneau(int servo_moteur) {
+    this->broadcastMessage("strat;servo_moteur;uncheck panneau;" + std::to_string(servo_moteur) + "\n");
 }
