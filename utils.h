@@ -4,6 +4,7 @@
 #include <utility>
 #include <vector>
 #include <string>
+#include <ostream>
 
 #define PI 3.14159265358979323846
 
@@ -30,6 +31,8 @@ public:
 
     ArucoTag() = default;
 
+    ArucoTag(const ArucoTag& other) = default;
+
     [[nodiscard]] int id() const;
 
     [[nodiscard]] std::string name() const;
@@ -51,6 +54,8 @@ public:
     void find();
 
     [[nodiscard]] int getNbFind() const;
+
+    friend std::ostream& operator<<(std::ostream& os, const ArucoTag& tag);
 
 private:
     int _id = -1;
