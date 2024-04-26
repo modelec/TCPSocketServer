@@ -130,6 +130,8 @@ private:
 
     bool awaitForLidar = false;
 
+    std::thread gameThread;
+
 public:
     explicit TCPServer(int port);
 
@@ -214,10 +216,12 @@ public:
     template<class X, class Y, class Z>
     void setPosition(X x, Y y, Z theta, int clientSocket = -1);
 
-    void setPosition(Position pos, int clientSocket = -1);
-
     template<class X>
     void setPosition(std::array<X, 3> data, int clientSocket = -1);
+
+    void setPosition(Position pos, int clientSocket = -1);
+
+    void setPosition(Position pos, const std::string &toSend);
 
     void openPince(int pince);
 

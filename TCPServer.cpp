@@ -129,12 +129,13 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         if (!gameStarted) return;
 
         this->stopEmergency = true;
+        this->gameThread.~thread();
         this->broadcastMessage("strat;arduino;clear;1");
 
         std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
 
         if (!handleEmergencyFlag) {
-            std::thread([this, args]() { this->handleEmergency(std::stoi(args[0]), std::stod(args[1])); }).detach();
+            std::thread([this, args]() { this->handleEmergency(std::stoi(args[0]), std::stod(args[1]) / 100); }).detach();
         }
     }
 
@@ -225,16 +226,19 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     {
         this->broadcastMessage(message.c_str(), clientSocket);
 
+        this->gameStarted = true;
+
         switch (this->team) {
             case BLUE:
             case YELLOW:
-                this->gameStarted = true;
-                std::thread([this]() { this->startGame(); }).detach();
+                this->gameThread = std::thread([this]() { this->startGame(); });
                 break;
             case TEST:
-                std::thread([this]() { this->startGameTest(); }).detach();
+                this->gameThread = std::thread([this]() { this->startGameTest(); });
                 break;
         }
+
+        this->gameThread.detach();
     }
     else if (tokens[0] == "aruco" && tokens[2] == "get aruco") {
         std::string arucoResponse = tokens[3];
@@ -266,6 +270,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         } else if (tokens[2] == "set pos") {
             std::vector<std::string> pos = TCPUtils::split(tokens[3], ",");
             this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]) / 100};
+            this->setPosition(this->robotPose, "lidar");
         }
     } else if (tokens[2] == "get speed") {
         this->sendToClient("strat;" + tokens[0] + ";set speed;" + std::to_string(this->speed) + "\n", clientSocket);
@@ -279,8 +284,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
 void TCPServer::broadcastMessage(const char* message, int senderSocket)
 {
-    if (stopEmergency) std::terminate();
-
     for (int clientSocket : clientSockets) {
         if (clientSocket != senderSocket) { // Exclude the sender's socket
             send(clientSocket, message, strlen(message), 0);
@@ -339,6 +342,8 @@ void TCPServer::stop() {
     for (auto& thread : clientThreads) {
         thread.join();
     }
+    this->gameThread.join();
+
     // Close the server socket
     close(serverSocket);
 }
@@ -377,7 +382,6 @@ void TCPServer::checkIfAllClientsReady()
 
 void TCPServer::startGame() {
     for (int i = whereAmI; i < stratPatterns.size(); i++) {
-        if (stopEmergency) std::terminate();
 
         auto time = std::chrono::system_clock::now();
         if (time - gameStart > std::chrono::seconds(85)) {
@@ -673,8 +677,6 @@ void TCPServer::awaitRobotIdle() {
     // ReSharper disable once CppDFAEndlessLoop
     usleep(200'000);
     while (isRobotIdle < 3) {
-        if (stopEmergency) std::terminate();
-
         usleep(200'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
         timeout++;
@@ -728,11 +730,18 @@ void TCPServer::handleEmergency(int distance, double angle) {
     usleep(500'000);
     if (this->stopEmergency) {
         // TODO here go back by twenty centimeter
+        usleep(200'000);
     }
 
     this->handleEmergencyFlag = false;
 
-    this->startGame();
+    this->gameThread.~thread();
+
+    this->gameStarted = false;
+
+    this->gameThread = std::thread([this]() { this->startGame(); });
+
+    this->gameThread.detach();
 }
 
 void TCPServer::startTestAruco(int pince) {
@@ -751,8 +760,6 @@ void TCPServer::startTestAruco(int pince) {
 }
 
 void TCPServer::goEnd() {
-    if (stopEmergency) std::terminate();
-
     std::vector<std::array<int, 2>> checkponts;
     if (this->robotPose.pos.y > 1000) {
         if (team == BLUE) {
@@ -816,8 +823,6 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
     this->arucoTags.clear();
     this->broadcastMessage("strat;aruco;get aruco;1\n");
     for (int i = 0; i < 5; i++) {
-        if (stopEmergency) std::terminate();
-
         usleep(200'000);
         this->broadcastMessage("strat;aruco;get aruco;1\n");
     }
@@ -1090,23 +1095,23 @@ void TCPServer::rotate(X angle) {
     this->broadcastMessage("strat;arduino;angle" + std::to_string(static_cast<int>(angle * 100)) + "\n");
 }
 
-void TCPServer::setSpeed(int speed) {
+void TCPServer::setSpeed(const int speed) {
     this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
     this->speed = speed;
 }
 
 template<class X, class Y>
-void TCPServer::transit(X x, Y y, int endSpeed) {
+void TCPServer::transit(X x, Y y, const int endSpeed) {
     this->broadcastMessage("strat;arduino;transit" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "," + std::to_string(endSpeed) + "\n");
 }
 
 template<class X>
-void TCPServer::transit(std::array<X, 2> data, int endSpeed) {
+void TCPServer::transit(std::array<X, 2> data, const int endSpeed) {
     this->broadcastMessage("strat;arduino;transit" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "," + std::to_string(endSpeed) + "\n");
 }
 
 template<class X, class Y, class Z>
-void TCPServer::setPosition(X x, Y y, Z theta, int clientSocket) {
+void TCPServer::setPosition(X x, Y y, Z theta, const int clientSocket) {
     if (clientSocket == -1) {
         this->broadcastMessage("strat;all;set pos;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "," + std::to_string(static_cast<int>(theta * 100)) + "\n");
     } else {
@@ -1115,7 +1120,7 @@ void TCPServer::setPosition(X x, Y y, Z theta, int clientSocket) {
 }
 
 template<class X>
-void TCPServer::setPosition(std::array<X, 3> data, int clientSocket) {
+void TCPServer::setPosition(std::array<X, 3> data, const int clientSocket) {
     if (clientSocket == -1) {
         this->broadcastMessage("strat;all;set pos;" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "," + std::to_string(static_cast<int>(data[2] * 100)) + "\n");
     } else {
@@ -1123,12 +1128,16 @@ void TCPServer::setPosition(std::array<X, 3> data, int clientSocket) {
     }
 }
 
-void TCPServer::setPosition(Position pos, int clientSocket) {
+void TCPServer::setPosition(const Position pos, const int clientSocket) {
     if (clientSocket == -1) {
         this->broadcastMessage("strat;all;set pos;" + std::to_string(static_cast<int>(pos.pos.x)) + "," + std::to_string(static_cast<int>(pos.pos.y)) + "," + std::to_string(static_cast<int>(pos.theta * 100)) + "\n");
     } else {
         this->sendToClient("strat;all;set pos;" + std::to_string(static_cast<int>(pos.pos.x)) + "," + std::to_string(static_cast<int>(pos.pos.y)) + "," + std::to_string(static_cast<int>(pos.theta * 100)) + "\n", clientSocket);
     }
+}
+
+void TCPServer::setPosition(const Position pos, const std::string &toSend) {
+    this->broadcastMessage("strat" + toSend + "set pos" + std::to_string(static_cast<int>(pos.pos.x)) + "," + std::to_string(static_cast<int>(pos.pos.y)) + "," + std::to_string(static_cast<int>(pos.theta * 100)) + "\n");
 }
 
 void TCPServer::baisserBras() {
