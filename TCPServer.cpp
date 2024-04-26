@@ -155,14 +155,17 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
         checkIfAllClientsReady();
     }
-    else if (tokens[2] == "set pos") {
-        std::vector<std::string> pos = TCPUtils::split(tokens[3], ",");
-        this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]) / 100};
-    }
     else if (tokens[2] == "get pos") {
-        std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
-        this->sendToClient(toSend, clientSocket);
+        this->setPosition(this->robotPose, clientSocket);
     }
+    else if (tokens[0] == "lidar" && tokens[2] == "set pos") {
+        std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
+        this->lidarCalculatePos = {std::stof(args[0]), std::stof(args[1]), std::stof(args[2]) / 100};
+        this->setPosition(this->lidarCalculatePos);
+        this->setPosition(this->lidarCalculatePos);
+        awaitForLidar = false;
+    }
+
     else if (tokens[2] == "spawn") {
         int spawnPointNb = std::stoi(tokens[3]);
         float spawnPoint[3];
@@ -212,10 +215,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         this->robotPose = {spawnPoint[0], spawnPoint[1], spawnPoint[2]};
         this->initRobotPose = {spawnPoint[0], spawnPoint[1], spawnPoint[2]};
         this->endRobotPose = {finishPoint[0], finishPoint[1], finishPoint[2]};
-        std::string toSend = "strat;all;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta * 100) + "\n";
 
         for (int j = 0; j < 3; j++) {
-            this->broadcastMessage(toSend);
+            this->setPosition(this->robotPose);
             usleep(200'000);
         }
     }
@@ -261,6 +263,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             }
         } else if (tokens[2] == "set speed") {
             this->speed = std::stoi(tokens[3]);
+        } else if (tokens[2] == "set pos") {
+            std::vector<std::string> pos = TCPUtils::split(tokens[3], ",");
+            this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]) / 100};
         }
     } else if (tokens[2] == "get speed") {
         this->sendToClient("strat;" + tokens[0] + ";set speed;" + std::to_string(this->speed) + "\n", clientSocket);
@@ -383,87 +388,30 @@ void TCPServer::startGame() {
         switch (stratPatterns[i]) {
             case TURN_SOLAR_PANNEL_1:
                 goAndTurnSolarPannel(TURN_SOLAR_PANNEL_1);
-            break;
+                break;
             case TURN_SOLAR_PANNEL_2:
                 goAndTurnSolarPannel(TURN_SOLAR_PANNEL_2);
-            break;
+                break;
             case TURN_SOLAR_PANNEL_3:
                 goAndTurnSolarPannel(TURN_SOLAR_PANNEL_3);
-            break;
+                break;
             case TAKE_FLOWER_TOP:
                 findAndGoFlower(TAKE_FLOWER_TOP);
-            break;
+               break;
             case TAKE_FLOWER_BOTTOM:
                 findAndGoFlower(TAKE_FLOWER_BOTTOM);
-            break;
+                break;
             case GO_END:
                 goEnd();
-            break;
+                break;
             case DROP_FLOWER:
                 dropFlowers();
-            break;
+                break;
+            case GET_LIDAR_POS:
+                getLidarPos();
+                break;
         }
         whereAmI++;
-    }
-}
-
-void TCPServer::startGameBlueTeam() {
-    for (int i = whereAmI; i < stratPatterns.size(); i++) {
-        if (stopEmergency) std::terminate();
-
-        switch (stratPatterns[i]) {
-            case TURN_SOLAR_PANNEL_1:
-                goAndTurnSolarPannel(TURN_SOLAR_PANNEL_1);
-                break;
-            case TURN_SOLAR_PANNEL_2:
-                goAndTurnSolarPannel(TURN_SOLAR_PANNEL_2);
-                break;
-            case TURN_SOLAR_PANNEL_3:
-                goAndTurnSolarPannel(TURN_SOLAR_PANNEL_3);
-                break;
-            case TAKE_FLOWER_TOP:
-                findAndGoFlower(TAKE_FLOWER_TOP);
-                break;
-            case TAKE_FLOWER_BOTTOM:
-                findAndGoFlower(TAKE_FLOWER_BOTTOM);
-                break;
-            case GO_END:
-                goEnd();
-                break;
-            case DROP_FLOWER:
-                dropFlowers();
-                break;
-        }
-    }
-}
-
-void TCPServer::startGameYellowTeam() {
-    for (int i = whereAmI; i < stratPatterns.size(); i++) {
-        if (stopEmergency) std::terminate();
-
-        switch (stratPatterns[i]) {
-            case TURN_SOLAR_PANNEL_1:
-                goAndTurnSolarPannel(TURN_SOLAR_PANNEL_1);
-            break;
-            case TURN_SOLAR_PANNEL_2:
-                goAndTurnSolarPannel(TURN_SOLAR_PANNEL_2);
-            break;
-            case TURN_SOLAR_PANNEL_3:
-                goAndTurnSolarPannel(TURN_SOLAR_PANNEL_3);
-            break;
-            case TAKE_FLOWER_TOP:
-                findAndGoFlower(TAKE_FLOWER_TOP);
-            break;
-            case TAKE_FLOWER_BOTTOM:
-                findAndGoFlower(TAKE_FLOWER_BOTTOM);
-            break;
-            case GO_END:
-                goEnd();
-            break;
-            case DROP_FLOWER:
-                dropFlowers();
-            break;
-        }
     }
 }
 
@@ -782,9 +730,9 @@ void TCPServer::handleEmergency(int distance, double angle) {
         // TODO here go back by twenty centimeter
     }
 
-    this->startGame();
-
     this->handleEmergencyFlag = false;
+
+    this->startGame();
 }
 
 void TCPServer::startTestAruco(int pince) {
@@ -803,7 +751,22 @@ void TCPServer::startTestAruco(int pince) {
 }
 
 void TCPServer::goEnd() {
-    // TODO checkpoint
+    if (stopEmergency) std::terminate();
+
+    std::vector<std::array<int, 2>> checkponts;
+    if (this->robotPose.pos.y > 1000) {
+        if (team == BLUE) {
+            checkponts.emplace_back(std::array{500, 1700});
+        } else if (team == YELLOW) {
+            checkponts.emplace_back(std::array{2500, 1700});
+        }
+    }
+
+    for (const auto& checkpoint : checkponts) {
+        this->go(checkpoint);
+        awaitRobotIdle();
+    }
+
     this->go(this->endRobotPose.pos.x, this->endRobotPose.pos.y);
     awaitRobotIdle();
     this->rotate(this->endRobotPose.theta);
@@ -1095,6 +1058,23 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
     this->setSpeed(previousSpeed);
 }
 
+void TCPServer::getLidarPos() {
+
+    this->askLidarPosition();
+
+    awaitForLidar = true;
+    // ReSharper disable once CppDFAConstantConditions
+    // ReSharper disable once CppDFAEndlessLoop
+    while (awaitForLidar) {
+        usleep(200'000);
+    }
+
+    // ReSharper disable once CppDFAUnreachableCode
+    std::cout << lidarCalculatePos.pos.x << " " << lidarCalculatePos.pos.y << " " << lidarCalculatePos.theta << std::endl;
+
+}
+
+
 template<class X, class Y>
 void TCPServer::go(X x, Y y) {
     this->broadcastMessage("strat;arduino;go;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "\n");
@@ -1123,6 +1103,32 @@ void TCPServer::transit(X x, Y y, int endSpeed) {
 template<class X>
 void TCPServer::transit(std::array<X, 2> data, int endSpeed) {
     this->broadcastMessage("strat;arduino;transit" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "," + std::to_string(endSpeed) + "\n");
+}
+
+template<class X, class Y, class Z>
+void TCPServer::setPosition(X x, Y y, Z theta, int clientSocket) {
+    if (clientSocket == -1) {
+        this->broadcastMessage("strat;all;set pos;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "," + std::to_string(static_cast<int>(theta * 100)) + "\n");
+    } else {
+        this->sendToClient("strat;all;set pos;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "," + std::to_string(static_cast<int>(theta * 100)) + "\n", clientSocket);
+    }
+}
+
+template<class X>
+void TCPServer::setPosition(std::array<X, 3> data, int clientSocket) {
+    if (clientSocket == -1) {
+        this->broadcastMessage("strat;all;set pos;" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "," + std::to_string(static_cast<int>(data[2] * 100)) + "\n");
+    } else {
+        this->sendToClient("strat;all;set pos;" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "," + std::to_string(static_cast<int>(data[2] * 100)) + "\n", clientSocket);
+    }
+}
+
+void TCPServer::setPosition(Position pos, int clientSocket) {
+    if (clientSocket == -1) {
+        this->broadcastMessage("strat;all;set pos;" + std::to_string(static_cast<int>(pos.pos.x)) + "," + std::to_string(static_cast<int>(pos.pos.y)) + "," + std::to_string(static_cast<int>(pos.theta * 100)) + "\n");
+    } else {
+        this->sendToClient("strat;all;set pos;" + std::to_string(static_cast<int>(pos.pos.x)) + "," + std::to_string(static_cast<int>(pos.pos.y)) + "," + std::to_string(static_cast<int>(pos.theta * 100)) + "\n", clientSocket);
+    }
 }
 
 void TCPServer::baisserBras() {
@@ -1155,4 +1161,8 @@ void TCPServer::checkPanneau(int servo_moteur) {
 
 void TCPServer::uncheckPanneau(int servo_moteur) {
     this->broadcastMessage("strat;servo_moteur;uncheck panneau;" + std::to_string(servo_moteur) + "\n");
+}
+
+void TCPServer::askLidarPosition() {
+    this->broadcastMessage("start;lidar;get pos;1\n");
 }

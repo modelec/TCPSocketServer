@@ -42,6 +42,7 @@ enum StratPattern {
     TAKE_FLOWER_TOP,
     DROP_FLOWER,
     GO_END,
+    GET_LIDAR_POS,
 };
 
 class TCPServer; // Forward declaration
@@ -90,6 +91,7 @@ private:
     Position robotPose{};
     Position initRobotPose{};
     Position endRobotPose{};
+    Position lidarCalculatePos{};
 
     std::vector<ArucoTag> arucoTags;
 
@@ -100,14 +102,19 @@ private:
         TURN_SOLAR_PANNEL_1,
         TURN_SOLAR_PANNEL_2,
         TURN_SOLAR_PANNEL_3,
+        GET_LIDAR_POS,
         TAKE_FLOWER_BOTTOM,
         TAKE_FLOWER_BOTTOM,
         TAKE_FLOWER_BOTTOM,
+        GET_LIDAR_POS,
         DROP_FLOWER,
+        GET_LIDAR_POS,
         TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,
+        GET_LIDAR_POS,
         DROP_FLOWER,
+        GET_LIDAR_POS,
         /* TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,
@@ -120,6 +127,8 @@ private:
 
     bool stopEmergency = false;
     bool handleEmergencyFlag = false;
+
+    bool awaitForLidar = false;
 
 public:
     explicit TCPServer(int port);
@@ -150,10 +159,6 @@ public:
 
     void startGame();
 
-    void startGameBlueTeam();
-
-    void startGameYellowTeam();
-
     void startGameTest();
 
     void goToAruco(const ArucoTag &arucoTag, int pince);
@@ -180,6 +185,8 @@ public:
     void goEnd();
 
     void dropFlowers();
+
+    void getLidarPos();
     /*
      *  End Strategy function
      */
@@ -204,6 +211,14 @@ public:
     template<class X>
     void transit(std::array<X, 2> data, int endSpeed);
 
+    template<class X, class Y, class Z>
+    void setPosition(X x, Y y, Z theta, int clientSocket = -1);
+
+    void setPosition(Position pos, int clientSocket = -1);
+
+    template<class X>
+    void setPosition(std::array<X, 3> data, int clientSocket = -1);
+
     void openPince(int pince);
 
     void middlePince(int pince);
@@ -219,6 +234,8 @@ public:
     void checkPanneau(int servo_moteur);
 
     void uncheckPanneau(int servo_moteur);
+
+    void askLidarPosition();
 
     ~TCPServer();
 };
