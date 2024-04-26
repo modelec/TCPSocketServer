@@ -221,6 +221,12 @@ public:
 
     void setPosition(Position pos, int clientSocket = -1);
 
+    template<class X, class Y, class Z>
+    void setPosition(X x, Y y, Z theta, const std::string &toSend);
+
+    template<class X>
+    void setPosition(std::array<X, 3> data, const std::string &toSend);
+
     void setPosition(Position pos, const std::string &toSend);
 
     void openPince(int pince);

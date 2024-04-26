@@ -141,7 +141,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
     else if (tokens[0] == "tirette" && tokens[2] == "set state")
     {
-        this->broadcastMessage(message.c_str(), clientSocket);
+        this->broadcastMessage(message, clientSocket);
     }
     else if (tokens[2] == "ready")
     {
@@ -159,86 +159,92 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     else if (tokens[2] == "get pos") {
         this->setPosition(this->robotPose, clientSocket);
     }
+    else if (tokens[2] == "get speed") {
+        this->sendToClient("strat;" + tokens[0] + ";set speed;" + std::to_string(this->speed) + "\n", clientSocket);
+    }
     else if (tokens[0] == "lidar" && tokens[2] == "set pos") {
         std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
         this->lidarCalculatePos = {std::stof(args[0]), std::stof(args[1]), std::stof(args[2]) / 100};
         this->setPosition(this->lidarCalculatePos);
+        usleep(100'000);
         this->setPosition(this->lidarCalculatePos);
         awaitForLidar = false;
     }
 
-    else if (tokens[2] == "spawn") {
-        int spawnPointNb = std::stoi(tokens[3]);
-        float spawnPoint[3];
-        float finishPoint[3];
+    else if (tokens[0] == "ihm") {
+        if (tokens[2] == "spawn") {
+            int spawnPointNb = std::stoi(tokens[3]);
+            float spawnPoint[3];
+            float finishPoint[3];
 
-        switch (spawnPointNb) {
-            case 3:
-                this->team = BLUE;
-                spawnPoint[0] = 250;
-                spawnPoint[1] = 1790;
-                spawnPoint[2] = 0;
+            switch (spawnPointNb) {
+                case 3:
+                    this->team = BLUE;
+                    spawnPoint[0] = 250;
+                    spawnPoint[1] = 1790;
+                    spawnPoint[2] = 0;
 
-                // For test
-                finishPoint[0] = 400;
-                finishPoint[1] = 1790;
-                finishPoint[2] = 0;
+                    // For test
+                    finishPoint[0] = 400;
+                    finishPoint[1] = 1790;
+                    finishPoint[2] = 0;
 
-                /*finishPoint[0] = 400;
-                finishPoint[1] = 400;
-                finishPoint[2] = 3.1415;*/
-                break;
-            case 6:
-                this->team = YELLOW;
-                spawnPoint[0] = 1750;
-                spawnPoint[1] = 1790;
-                spawnPoint[2] = 3.1415;
-                finishPoint[0] = 2600;
-                finishPoint[1] = 400;
-                finishPoint[2] = 0;
-                break;
+                    /*finishPoint[0] = 400;
+                    finishPoint[1] = 400;
+                    finishPoint[2] = 3.1415;*/
+                    break;
+                case 6:
+                    this->team = YELLOW;
+                    spawnPoint[0] = 1750;
+                    spawnPoint[1] = 1790;
+                    spawnPoint[2] = 3.1415;
+                    finishPoint[0] = 2600;
+                    finishPoint[1] = 400;
+                    finishPoint[2] = 0;
+                    break;
 
-            default:
-                this->team = TEST;
-                spawnPoint[0] = 1200;
-                spawnPoint[1] = 1800;
-                spawnPoint[2] = 1.57;
-                finishPoint[0] = 1200;
-                finishPoint[1] = 1800;
-                finishPoint[2] = 1.57;
-                break;
+                default:
+                    this->team = TEST;
+                    spawnPoint[0] = 1200;
+                    spawnPoint[1] = 1800;
+                    spawnPoint[2] = 1.57;
+                    finishPoint[0] = 1200;
+                    finishPoint[1] = 1800;
+                    finishPoint[2] = 1.57;
+                    break;
+            }
+
+            std::ofstream file("end_point.txt");
+            file << finishPoint[0] << " " << finishPoint[1];
+            file.close();
+
+            this->robotPose = {spawnPoint[0], spawnPoint[1], spawnPoint[2]};
+            this->initRobotPose = {spawnPoint[0], spawnPoint[1], spawnPoint[2]};
+            this->endRobotPose = {finishPoint[0], finishPoint[1], finishPoint[2]};
+
+            for (int j = 0; j < 3; j++) {
+                this->setPosition(this->robotPose);
+                usleep(200'000);
+            }
         }
+        else if (tokens[1] == "strat" && tokens[2] == "start")
+        {
+            this->broadcastMessage(message.c_str(), clientSocket);
 
-        std::ofstream file("end_point.txt");
-        file << finishPoint[0] << " " << finishPoint[1];
-        file.close();
+            this->gameStarted = true;
 
-        this->robotPose = {spawnPoint[0], spawnPoint[1], spawnPoint[2]};
-        this->initRobotPose = {spawnPoint[0], spawnPoint[1], spawnPoint[2]};
-        this->endRobotPose = {finishPoint[0], finishPoint[1], finishPoint[2]};
+            switch (this->team) {
+                case BLUE:
+                case YELLOW:
+                    this->gameThread = std::thread([this]() { this->startGame(); });
+                    break;
+                case TEST:
+                    this->gameThread = std::thread([this]() { this->startGameTest(); });
+                    break;
+            }
 
-        for (int j = 0; j < 3; j++) {
-            this->setPosition(this->robotPose);
-            usleep(200'000);
+            this->gameThread.detach();
         }
-    }
-    else if (tokens[1] == "strat" && tokens[2] == "start")
-    {
-        this->broadcastMessage(message.c_str(), clientSocket);
-
-        this->gameStarted = true;
-
-        switch (this->team) {
-            case BLUE:
-            case YELLOW:
-                this->gameThread = std::thread([this]() { this->startGame(); });
-                break;
-            case TEST:
-                this->gameThread = std::thread([this]() { this->startGameTest(); });
-                break;
-        }
-
-        this->gameThread.detach();
     }
     else if (tokens[0] == "aruco" && tokens[2] == "get aruco") {
         std::string arucoResponse = tokens[3];
@@ -272,8 +278,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]) / 100};
             this->setPosition(this->robotPose, "lidar");
         }
-    } else if (tokens[2] == "get speed") {
-        this->sendToClient("strat;" + tokens[0] + ";set speed;" + std::to_string(this->speed) + "\n", clientSocket);
     } else if (tokens[2] == "test aruco") {
         int pince = std::stoi(tokens[3]);
 
@@ -1134,6 +1138,16 @@ void TCPServer::setPosition(const Position pos, const int clientSocket) {
     } else {
         this->sendToClient("strat;all;set pos;" + std::to_string(static_cast<int>(pos.pos.x)) + "," + std::to_string(static_cast<int>(pos.pos.y)) + "," + std::to_string(static_cast<int>(pos.theta * 100)) + "\n", clientSocket);
     }
+}
+
+template<class X, class Y, class Z>
+void TCPServer::setPosition(X x, Y y, Z theta, const std::string &toSend) {
+    this->broadcastMessage("strat" + toSend + "set pos" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "," + std::to_string(static_cast<int>(theta * 100)) + "\n");
+}
+
+template<class X>
+void TCPServer::setPosition(std::array<X, 3> data, const std::string &toSend) {
+    this->broadcastMessage("strat" + toSend + "set pos" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "," + std::to_string(static_cast<int>(data[2] * 100)) + "\n");
 }
 
 void TCPServer::setPosition(const Position pos, const std::string &toSend) {
