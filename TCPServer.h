@@ -177,6 +177,8 @@ public:
 
     std::optional<ArucoTag> getBiggestArucoTag(float borneMinX, float borneMaxX, float borneMinY, float borneMaxY);
 
+    std::optional<ArucoTag> getMostCenteredArucoTag(float borneMinX, float borneMaxX, float borneMinY, float borneMaxY);
+
     void handleEmergency(int distance, double angle);
 
     /*

@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <ostream>
+#include <cmath>
 
 #define PI 3.14159265358979323846
 
@@ -64,3 +65,5 @@ private:
     std::array<float, 3> _rot = {0, 0, 0};
     int nbFind = 0;
 };
+
+double distanceToTag(const ArucoTag& tag);

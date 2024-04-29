@@ -429,7 +429,8 @@ void TCPServer::startGame() {
     for (int i = whereAmI; i < stratPatterns.size(); i++) {
 
         auto time = std::chrono::system_clock::now();
-        if (time - gameStart > std::chrono::seconds(85)) {
+        // TODO check for the bbest timing to return to the spawn
+        if (time - gameStart > std::chrono::seconds(80)) {
             this->goEnd();
             return;
         }
@@ -643,7 +644,6 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     double robotPosY = this->robotPose.pos.y;
     double theta = this->robotPose.theta;
     double decalage;
-    double rotate;
     if (pince < 0 || pince > 2) {
         return;
     }
@@ -651,19 +651,15 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     switch (pince) {
         case 0:
             decalage = 60;
-            rotate = -0.07;
             break;
         case 1:
             decalage = 0;
-            rotate = 0;
             break;
         case 2:
             decalage = -60;
-            rotate = 0.07;
             break;
         default:
             decalage = 0;
-            rotate = 0;
             break;
     }
 
@@ -765,6 +761,26 @@ std::optional<ArucoTag> TCPServer::getBiggestArucoTag(float borneMinX, float bor
     }
 
     return found ? std::optional(biggestTag) : std::nullopt;
+}
+
+
+std::optional<ArucoTag> TCPServer::getMostCenteredArucoTag(float borneMinX, float borneMaxX, float borneMinY, float borneMaxY) {
+    bool found = false;
+    ArucoTag mostCenteredTag = ArucoTag();
+    for (const auto & tag : arucoTags) {
+        if (tag.getNbFind() < 2) break;
+
+        if (!found) {
+            if (tag.pos()[0] > borneMinX && tag.pos()[0] < borneMaxX && tag.pos()[1] > borneMinY && tag.pos()[1] < borneMaxY) {
+                mostCenteredTag = tag;
+                found = true;
+            }
+        } else if (distanceToTag(tag) < distanceToTag(mostCenteredTag)) {
+            mostCenteredTag = tag;
+        }
+    }
+
+    return found ? std::optional(mostCenteredTag) : std::nullopt;
 }
 
 void TCPServer::handleEmergency(int distance, double angle) {
@@ -871,13 +887,13 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
 
     this->arucoTags.clear();
     this->broadcastMessage("strat;aruco;get aruco;1\n");
-    for (int i = 0; i < 3; i++) {
-        usleep(400'000);
+    for (int i = 0; i < 4; i++) {
+        usleep(250'000);
         this->broadcastMessage("strat;aruco;get aruco;1\n");
     }
     usleep(100'000);
 
-    std::optional<ArucoTag> tag = getBiggestArucoTag(100, 800, -200, 200);
+    std::optional<ArucoTag> tag = getMostCenteredArucoTag(100, 800, -200, 200);
 
     if (tag.has_value()) {
         if (pinceState[1] == NONE) {
@@ -980,7 +996,7 @@ void TCPServer::dropFlowers() {
         this->setSpeed(130);
 
         this->go(whiteDropPosition[0], 0);
-        usleep(1'000'000);
+        usleep(2'000'000);
 
         for (int i = 0; i < 3; i++) {
             if (pinceState[i] == WHITE_FLOWER) {

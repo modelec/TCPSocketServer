@@ -92,3 +92,7 @@ std::ostream& operator<<(std::ostream& os, const ArucoTag& tag) {
     os << "ArucoTag{id=" << tag.id() << ", name=" << tag.name() << ", pos=[" << tag.pos()[0] << ", " << tag.pos()[1] << "], rot=[" << tag.rot()[0] << ", " << tag.rot()[1] << ", " << tag.rot()[2] << "]}";
     return os;
 }
+
+double distanceToTag(const ArucoTag& tag) {
+    return std::sqrt(pow(tag.pos()[0], 2) + pow(tag.pos()[1], 2));
+}
