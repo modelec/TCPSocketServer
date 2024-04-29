@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
     try {
         server.start();
 
-        while (!server.shouldStop() || !shouldStop) {
+        while (!server.shouldStop() && !shouldStop) {
             usleep(500'000);
         }
 
