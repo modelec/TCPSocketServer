@@ -871,8 +871,8 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
 
     this->arucoTags.clear();
     this->broadcastMessage("strat;aruco;get aruco;1\n");
-    for (int i = 0; i < 5; i++) {
-        usleep(500'000);
+    for (int i = 0; i < 3; i++) {
+        usleep(400'000);
         this->broadcastMessage("strat;aruco;get aruco;1\n");
     }
     usleep(100'000);
