@@ -77,7 +77,7 @@ TCPServer::TCPServer(int port) : team(TEST)
     clients.emplace_back("lidar");
     clients.emplace_back("arduino");
     clients.emplace_back("servo_moteur");
-    clients.emplace_back("point");
+    // clients.emplace_back("point");
 
 }
 
