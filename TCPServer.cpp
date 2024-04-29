@@ -22,7 +22,7 @@ void ClientHandler::handle() {
 
             buffer.clear();
         } else if (valread == 0) {
-            std::cout << "Client disconnected." << std::endl;
+            std::cout << "Client disconnected. " << clientSocket << std::endl;
             break; // Client disconnected
         } else {
             std::cerr << "Failed to receive data." << this->clientSocket << std::endl;
