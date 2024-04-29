@@ -830,14 +830,14 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
     this->setSpeed(200);
     if (team == BLUE) {
         if (sp == TAKE_FLOWER_TOP) {
-            this->go(1000, 250);
+            this->go(1000, 300);
             awaitRobotIdle();
 
             this->rotate(-PI/2);
             awaitRobotIdle();
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
-            this->go(1000, 1800);
+            this->go(1000, 1700);
             awaitRobotIdle();
 
             this->rotate(PI / 2);
@@ -847,14 +847,14 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
         }
     } else if (team == YELLOW) {
         if (sp == TAKE_FLOWER_TOP) {
-            this->go(2000, 250);
+            this->go(2000, 300);
             awaitRobotIdle();
 
             this->rotate(-PI/2);
             awaitRobotIdle();
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
-            this->go(2000, 1800);
+            this->go(2000, 1700);
             awaitRobotIdle();
 
             this->rotate(PI / 2);
@@ -874,7 +874,7 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
     }
     usleep(100'000);
 
-    std::optional<ArucoTag> tag = getBiggestArucoTag(300, 700, -200, 200);
+    std::optional<ArucoTag> tag = getBiggestArucoTag(300, 800, -200, 200);
 
     if (tag.has_value()) {
         if (pinceState[1] == NONE) {
