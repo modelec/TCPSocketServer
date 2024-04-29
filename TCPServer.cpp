@@ -240,6 +240,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
             this->gameStarted = true;
 
+            this->gameStart = std::chrono::system_clock::now();
+
             switch (this->team) {
                 case BLUE:
                 case YELLOW:
