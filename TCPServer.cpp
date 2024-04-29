@@ -198,13 +198,13 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
                     finishPoint[0] = 400;
                     finishPoint[1] = 550;
-                    finishPoint[2] = 3.1415;
+                    finishPoint[2] = -PI;
                     break;
                 case 6:
                     this->team = YELLOW;
                     spawnPoint[0] = 1750;
                     spawnPoint[1] = 1790;
-                    spawnPoint[2] = 3.1415;
+                    spawnPoint[2] = PI;
 
                     finishPoint[0] = 2600;
                     finishPoint[1] = 550;
@@ -833,14 +833,14 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
     this->setSpeed(200);
     if (team == BLUE) {
         if (sp == TAKE_FLOWER_TOP) {
-            this->go(1000, 250);
+            this->go(1000, 210);
             awaitRobotIdle();
 
             this->rotate(-PI/2);
             awaitRobotIdle();
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
-            this->go(1000, 1750);
+            this->go(1000, 1790);
             awaitRobotIdle();
 
             this->rotate(PI / 2);
@@ -850,14 +850,14 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
         }
     } else if (team == YELLOW) {
         if (sp == TAKE_FLOWER_TOP) {
-            this->go(2000, 250);
+            this->go(2000, 210);
             awaitRobotIdle();
 
             this->rotate(-PI/2);
             awaitRobotIdle();
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
-            this->go(2000, 1750);
+            this->go(2000, 1790);
             awaitRobotIdle();
 
             this->rotate(PI / 2);
