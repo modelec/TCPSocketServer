@@ -773,6 +773,7 @@ void TCPServer::startTestAruco(int pince) {
 }
 
 void TCPServer::goEnd() {
+    this->setSpeed(200);
     std::vector<std::array<int, 2>> checkponts;
     if (this->robotPose.pos.y > 1000) {
         if (team == BLUE) {
