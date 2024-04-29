@@ -12,13 +12,16 @@ void ClientHandler::handle() {
 
         if (valread > 0) {
             buffer.append(tempBuffer, valread);
-            //std::cout << "Received: " << buffer << std::endl;
 
             if (buffer == "quit") {
                 std::cerr << "Client requested to quit. Closing connection." << std::endl;
                 break;
             }
-            processMessage(buffer);
+
+            std::vector<std::string> messages = TCPUtils::split(buffer, "\n");
+            for (const std::string& message : messages) {
+                processMessage(message);
+            }
 
             buffer.clear();
         } else if (valread == 0) {
