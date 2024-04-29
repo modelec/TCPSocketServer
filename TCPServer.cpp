@@ -124,7 +124,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
     if (tokens[1] != "strat")
     {
-        this->broadcastMessage(message.c_str(), clientSocket);
+        this->broadcastMessage(message, clientSocket);
     }
 
     // EMERGENCY
@@ -236,7 +236,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
         else if (tokens[1] == "strat" && tokens[2] == "start")
         {
-            this->broadcastMessage(message.c_str(), clientSocket);
+            this->broadcastMessage(message, clientSocket);
 
             this->gameStarted = true;
 
@@ -274,7 +274,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 handleArucoTag(tag);
             }
             // Broadcast the aruco tag to all clients
-            this->broadcastMessage(message.c_str(), clientSocket);
+            this->broadcastMessage(message, clientSocket);
         }
     }
     else if (tokens[0] == "arduino") {
@@ -325,13 +325,28 @@ void TCPServer::broadcastMessage(const std::string &message, int senderSocket) {
 }
 
 void TCPServer::sendToClient(const std::string &message, int clientSocket) {
-    this->sendToClient(message.c_str(), clientSocket);
+    std::string temp = const_cast<std::string&>(message);
+    if (temp[temp.size() - 1] != '\n') {
+        temp += '\n';
+    }
+
+    for (int socket : clientSockets) {
+        if (socket == clientSocket) {
+            send(socket, temp.c_str(), temp.size(), 0);
+            break;
+        }
+    }
 }
 
 void TCPServer::sendToClient(const char *message, int clientSocket) {
+    std::string temp = std::string(message);
+    if (temp[temp.size() - 1] != '\n') {
+        temp += '\n';
+    }
+
     for (int socket : clientSockets) {
         if (socket == clientSocket) {
-            send(socket, message, strlen(message), 0);
+            send(socket, temp.c_str(), temp.size(), 0);
             break;
         }
     }
