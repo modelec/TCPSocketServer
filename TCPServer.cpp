@@ -69,7 +69,7 @@ TCPServer::TCPServer(int port) : team(TEST)
 
     std::cout << "Server started on port " << port << std::endl;
 
-    clients.reserve(7);
+    clients.reserve(6);
 
     clients.emplace_back("tirette");
     clients.emplace_back("aruco");
@@ -1142,16 +1142,16 @@ void TCPServer::setPosition(const Position pos, const int clientSocket) {
 
 template<class X, class Y, class Z>
 void TCPServer::setPosition(X x, Y y, Z theta, const std::string &toSend) {
-    this->broadcastMessage("strat" + toSend + "set pos" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "," + std::to_string(static_cast<int>(theta * 100)) + "\n");
+    this->broadcastMessage("strat;" + toSend + ";set pos;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "," + std::to_string(static_cast<int>(theta * 100)) + "\n");
 }
 
 template<class X>
 void TCPServer::setPosition(std::array<X, 3> data, const std::string &toSend) {
-    this->broadcastMessage("strat" + toSend + "set pos" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "," + std::to_string(static_cast<int>(data[2] * 100)) + "\n");
+    this->broadcastMessage("strat;" + toSend + ";set pos;" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "," + std::to_string(static_cast<int>(data[2] * 100)) + "\n");
 }
 
 void TCPServer::setPosition(const Position pos, const std::string &toSend) {
-    this->broadcastMessage("strat" + toSend + "set pos" + std::to_string(static_cast<int>(pos.pos.x)) + "," + std::to_string(static_cast<int>(pos.pos.y)) + "," + std::to_string(static_cast<int>(pos.theta * 100)) + "\n");
+    this->broadcastMessage("strat;" + toSend + ";set pos;" + std::to_string(static_cast<int>(pos.pos.x)) + "," + std::to_string(static_cast<int>(pos.pos.y)) + "," + std::to_string(static_cast<int>(pos.theta * 100)) + "\n");
 }
 
 void TCPServer::baisserBras() {
