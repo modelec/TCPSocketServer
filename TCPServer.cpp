@@ -297,15 +297,29 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
 void TCPServer::broadcastMessage(const char* message, int senderSocket)
 {
+    std::string temp = std::string(message);
+    if (temp[temp.size() - 1] != '\n') {
+        temp += '\n';
+    }
+
     for (int clientSocket : clientSockets) {
         if (clientSocket != senderSocket) { // Exclude the sender's socket
-            send(clientSocket, message, strlen(message), 0);
+            send(clientSocket, temp.c_str(), temp.length(), 0);
         }
     }
 }
 
 void TCPServer::broadcastMessage(const std::string &message, int senderSocket) {
-    this->broadcastMessage(message.c_str(), senderSocket);
+    std::string temp = const_cast<std::string&>(message);
+    if (temp[temp.size() - 1] != '\n') {
+        temp += '\n';
+    }
+
+    for (int clientSocket : clientSockets) {
+        if (clientSocket != senderSocket) { // Exclude the sender's socket
+            send(clientSocket, temp.c_str(), temp.length(), 0);
+        }
+    }
 }
 
 void TCPServer::sendToClient(const std::string &message, int clientSocket) {
@@ -695,6 +709,7 @@ void TCPServer::awaitRobotIdle() {
         timeout++;
         if (timeout > 30) {
             this->broadcastMessage("strat;arduino;clear;1");
+            break;
         }
     }
 }
@@ -972,6 +987,7 @@ void TCPServer::dropFlowers() {
 void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
     int previousSpeed = this->speed;
     this->setSpeed(150);
+    usleep(10'000);
     if (team == BLUE) {
         switch (sp) {
             case TURN_SOLAR_PANNEL_1:
@@ -1031,13 +1047,13 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 this->rotate(PI);
                 awaitRobotIdle();
 
-                this->checkPanneau(8);
+                this->checkPanneau(6);
                 usleep(100'000);
 
                 this->go(2620, 1790);
                 awaitRobotIdle();
 
-                this->uncheckPanneau(8);
+                this->uncheckPanneau(6);
                 break;
             case TURN_SOLAR_PANNEL_2:
                 this->go(2525, 1790);
@@ -1046,13 +1062,13 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 this->rotate(PI);
                 awaitRobotIdle();
 
-                this->checkPanneau(8);
+                this->checkPanneau(6);
                 usleep(100'000);
 
                 this->go(2395, 1790);
                 awaitRobotIdle();
 
-                this->uncheckPanneau(8);
+                this->uncheckPanneau(6);
                 break;
             case TURN_SOLAR_PANNEL_3:
                 this->go(2300, 1790);
@@ -1061,13 +1077,13 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 this->rotate(PI);
                 awaitRobotIdle();
 
-                this->checkPanneau(8);
+                this->checkPanneau(6);
                 usleep(100'000);
 
                 this->go(2170, 1790);
                 awaitRobotIdle();
 
-                this->uncheckPanneau(8);
+                this->uncheckPanneau(6);
                 break;
             default:
                 break;
