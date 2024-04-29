@@ -874,7 +874,7 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
     }
     usleep(100'000);
 
-    std::optional<ArucoTag> tag = getBiggestArucoTag(300, 800, -200, 200);
+    std::optional<ArucoTag> tag = getBiggestArucoTag(100, 800, -200, 200);
 
     if (tag.has_value()) {
         if (pinceState[1] == NONE) {
