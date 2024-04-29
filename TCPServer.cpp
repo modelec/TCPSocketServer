@@ -197,8 +197,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     finishPoint[2] = 0;*/
 
                     finishPoint[0] = 400;
-                    finishPoint[1] = 550;
-                    finishPoint[2] = -PI;
+                    finishPoint[1] = 500;
+                    finishPoint[2] = PI / 2;
                     break;
                 case 6:
                     this->team = YELLOW;
@@ -207,8 +207,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     spawnPoint[2] = PI;
 
                     finishPoint[0] = 2600;
-                    finishPoint[1] = 550;
-                    finishPoint[2] = 0;
+                    finishPoint[1] = 500;
+                    finishPoint[2] = PI / 2;
                     break;
 
                 default:
