@@ -227,7 +227,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             this->endRobotPose = {finishPoint[0], finishPoint[1], finishPoint[2]};
 
             for (int j = 0; j < 3; j++) {
-                this->setPosition(this->robotPose);
+                this->setPosition(this->initRobotPose);
                 usleep(200'000);
             }
         }
