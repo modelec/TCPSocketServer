@@ -1100,7 +1100,7 @@ void TCPServer::go(std::array<X, 2> data) {
 
 template<class X>
 void TCPServer::rotate(X angle) {
-    this->broadcastMessage("strat;arduino;angle" + std::to_string(static_cast<int>(angle * 100)) + "\n");
+    this->broadcastMessage("strat;arduino;angle;" + std::to_string(static_cast<int>(angle * 100)) + "\n");
 }
 
 void TCPServer::setSpeed(const int speed) {
@@ -1110,12 +1110,12 @@ void TCPServer::setSpeed(const int speed) {
 
 template<class X, class Y>
 void TCPServer::transit(X x, Y y, const int endSpeed) {
-    this->broadcastMessage("strat;arduino;transit" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "," + std::to_string(endSpeed) + "\n");
+    this->broadcastMessage("strat;arduino;transit;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "," + std::to_string(endSpeed) + "\n");
 }
 
 template<class X>
 void TCPServer::transit(std::array<X, 2> data, const int endSpeed) {
-    this->broadcastMessage("strat;arduino;transit" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "," + std::to_string(endSpeed) + "\n");
+    this->broadcastMessage("strat;arduino;transit;" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "," + std::to_string(endSpeed) + "\n");
 }
 
 template<class X, class Y, class Z>
