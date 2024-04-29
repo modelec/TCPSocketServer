@@ -25,7 +25,7 @@ void ClientHandler::handle() {
             std::cout << "Client disconnected." << std::endl;
             break; // Client disconnected
         } else {
-            std::cerr << "Failed to receive data." << std::endl;
+            std::cerr << "Failed to receive data." << this->clientSocket << std::endl;
             break; // Error in receiving data
         }
     }
@@ -154,6 +154,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 if (client.name == "lidar") {
                     this->lidarSocket = clientSocket;
                 }
+                std::cout << client.socket << " | " << client.name << " is ready" << std::endl;
                 break;
             }
         }
