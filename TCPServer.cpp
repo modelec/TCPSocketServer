@@ -116,7 +116,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
     if (tokens.size() != 4)
     {
-        std::cerr << "Invalid message format : " << message << std::endl;
+        std::cerr << "Invalid message format, token size : " << std::to_string(tokens.size()) << " from message : " << message << std::endl;
         return;
     }
     if (tokens[1] != "strat")
