@@ -242,7 +242,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
             this->gameStart = std::chrono::system_clock::now();
 
-            this->broadcastMessage("strat;arduino;speed;200");
+            this->setSpeed(200);
 
             switch (this->team) {
                 case BLUE:
