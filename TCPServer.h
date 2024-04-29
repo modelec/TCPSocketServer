@@ -132,6 +132,8 @@ private:
 
     std::thread gameThread;
 
+    int lidarSocket = -1;
+
 public:
     explicit TCPServer(int port);
 

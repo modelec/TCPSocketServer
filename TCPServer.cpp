@@ -151,6 +151,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             {
                 client.isReady = true;
                 client.socket = clientSocket;
+                if (client.name == "lidar") {
+                    this->lidarSocket = clientSocket;
+                }
                 break;
             }
         }
@@ -276,7 +279,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         } else if (tokens[2] == "set pos") {
             std::vector<std::string> pos = TCPUtils::split(tokens[3], ",");
             this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]) / 100};
-            this->setPosition(this->robotPose, "lidar");
+            this->setPosition(this->robotPose, lidarSocket);
         }
     } else if (tokens[2] == "test aruco") {
         int pince = std::stoi(tokens[3]);
