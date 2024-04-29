@@ -192,13 +192,13 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     spawnPoint[2] = 0;
 
                     // For test
-                    finishPoint[0] = 400;
-                    finishPoint[1] = 1790;
-                    finishPoint[2] = 0;
-
                     /*finishPoint[0] = 400;
+                    finishPoint[1] = 1790;
+                    finishPoint[2] = 0;*/
+
+                    finishPoint[0] = 400;
                     finishPoint[1] = 400;
-                    finishPoint[2] = 3.1415;*/
+                    finishPoint[2] = 3.1415;
                     break;
                 case 6:
                     this->team = YELLOW;
@@ -427,11 +427,11 @@ void TCPServer::checkIfAllClientsReady()
 void TCPServer::startGame() {
     for (int i = whereAmI; i < stratPatterns.size(); i++) {
 
-        /*auto time = std::chrono::system_clock::now();
+        auto time = std::chrono::system_clock::now();
         if (time - gameStart > std::chrono::seconds(85)) {
             this->goEnd();
             return;
-        }*/
+        }
 
         switch (stratPatterns[i]) {
             case TURN_SOLAR_PANNEL_1:
@@ -961,6 +961,8 @@ void TCPServer::dropFlowers() {
 
         this->baisserBras();
     }
+
+    this->setSpeed(200);
 
     if (!pinceHaveWhiteFlower.empty()) {
         this->go(whiteDropPosition);
