@@ -261,7 +261,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 tag.setPos(std::stof(aruco[i + 2]), std::stof(aruco[i + 3]));
                 tag.setRot(std::stof(aruco[i + 4]), std::stof(aruco[i + 5]), std::stof(aruco[i + 6]));
 
-                std::cout << tag << std::endl;
+                // std::cout << tag << std::endl;
 
                 handleArucoTag(tag);
             }
@@ -286,7 +286,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
         std::thread([this, pince]() { this->startTestAruco(pince); }).detach();
     }
-    std::cout << "Received: " << message << std::endl;
+    // std::cout << "Received: " << message << std::endl;
 }
 
 void TCPServer::broadcastMessage(const char* message, int senderSocket)
