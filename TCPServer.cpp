@@ -978,7 +978,7 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 this->go(250, 1790);
                 awaitRobotIdle();
 
-                this->rotate(-PI / 2);
+                this->rotate(0);
                 awaitRobotIdle();
 
                 this->checkPanneau(7);
@@ -993,7 +993,7 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 this->go(475, 1790);
                 awaitRobotIdle();
 
-                this->rotate(-PI / 2);
+                this->rotate(0);
                 awaitRobotIdle();
 
                 this->checkPanneau(7);
@@ -1008,7 +1008,7 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 this->go(700, 1790);
                 awaitRobotIdle();
 
-                this->rotate(-PI / 2);
+                this->rotate(0);
                 awaitRobotIdle();
 
                 this->checkPanneau(7);
@@ -1028,7 +1028,7 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 this->go(2750, 1790);
                 awaitRobotIdle();
 
-                this->rotate(PI / 2);
+                this->rotate(PI);
                 awaitRobotIdle();
 
                 this->checkPanneau(8);
@@ -1043,7 +1043,7 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 this->go(2525, 1790);
                 awaitRobotIdle();
 
-                this->rotate(PI / 2);
+                this->rotate(PI);
                 awaitRobotIdle();
 
                 this->checkPanneau(8);
@@ -1058,7 +1058,7 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 this->go(2300, 1790);
                 awaitRobotIdle();
 
-                this->rotate(PI / 2);
+                this->rotate(PI);
                 awaitRobotIdle();
 
                 this->checkPanneau(8);
