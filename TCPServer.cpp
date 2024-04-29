@@ -110,7 +110,7 @@ void TCPServer::acceptConnections()
 
 void TCPServer::handleMessage(const std::string& message, int clientSocket)
 {
-    // std::cout << message << std::endl;
+    std::cout << message << std::endl;
 
     std::vector<std::string> tokens = TCPUtils::split(message, ";");
 
