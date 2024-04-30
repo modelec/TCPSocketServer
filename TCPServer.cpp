@@ -716,15 +716,14 @@ void TCPServer::awaitRobotIdle() {
     int timeout = 0;
     // ReSharper disable once CppDFAConstantConditions
     // ReSharper disable once CppDFAEndlessLoop
-    usleep(100'000);
     while (isRobotIdle < 2) {
-        usleep(100'000);
+        usleep(50'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
         timeout++;
-        /*if (timeout > 30) {
+        if (timeout > 30) {
             this->broadcastMessage("strat;arduino;clear;1");
             break;
-        }*/
+        }
     }
 }
 
@@ -808,17 +807,22 @@ void TCPServer::handleEmergency(int distance, double angle) {
 
 void TCPServer::startTestAruco(int pince) {
     this->arucoTags.clear();
-
     std::optional<ArucoTag> tag = std::nullopt;
+
+    for (int i = 0; i < 5; i++) {
+        this->broadcastMessage("strat;aruco;get aruco;1\n");
+        usleep(220'000);
+    }
+    tag = getMostCenteredArucoTag(100, 800, -400, 400);
 
     int timeout = 0;
     while (!tag.has_value()) {
         this->broadcastMessage("strat;aruco;get aruco;1\n");
-        usleep(500'000);
+        usleep(220'000);
         tag = getMostCenteredArucoTag(100, 800, -400, 400);
 
         timeout++;
-        if (timeout > 10) {
+        if (timeout > 5) {
             break;
         }
     }
@@ -905,7 +909,7 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
     this->arucoTags.clear();
     std::optional<ArucoTag> tag = std::nullopt;
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
         this->broadcastMessage("strat;aruco;get aruco;1\n");
         usleep(220'000);
     }
