@@ -994,7 +994,7 @@ void TCPServer::dropFlowers() {
 
         for (auto & toDrop : pinceHavePurpleFlower) {
             this->openPince(toDrop);
-            usleep(500'000);
+            usleep(800'000);
 
             this->go(this->robotPose.pos.x, this->robotPose.pos.y + 50);
             awaitRobotIdle();
@@ -1030,7 +1030,7 @@ void TCPServer::dropFlowers() {
         for (int i = 0; i < 3; i++) {
             if (pinceState[i] == WHITE_FLOWER) {
                 this->openPince(i);
-                usleep(500'000);
+                usleep(800'000);
 
                 pinceState[i] = NONE;
                 this->closePince(i);
