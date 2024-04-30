@@ -718,7 +718,7 @@ void TCPServer::awaitRobotIdle() {
     // ReSharper disable once CppDFAEndlessLoop
     usleep(100'000);
     while (isRobotIdle < 2) {
-        usleep(200'000);
+        usleep(100'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
         timeout++;
         /*if (timeout > 30) {
@@ -846,6 +846,7 @@ void TCPServer::goEnd() {
 
     this->go(this->endRobotPose.pos.x, this->endRobotPose.pos.y);
     awaitRobotIdle();
+    this->setSpeed(180);
     this->rotate(this->endRobotPose.theta);
     awaitRobotIdle();
 
@@ -859,7 +860,7 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
             this->go(1000, 210);
             awaitRobotIdle();
 
-            this->setSpeed(190);
+            this->setSpeed(180);
             this->rotate(-PI/2);
             awaitRobotIdle();
             this->setSpeed(200);
@@ -868,7 +869,7 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
             this->go(1000, 1790);
             awaitRobotIdle();
 
-            this->setSpeed(190);
+            this->setSpeed(180);
             this->rotate(PI/2);
             awaitRobotIdle();
             this->setSpeed(190);
@@ -880,7 +881,7 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
             this->go(2000, 210);
             awaitRobotIdle();
 
-            this->setSpeed(190);
+            this->setSpeed(180);
             this->rotate(-PI/2);
             awaitRobotIdle();
             this->setSpeed(200);
@@ -889,7 +890,7 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
             this->go(2000, 1790);
             awaitRobotIdle();
 
-            this->setSpeed(190);
+            this->setSpeed(180);
             this->rotate(PI/2);
             awaitRobotIdle();
             this->setSpeed(200);
@@ -961,14 +962,14 @@ void TCPServer::dropFlowers() {
         purpleDropPosition = {200, 300};
         whiteDropPosition = {762, 300};
         if (this->robotPose.pos.y > 1000) {
-            checkpoints.emplace_back(std::array{500, 1700});
+            checkpoints.emplace_back(std::array{500, 1500});
             checkpoints.emplace_back(std::array{500, 500});
         }
     } else if (team == YELLOW) {
         purpleDropPosition = {2700, 400};
         whiteDropPosition = {2237, 400};
         if (this->robotPose.pos.y > 1000) {
-            checkpoints.emplace_back(std::array{2500, 1700});
+            checkpoints.emplace_back(std::array{2500, 1500});
             checkpoints.emplace_back(std::array{2500, 500});
         }
     }
