@@ -966,12 +966,13 @@ void TCPServer::dropFlowers() {
     if (!pinceHavePurpleFlower.empty()) {
         this->go(purpleDropPosition);
         awaitRobotIdle();
+
+        this->setSpeed(150);
+
         this->rotate(PI / 2);
         awaitRobotIdle();
 
         this->leverBras();
-
-        this->setSpeed(150);
 
         for (auto & toDrop : pinceHavePurpleFlower) {
             this->openPince(toDrop);
@@ -997,13 +998,13 @@ void TCPServer::dropFlowers() {
         this->go(whiteDropPosition);
         awaitRobotIdle();
 
+        this->setSpeed(130);
+
         this->rotate(PI / 2);
         awaitRobotIdle();
 
         this->leverBras();
         usleep(500'000);
-
-        this->setSpeed(130);
 
         this->go(whiteDropPosition[0], 0);
         usleep(2'000'000);
