@@ -861,19 +861,15 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
             this->go(1000, 210);
             awaitRobotIdle();
 
-            this->setSpeed(170);
             this->rotate(-PI/2);
             awaitRobotIdle();
-            this->setSpeed(200);
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
             this->go(1000, 1790);
             awaitRobotIdle();
 
-            this->setSpeed(170);
             this->rotate(PI/2);
             awaitRobotIdle();
-            this->setSpeed(200);
         } else {
             return;
         }
@@ -882,19 +878,15 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
             this->go(2000, 210);
             awaitRobotIdle();
 
-            this->setSpeed(170);
             this->rotate(-PI/2);
             awaitRobotIdle();
-            this->setSpeed(200);
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
             this->go(2000, 1790);
             awaitRobotIdle();
 
-            this->setSpeed(170);
             this->rotate(PI/2);
             awaitRobotIdle();
-            this->setSpeed(200);
         } else {
             return;
         }
@@ -906,7 +898,7 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
     this->arucoTags.clear();
     std::optional<ArucoTag> tag = std::nullopt;
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 4; i++) {
         this->broadcastMessage("strat;aruco;get aruco;1\n");
         usleep(220'000);
     }
