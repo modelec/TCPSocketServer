@@ -722,10 +722,10 @@ void TCPServer::awaitRobotIdle() {
         usleep(100'000);
         this->broadcastMessage("strat;arduino;get state;1\n");
         timeout++;
-        if (timeout > 30) {
+        /*if (timeout > 30) {
             this->broadcastMessage("strat;arduino;clear;1");
             break;
-        }
+        }*/
     }
 }
 
@@ -911,6 +911,7 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
     this->arucoTags.clear();
     std::optional<ArucoTag> tag = std::nullopt;
 
+    usleep(500'000);
     for (int i = 0; i < 5; i++) {
         this->broadcastMessage("strat;aruco;get aruco;1\n");
         usleep(220'000);
