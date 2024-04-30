@@ -429,8 +429,8 @@ void TCPServer::startGame() {
     for (int i = whereAmI; i < stratPatterns.size(); i++) {
 
         auto time = std::chrono::system_clock::now();
-        // TODO check for the bbest timing to return to the spawn
-        if (time - gameStart > std::chrono::seconds(80)) {
+        // TODO check for the best timing to return to the spawn
+        if (time - gameStart > std::chrono::seconds(85)) {
             this->goEnd();
             return;
         }
@@ -675,8 +675,10 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     double thetaPrime = std::atan2(centerPlantY, centerPlantX);
 
+    this->setSpeed(150);
     this->rotate(this->robotPose.theta /*+ rotate*/ - thetaPrime);
     awaitRobotIdle();
+    this->setSpeed(200);
 
     double robotPosForPotX = (centerPlantX * std::cos(theta) + centerPlantY * std::sin(theta)) + robotPosX;
     double robotPosForPotY = (-centerPlantX * std::sin(theta) + centerPlantY * std::cos(theta)) + robotPosY;
@@ -852,15 +854,19 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
             this->go(1000, 210);
             awaitRobotIdle();
 
+            this->setSpeed(150);
             this->rotate(-PI/2);
             awaitRobotIdle();
+            this->setSpeed(200);
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
             this->go(1000, 1790);
             awaitRobotIdle();
 
-            this->rotate(PI / 2);
+            this->setSpeed(150);
+            this->rotate(PI/2);
             awaitRobotIdle();
+            this->setSpeed(200);
         } else {
             return;
         }
@@ -869,15 +875,19 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
             this->go(2000, 210);
             awaitRobotIdle();
 
+            this->setSpeed(150);
             this->rotate(-PI/2);
             awaitRobotIdle();
+            this->setSpeed(200);
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
             this->go(2000, 1790);
             awaitRobotIdle();
 
-            this->rotate(PI / 2);
+            this->setSpeed(150);
+            this->rotate(PI/2);
             awaitRobotIdle();
+            this->setSpeed(200);
         } else {
             return;
         }
@@ -888,7 +898,7 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
     this->arucoTags.clear();
     this->broadcastMessage("strat;aruco;get aruco;1\n");
     for (int i = 0; i < 4; i++) {
-        usleep(250'000);
+        usleep(500'000);
         this->broadcastMessage("strat;aruco;get aruco;1\n");
     }
     usleep(100'000);
@@ -931,7 +941,7 @@ void TCPServer::dropFlowers() {
     std::array<int, 2> purpleDropPosition{};
     std::array<int, 2> whiteDropPosition{};
     if (team == BLUE) {
-        purpleDropPosition = {300, 400};
+        purpleDropPosition = {200, 300};
         whiteDropPosition = {762, 300};
         if (this->robotPose.pos.y > 1000) {
             checkpoints.emplace_back(std::array{500, 1700});
@@ -1025,7 +1035,6 @@ void TCPServer::dropFlowers() {
 void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
     int previousSpeed = this->speed;
     this->setSpeed(150);
-    usleep(10'000);
     if (team == BLUE) {
         switch (sp) {
             case TURN_SOLAR_PANNEL_1:
@@ -1036,7 +1045,6 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(7);
-                usleep(100'000);
 
                 this->go(380, 1790);
                 awaitRobotIdle();
@@ -1051,7 +1059,6 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(7);
-                usleep(100'000);
 
                 this->go(605, 1790);
                 awaitRobotIdle();
@@ -1066,7 +1073,6 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(7);
-                usleep(100'000);
 
                 this->go(830, 1790);
                 awaitRobotIdle();
@@ -1086,7 +1092,6 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(6);
-                usleep(100'000);
 
                 this->go(2620, 1790);
                 awaitRobotIdle();
@@ -1101,7 +1106,6 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(6);
-                usleep(100'000);
 
                 this->go(2395, 1790);
                 awaitRobotIdle();
@@ -1116,7 +1120,6 @@ void TCPServer::goAndTurnSolarPannel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(6);
-                usleep(100'000);
 
                 this->go(2170, 1790);
                 awaitRobotIdle();
