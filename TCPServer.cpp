@@ -675,10 +675,8 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     double thetaPrime = std::atan2(centerPlantY, centerPlantX);
 
-    this->setSpeed(150);
     this->rotate(this->robotPose.theta /*+ rotate*/ - thetaPrime);
     awaitRobotIdle();
-    this->setSpeed(200);
 
     double robotPosForPotX = (centerPlantX * std::cos(theta) + centerPlantY * std::sin(theta)) + robotPosX;
     double robotPosForPotY = (-centerPlantX * std::sin(theta) + centerPlantY * std::cos(theta)) + robotPosY;
