@@ -810,13 +810,20 @@ void TCPServer::handleEmergency(int distance, double angle) {
 
 void TCPServer::startTestAruco(int pince) {
     this->arucoTags.clear();
-    this->broadcastMessage("strat;aruco;get aruco;1\n");
-    for (int i = 0; i < 5; i++) {
-        usleep(500'000);
-        this->broadcastMessage("strat;aruco;get aruco;1\n");
-    }
 
-    std::optional<ArucoTag> tag = getBiggestArucoTag(300, 1500, -600, 600);
+    std::optional<ArucoTag> tag = std::nullopt;
+
+    int timeout = 0;
+    while (!tag.has_value()) {
+        this->broadcastMessage("strat;aruco;get aruco;1\n");
+        usleep(500'000);
+        tag = getMostCenteredArucoTag(100, 800, -400, 400);
+
+        timeout++;
+        if (timeout > 10) {
+            break;
+        }
+    }
 
     if (tag.has_value()) {
         goToAruco(tag.value(), pince);
@@ -895,15 +902,22 @@ void TCPServer::findAndGoFlower(StratPattern sp) {
         return;
     }
 
-    this->arucoTags.clear();
-    this->broadcastMessage("strat;aruco;get aruco;1\n");
-    for (int i = 0; i < 4; i++) {
-        usleep(500'000);
-        this->broadcastMessage("strat;aruco;get aruco;1\n");
-    }
-    usleep(100'000);
 
-    std::optional<ArucoTag> tag = getMostCenteredArucoTag(100, 800, -200, 200);
+    this->arucoTags.clear();
+
+    std::optional<ArucoTag> tag = std::nullopt;
+
+    int timeout = 0;
+    while (!tag.has_value()) {
+        this->broadcastMessage("strat;aruco;get aruco;1\n");
+        usleep(500'000);
+        tag = getMostCenteredArucoTag(100, 800, -400, 400);
+
+        timeout++;
+        if (timeout > 10) {
+            break;
+        }
+    }
 
     if (tag.has_value()) {
         if (pinceState[1] == NONE) {
