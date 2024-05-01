@@ -184,7 +184,7 @@ public:
     /*
      * Start Strategy function
     */
-    void goAndTurnSolarPannel(StratPattern sp);
+    void goAndTurnSolarPanel(StratPattern sp);
 
     void findAndGoFlower(StratPattern sp);
 
