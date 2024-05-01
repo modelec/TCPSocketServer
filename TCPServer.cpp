@@ -460,6 +460,12 @@ void TCPServer::startGame() {
             case GET_LIDAR_POS:
                 getLidarPos();
                 break;
+            case CHECKPOINT_BOTTOM_TO_TOP:
+                checkpoint(CHECKPOINT_BOTTOM_TO_TOP);
+                break;
+            case CHECKPOINT_TOP_TO_BOTTOM:
+                checkpoint(CHECKPOINT_TOP_TO_BOTTOM);
+                break;
         }
         whereAmI++;
     }
@@ -692,6 +698,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     usleep(500'000);
     this->setSpeed(previousSpeed);
     pinceState[pince] = TCPUtils::startWith(arucoTag.name(), "Purple_flower") ? PURPLE_FLOWER : WHITE_FLOWER;
+    this->transportBras();
 }
 
 void TCPServer::askArduinoPos() {
@@ -859,7 +866,7 @@ void TCPServer::goEnd() {
     this->broadcastMessage("strat;all;end;1");
 }
 
-void TCPServer::findAndGoFlower(StratPattern sp) {
+void TCPServer::findAndGoFlower(const StratPattern sp) {
     this->setSpeed(200);
     if (team == BLUE) {
         if (sp == TAKE_FLOWER_TOP) {
@@ -945,8 +952,6 @@ void TCPServer::dropFlowers() {
     std::vector<int> pinceHavePurpleFlower;
     std::vector<int> pinceHaveWhiteFlower;
 
-    std::vector<std::array<int, 2>> checkpoints;
-
     pinceHavePurpleFlower.reserve(3);
     pinceHaveWhiteFlower.reserve(3);
 
@@ -966,29 +971,17 @@ void TCPServer::dropFlowers() {
     std::array<int, 2> purpleDropPosition{};
     std::array<int, 2> whiteDropPosition{};
     if (team == BLUE) {
-        purpleDropPosition = {200, 300};
-        whiteDropPosition = {762, 300};
-        if (this->robotPose.pos.y > 1000) {
-            checkpoints.emplace_back(std::array{500, 1500});
-            checkpoints.emplace_back(std::array{500, 500});
-        }
+        purpleDropPosition = {300, 225};
+        whiteDropPosition = firstTimeDropWhiteFlower ? std::array{755, 300} : std::array{765, 300};
     } else if (team == YELLOW) {
-        purpleDropPosition = {2700, 400};
-        whiteDropPosition = {2237, 400};
-        if (this->robotPose.pos.y > 1000) {
-            checkpoints.emplace_back(std::array{2500, 1500});
-            checkpoints.emplace_back(std::array{2500, 500});
-        }
-    }
-
-    for (const auto& checkpoint : checkpoints) {
-        this->go(checkpoint);
-        awaitRobotIdle();
+        purpleDropPosition = {2700, 225};
+        whiteDropPosition = firstTimeDropWhiteFlower ? std::array{2227, 300} : std::array{2237, 300};
     }
 
     this->setSpeed(200);
 
     if (!pinceHavePurpleFlower.empty()) {
+        // TODO change that
         this->go(purpleDropPosition);
         awaitRobotIdle();
 
@@ -997,24 +990,25 @@ void TCPServer::dropFlowers() {
         this->rotate(PI / 2);
         awaitRobotIdle();
 
-        this->leverBras();
+        this->baisserBras();
 
         for (auto & toDrop : pinceHavePurpleFlower) {
             this->openPince(toDrop);
-            usleep(800'000);
+            usleep(200'000);
 
-            this->go(this->robotPose.pos.x, this->robotPose.pos.y + 50);
+            this->go(this->robotPose.pos.x, this->robotPose.pos.y + 100);
             awaitRobotIdle();
 
             pinceState[toDrop] = NONE;
             this->closePince(toDrop);
-            usleep(100'000);
+            usleep(200'000);
+
+            this->go(this->robotPose.pos.x, this->robotPose.pos.y - 100);
+            awaitRobotIdle();
         }
 
         this->go(this->robotPose.pos.x, this->robotPose.pos.y + 150);
         awaitRobotIdle();
-
-        this->baisserBras();
     }
 
     this->setSpeed(200);
@@ -1055,6 +1049,8 @@ void TCPServer::dropFlowers() {
         awaitRobotIdle();
 
         this->baisserBras();
+
+        firstTimeDropWhiteFlower++;
     }
 }
 
@@ -1141,6 +1137,45 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
 
     this->setSpeed(previousSpeed);
 }
+
+void TCPServer::checkpoint(StratPattern sp) {
+    if (team == BLUE) {
+        switch (sp) {
+            case CHECKPOINT_BOTTOM_TO_TOP:
+                this->go(500, 1500);
+                this->awaitRobotIdle();
+                this->go(500, 500);
+                this->awaitRobotIdle();
+                break;
+            case CHECKPOINT_TOP_TO_BOTTOM:
+                this->go(500, 500);
+                this->awaitRobotIdle();
+                this->go(500, 1500);
+                this->awaitRobotIdle();
+                break;
+            default:
+                break;
+        }
+    } else if (team == YELLOW) {
+        switch (sp) {
+            case CHECKPOINT_BOTTOM_TO_TOP:
+                this->go(1500, 1500);
+                this->awaitRobotIdle();
+                this->go(1500, 500);
+                this->awaitRobotIdle();
+                break;
+            case CHECKPOINT_TOP_TO_BOTTOM:
+                this->go(1500, 500);
+                this->awaitRobotIdle();
+                this->go(1500, 1500);
+                this->awaitRobotIdle();
+                break;
+            default:
+                break;
+        }
+    }
+}
+
 
 void TCPServer::getLidarPos() {
 

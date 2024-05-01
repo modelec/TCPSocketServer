@@ -43,6 +43,8 @@ enum StratPattern {
     DROP_FLOWER,
     GO_END,
     GET_LIDAR_POS,
+    CHECKPOINT_BOTTOM_TO_TOP,
+    CHECKPOINT_TOP_TO_BOTTOM
 };
 
 class TCPServer; // Forward declaration
@@ -102,11 +104,10 @@ private:
         TURN_SOLAR_PANNEL_1,
         TURN_SOLAR_PANNEL_2,
         TURN_SOLAR_PANNEL_3,
-        // GET_LIDAR_POS,
         TAKE_FLOWER_BOTTOM,
         TAKE_FLOWER_BOTTOM,
         TAKE_FLOWER_BOTTOM,
-        // GET_LIDAR_POS,
+        CHECKPOINT_BOTTOM_TO_TOP,
         DROP_FLOWER,
         // GET_LIDAR_POS,
         TAKE_FLOWER_TOP,
@@ -133,6 +134,8 @@ private:
     std::thread gameThread;
 
     int lidarSocket = -1;
+
+    int firstTimeDropWhiteFlower = 0;
 
 public:
     explicit TCPServer(int port);
@@ -193,6 +196,8 @@ public:
     void dropFlowers();
 
     void getLidarPos();
+
+    void checkpoint(StratPattern sp);
     /*
      *  End Strategy function
      */
