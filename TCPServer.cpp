@@ -922,13 +922,13 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
         this->broadcastMessage("strat;aruco;get aruco;1\n");
         usleep(220'000);
     }
-    tag = getMostCenteredArucoTag(100, 800, -400, 400);
+    tag = getMostCenteredArucoTag(100, 800, -300, 300);
 
     int timeout = 0;
     while (!tag.has_value()) {
         this->broadcastMessage("strat;aruco;get aruco;1\n");
         usleep(220'000);
-        tag = getMostCenteredArucoTag(100, 800, -400, 400);
+        tag = getMostCenteredArucoTag(100, 800, -300, 300);
 
         timeout++;
         if (timeout > 3) {
