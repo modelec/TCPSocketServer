@@ -971,9 +971,9 @@ void TCPServer::dropPurpleFlowers() {
 
     std::array<int, 2> purpleDropPosition{};
     if (team == BLUE) {
-        purpleDropPosition = {300, 400};
+        purpleDropPosition = {225, 400};
     } else if (team == YELLOW) {
-        purpleDropPosition = {2700, 400};
+        purpleDropPosition = {2775, 400};
     }
 
     this->setSpeed(200);
@@ -1026,57 +1026,78 @@ void TCPServer::dropWhiteFlowers(StratPattern sp) {
         }
     }
 
+    if (pinceHaveWhiteFlower.empty()) {
+        return;
+    }
+
+    std::array<int, 2> whiteDropSetup{};
     std::array<int, 2> whiteDropPosition{};
+    double angle = PI / 2;
     if (team == BLUE) {
-        whiteDropPosition = std::array{775, 300};
+        if (sp == DROP_WHITE_FLOWER_J1) {
+            whiteDropSetup = std::array{775, 300};
+            whiteDropPosition = std::array{775, 0};
+            angle = PI / 2;
+        } else if (sp == DROP_WHITE_FLOWER_J2) {
+            whiteDropSetup = std::array{200, 400};
+            whiteDropPosition = std::array{0, 400};
+            angle = -PI;
+        }
     } else if (team == YELLOW) {
-        whiteDropPosition = std::array{2224, 300};
+        if (sp == DROP_WHITE_FLOWER_J1) {
+            whiteDropSetup = std::array{2224, 300};
+            whiteDropPosition = std::array{2224, 0};
+            angle = PI / 2;
+        } else if (sp == DROP_WHITE_FLOWER_J2) {
+            whiteDropSetup = std::array{2800, 400};
+            whiteDropPosition = std::array{3000, 400};
+            angle = 0;
+
+        }
     }
 
     this->setSpeed(200);
 
-    if (!pinceHaveWhiteFlower.empty()) {
-        this->go(whiteDropPosition);
-        awaitRobotIdle();
+    this->go(whiteDropSetup);
+    awaitRobotIdle();
 
-        this->setSpeed(130);
+    this->setSpeed(130);
 
-        this->rotate(PI / 2);
-        awaitRobotIdle();
+    this->rotate(angle);
+    awaitRobotIdle();
 
-        this->leverBras();
-        usleep(500'000);
+    this->leverBras();
+    usleep(500'000);
 
-        this->go(whiteDropPosition[0], 0);
-        usleep(2'000'000);
+    this->go(whiteDropPosition);
+    usleep(2'000'000);
 
-        for (int i = 0; i < 3; i++) {
-            if (pinceState[i] == WHITE_FLOWER) {
-                this->openPince(i);
-                usleep(1'000'000);
+    for (int i = 0; i < 3; i++) {
+        if (pinceState[i] == WHITE_FLOWER) {
+            this->openPince(i);
+            usleep(1'000'000);
 
-                pinceState[i] = NONE;
-                this->closePince(i);
-                usleep(100'000);
-            }
-        }
-
-        for (int i = 0; i < 3; i++) {
-            this->middlePince(i);
-        }
-        usleep(1'000'000);
-
-        this->setSpeed(200);
-
-        this->go(whiteDropPosition);
-        awaitRobotIdle();
-
-        for (int i = 0; i < 3; i++) {
+            pinceState[i] = NONE;
             this->closePince(i);
+            usleep(100'000);
         }
-
-        this->transportBras();
     }
+
+    for (int i = 0; i < 3; i++) {
+        this->middlePince(i);
+    }
+    usleep(1'000'000);
+
+    this->setSpeed(200);
+
+    this->go(whiteDropSetup);
+    awaitRobotIdle();
+
+    for (int i = 0; i < 3; i++) {
+        this->closePince(i);
+    }
+
+    this->transportBras();
 }
 
 void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
