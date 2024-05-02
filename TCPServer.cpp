@@ -216,6 +216,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     spawnPoint[0] = 1200;
                     spawnPoint[1] = 1800;
                     spawnPoint[2] = 1.57;
+
                     finishPoint[0] = 1200;
                     finishPoint[1] = 1800;
                     finishPoint[2] = 1.57;
@@ -429,8 +430,7 @@ void TCPServer::startGame() {
     for (int i = whereAmI; i < stratPatterns.size(); i++) {
 
         auto time = std::chrono::system_clock::now();
-        // TODO check for the best timing to return to the spawn
-        if (time - gameStart > std::chrono::seconds(85)) {
+        if (time - gameStart > std::chrono::seconds(82)) {
             this->goEnd();
             return;
         }
@@ -737,7 +737,7 @@ void TCPServer::awaitRobotIdle() {
 }
 
 void TCPServer::handleArucoTag(ArucoTag &tag) {
-    if (!TCPUtils::endWith(tag.name(), "flower")) {
+    if (!TCPUtils::contains(tag.name(), "flower")) {
         return;
     }
 
@@ -932,7 +932,7 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
         tag = getMostCenteredArucoTag(100, 800, -400, 400);
 
         timeout++;
-        if (timeout > 5) {
+        if (timeout > 3) {
             break;
         }
     }
@@ -1044,7 +1044,11 @@ void TCPServer::dropFlowers() {
         this->go(whiteDropPosition);
         awaitRobotIdle();
 
-        this->baisserBras();
+        for (int i = 0; i < 3; i++) {
+            this->closePince(i);
+        }
+
+        this->transportBras();
 
         firstTimeDropWhiteFlower++;
     }
