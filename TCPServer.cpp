@@ -686,13 +686,12 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     auto centerPlantY = (-20 * std::sin(roll)) + yPrime + decalage;
 
     double thetaPrime = std::atan2(centerPlantY, centerPlantX);
-    int previousSpeed = this->speed;
 
-    this->setSpeed(190);
+    this->setSpeed(200);
+
     this->rotate(this->robotPose.theta /*+ rotate*/ - thetaPrime);
     awaitRobotIdle();
 
-    this->setSpeed(200);
     double robotPosForPotX = (centerPlantX * std::cos(theta) + centerPlantY * std::sin(theta)) + robotPosX;
     double robotPosForPotY = (-centerPlantX * std::sin(theta) + centerPlantY * std::cos(theta)) + robotPosY;
 
@@ -702,7 +701,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     this->closePince(pince);
     usleep(500'000);
-    this->setSpeed(previousSpeed);
+    this->setSpeed(200);
     pinceState[pince] = TCPUtils::startWith(arucoTag.name(), "Purple_flower") ? PURPLE_FLOWER : WHITE_FLOWER;
     this->transportBras();
 }
@@ -878,19 +877,15 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
             this->go(1000, 250);
             awaitRobotIdle();
 
-            this->setSpeed(180);
             this->rotate(-PI/2);
             awaitRobotIdle();
-            this->setSpeed(200);
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
             this->go(1000, 1790);
             awaitRobotIdle();
 
-            this->setSpeed(180);
             this->rotate(PI/2);
             awaitRobotIdle();
-            this->setSpeed(190);
         } else {
             return;
         }
@@ -899,19 +894,15 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
             this->go(2000, 250);
             awaitRobotIdle();
 
-            this->setSpeed(180);
             this->rotate(-PI/2);
             awaitRobotIdle();
-            this->setSpeed(200);
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
             this->go(2000, 1790);
             awaitRobotIdle();
 
-            this->setSpeed(180);
             this->rotate(PI/2);
             awaitRobotIdle();
-            this->setSpeed(200);
         } else {
             return;
         }
@@ -1195,6 +1186,7 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
 }
 
 void TCPServer::checkpoint(StratPattern sp) {
+    this->setSpeed(200);
     if (team == BLUE) {
         switch (sp) {
             case CHECKPOINT_BOTTOM_TO_TOP:
