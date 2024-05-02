@@ -40,7 +40,9 @@ enum StratPattern {
     TURN_SOLAR_PANNEL_3,
     TAKE_FLOWER_BOTTOM,
     TAKE_FLOWER_TOP,
-    DROP_FLOWER,
+    DROP_PURPLE_FLOWER,
+    DROP_WHITE_FLOWER_J1,
+    DROP_WHITE_FLOWER_J2,
     GO_END,
     GET_LIDAR_POS,
     CHECKPOINT_BOTTOM_TO_TOP,
@@ -108,13 +110,17 @@ private:
         TAKE_FLOWER_BOTTOM,
         TAKE_FLOWER_BOTTOM,
         CHECKPOINT_BOTTOM_TO_TOP,
-        DROP_FLOWER,
+        // DROP_FLOWER,
+        DROP_PURPLE_FLOWER,
+        DROP_WHITE_FLOWER_J1,
         // GET_LIDAR_POS,
         TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,
         // GET_LIDAR_POS,
-        DROP_FLOWER,
+        // DROP_FLOWER,
+        DROP_PURPLE_FLOWER,
+        DROP_WHITE_FLOWER_J2,
         // GET_LIDAR_POS,
         /* TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,
@@ -135,8 +141,6 @@ private:
 
     int lidarSocket = -1;
     int arduinoSocket = -1;
-
-    int firstTimeDropWhiteFlower = 0;
 
 public:
     explicit TCPServer(int port);
@@ -194,7 +198,9 @@ public:
 
     void goEnd();
 
-    void dropFlowers();
+    void dropPurpleFlowers();
+
+    void dropWhiteFlowers(StratPattern sp);
 
     void getLidarPos();
 

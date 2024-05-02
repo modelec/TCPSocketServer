@@ -454,8 +454,14 @@ void TCPServer::startGame() {
             case GO_END:
                 goEnd();
                 break;
-            case DROP_FLOWER:
-                dropFlowers();
+            case DROP_PURPLE_FLOWER:
+                dropPurpleFlowers();
+                break;
+            case DROP_WHITE_FLOWER_J1:
+                dropWhiteFlowers(DROP_WHITE_FLOWER_J1);
+                break;
+            case DROP_WHITE_FLOWER_J2:
+                dropWhiteFlowers(DROP_WHITE_FLOWER_J2);
                 break;
             case GET_LIDAR_POS:
                 getLidarPos();
@@ -680,14 +686,16 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     auto centerPlantY = (-20 * std::sin(roll)) + yPrime + decalage;
 
     double thetaPrime = std::atan2(centerPlantY, centerPlantX);
+    int previousSpeed = this->speed;
 
+    this->setSpeed(180);
     this->rotate(this->robotPose.theta /*+ rotate*/ - thetaPrime);
     awaitRobotIdle();
 
+    this->setSpeed(200);
     double robotPosForPotX = (centerPlantX * std::cos(theta) + centerPlantY * std::sin(theta)) + robotPosX;
     double robotPosForPotY = (-centerPlantX * std::sin(theta) + centerPlantY * std::cos(theta)) + robotPosY;
 
-    int previousSpeed = this->speed;
 
     this->transit(robotPosForPotX, robotPosForPotY, 130);
     awaitRobotIdle();
@@ -945,12 +953,10 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
     }
 }
 
-void TCPServer::dropFlowers() {
+void TCPServer::dropPurpleFlowers() {
     std::vector<int> pinceHavePurpleFlower;
-    std::vector<int> pinceHaveWhiteFlower;
 
     pinceHavePurpleFlower.reserve(3);
-    pinceHaveWhiteFlower.reserve(3);
 
     for (int i = 0; i < 3; i++) {
         switch (pinceState[i]) {
@@ -958,21 +964,16 @@ void TCPServer::dropFlowers() {
                 pinceHavePurpleFlower.push_back(i);
                 break;
             case WHITE_FLOWER:
-                pinceHaveWhiteFlower.push_back(i);
-                break;
             case NONE:
                 break;
         }
     }
 
     std::array<int, 2> purpleDropPosition{};
-    std::array<int, 2> whiteDropPosition{};
     if (team == BLUE) {
         purpleDropPosition = {300, 400};
-        whiteDropPosition = firstTimeDropWhiteFlower ? std::array{755, 300} : std::array{765, 300};
     } else if (team == YELLOW) {
         purpleDropPosition = {2700, 400};
-        whiteDropPosition = firstTimeDropWhiteFlower ? std::array{2227, 300} : std::array{2237, 300};
     }
 
     this->setSpeed(200);
@@ -1002,6 +1003,34 @@ void TCPServer::dropFlowers() {
             this->closePince(toDrop);
             usleep(200'000);
         }
+    }
+
+    this->transportBras();
+
+    this->setSpeed(200);
+}
+
+void TCPServer::dropWhiteFlowers(StratPattern sp) {
+    std::vector<int> pinceHaveWhiteFlower;
+
+    pinceHaveWhiteFlower.reserve(3);
+
+    for (int i = 0; i < 3; i++) {
+        switch (pinceState[i]) {
+            case WHITE_FLOWER:
+                pinceHaveWhiteFlower.push_back(i);
+            break;
+            case PURPLE_FLOWER:
+            case NONE:
+                break;
+        }
+    }
+
+    std::array<int, 2> whiteDropPosition{};
+    if (team == BLUE) {
+        whiteDropPosition = std::array{775, 300};
+    } else if (team == YELLOW) {
+        whiteDropPosition = std::array{2224, 300};
     }
 
     this->setSpeed(200);
@@ -1047,8 +1076,6 @@ void TCPServer::dropFlowers() {
         }
 
         this->transportBras();
-
-        firstTimeDropWhiteFlower++;
     }
 }
 
@@ -1065,7 +1092,7 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(7);
-                usleep(300'000);
+                usleep(150'000);
                 this->uncheckPanneau(7);
                 break;
             case TURN_SOLAR_PANNEL_2:
@@ -1076,7 +1103,7 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(7);
-                usleep(300'000);
+                usleep(150'000);
                 this->uncheckPanneau(7);
                 break;
             case TURN_SOLAR_PANNEL_3:
@@ -1087,7 +1114,7 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(7);
-                usleep(300'000);
+                usleep(150'000);
                 this->uncheckPanneau(7);
                 break;
             default:
@@ -1103,7 +1130,7 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(6);
-                usleep(300'000);
+                usleep(150'000);
                 this->uncheckPanneau(6);
                 break;
             case TURN_SOLAR_PANNEL_2:
@@ -1114,7 +1141,7 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(6);
-                usleep(300'000);
+                usleep(150'000);
                 this->uncheckPanneau(6);
                 break;
             case TURN_SOLAR_PANNEL_3:
@@ -1125,7 +1152,7 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(6);
-                usleep(300'000);
+                usleep(150'000);
                 this->uncheckPanneau(6);
                 break;
             default:
