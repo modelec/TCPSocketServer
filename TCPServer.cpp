@@ -688,7 +688,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     double thetaPrime = std::atan2(centerPlantY, centerPlantX);
     int previousSpeed = this->speed;
 
-    this->setSpeed(180);
+    this->setSpeed(190);
     this->rotate(this->robotPose.theta /*+ rotate*/ - thetaPrime);
     awaitRobotIdle();
 
@@ -1112,7 +1112,7 @@ void TCPServer::dropWhiteFlowers(StratPattern sp) {
 
 void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
     int previousSpeed = this->speed;
-    this->setSpeed(170);
+    this->setSpeed(200);
     if (team == BLUE) {
         switch (sp) {
             case TURN_SOLAR_PANNEL_1:
