@@ -1067,7 +1067,7 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(7);
-                usleep(500'000);
+                usleep(300'000);
                 this->uncheckPanneau(7);
                 break;
             case TURN_SOLAR_PANNEL_2:
@@ -1078,7 +1078,7 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(7);
-                usleep(500'000);
+                usleep(300'000);
                 this->uncheckPanneau(7);
                 break;
             case TURN_SOLAR_PANNEL_3:
@@ -1089,7 +1089,7 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(7);
-                usleep(500'000);
+                usleep(300'000);
                 this->uncheckPanneau(7);
                 break;
             default:
@@ -1105,7 +1105,7 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(6);
-                usleep(500'000);
+                usleep(300'000);
                 this->uncheckPanneau(6);
                 break;
             case TURN_SOLAR_PANNEL_2:
@@ -1116,7 +1116,7 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(6);
-                usleep(500'000);
+                usleep(300'000);
                 this->uncheckPanneau(6);
                 break;
             case TURN_SOLAR_PANNEL_3:
@@ -1127,7 +1127,7 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(6);
-                usleep(500'000);
+                usleep(300'000);
                 this->uncheckPanneau(6);
                 break;
             default:
