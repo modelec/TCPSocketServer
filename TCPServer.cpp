@@ -429,11 +429,11 @@ void TCPServer::checkIfAllClientsReady()
 void TCPServer::startGame() {
     for (int i = whereAmI; i < stratPatterns.size(); i++) {
 
-        auto time = std::chrono::system_clock::now();
+        /*auto time = std::chrono::system_clock::now();
         if (time - gameStart > std::chrono::seconds(82)) {
             this->goEnd();
             return;
-        }
+        }*/
 
         switch (stratPatterns[i]) {
             case TURN_SOLAR_PANNEL_1:
