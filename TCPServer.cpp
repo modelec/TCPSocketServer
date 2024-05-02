@@ -1026,7 +1026,7 @@ void TCPServer::dropFlowers() {
         for (int i = 0; i < 3; i++) {
             if (pinceState[i] == WHITE_FLOWER) {
                 this->openPince(i);
-                usleep(800'000);
+                usleep(1'000'000);
 
                 pinceState[i] = NONE;
                 this->closePince(i);
@@ -1037,6 +1037,7 @@ void TCPServer::dropFlowers() {
         for (int i = 0; i < 3; i++) {
             this->middlePince(i);
         }
+        usleep(1'000'000);
 
         this->setSpeed(200);
 
