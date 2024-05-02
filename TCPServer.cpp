@@ -878,11 +878,11 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
             this->setSpeed(200);
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
-            this->go(1000, 1750);
+            this->go(1300, 350);
             awaitRobotIdle();
 
             this->setSpeed(180);
-            this->rotate(PI/2);
+            this->rotate(0);
             awaitRobotIdle();
             this->setSpeed(190);
         } else {
