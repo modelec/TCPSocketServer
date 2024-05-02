@@ -970,11 +970,11 @@ void TCPServer::dropFlowers() {
     std::array<int, 2> purpleDropPosition{};
     std::array<int, 2> whiteDropPosition{};
     if (team == BLUE) {
-        purpleDropPosition = {300, 225};
-        whiteDropPosition = firstTimeDropWhiteFlower ? std::array{755, 400} : std::array{765, 400};
+        purpleDropPosition = {300, 400};
+        whiteDropPosition = firstTimeDropWhiteFlower ? std::array{755, 300} : std::array{765, 300};
     } else if (team == YELLOW) {
-        purpleDropPosition = {2700, 225};
-        whiteDropPosition = firstTimeDropWhiteFlower ? std::array{2227, 400} : std::array{2237, 400};
+        purpleDropPosition = {2700, 400};
+        whiteDropPosition = firstTimeDropWhiteFlower ? std::array{2227, 300} : std::array{2237, 300};
     }
 
     this->setSpeed(200);
