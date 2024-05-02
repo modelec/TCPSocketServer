@@ -869,7 +869,7 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
     this->setSpeed(200);
     if (team == BLUE) {
         if (sp == TAKE_FLOWER_TOP) {
-            this->go(1000, 210);
+            this->go(1000, 250);
             awaitRobotIdle();
 
             this->setSpeed(180);
@@ -878,7 +878,7 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
             this->setSpeed(200);
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
-            this->go(1000, 1700);
+            this->go(1000, 1750);
             awaitRobotIdle();
 
             this->setSpeed(180);
@@ -890,7 +890,7 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
         }
     } else if (team == YELLOW) {
         if (sp == TAKE_FLOWER_TOP) {
-            this->go(2000, 210);
+            this->go(2000, 250);
             awaitRobotIdle();
 
             this->setSpeed(180);
@@ -899,7 +899,7 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
             this->setSpeed(200);
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
-            this->go(2000, 1700);
+            this->go(2000, 1750);
             awaitRobotIdle();
 
             this->setSpeed(180);
