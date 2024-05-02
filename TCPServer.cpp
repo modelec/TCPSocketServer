@@ -730,7 +730,7 @@ void TCPServer::awaitRobotIdle() {
     // ReSharper disable once CppDFAConstantConditions
     // ReSharper disable once CppDFAEndlessLoop
     while (isRobotIdle < 2) {
-        usleep(100'000);
+        usleep(200'000);
         this->sendToClient("strat;arduino;get state;1\n", this->arduinoSocket);
         timeout++;
         if (timeout > 30) {
@@ -1071,7 +1071,7 @@ void TCPServer::dropWhiteFlowers(StratPattern sp) {
     usleep(500'000);
 
     this->go(whiteDropPosition);
-    usleep(2'000'000);
+    usleep(4'000'000);
 
     for (int i = 0; i < 3; i++) {
         if (pinceState[i] == WHITE_FLOWER) {
