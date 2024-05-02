@@ -702,20 +702,19 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 }
 
 void TCPServer::askArduinoPos() {
-    ClientTCP arduino;
     for (const auto & client : clients) {
         if (client.name == "arduino") {
-            arduino = client;
+            this->arduinoSocket = client.socket;
             break;
         }
     }
 
-    if (arduino.socket == -1) {
+    if (this->arduinoSocket == -1) {
         return;
     }
 
     while (!this->_shouldStop) {
-        this->sendToClient("strat;arduino;get pos;1\n", arduino.socket);
+        this->sendToClient("strat;arduino;get pos;1\n", this->arduinoSocket);
         usleep(200'000);
     }
 }
@@ -727,7 +726,7 @@ void TCPServer::awaitRobotIdle() {
     // ReSharper disable once CppDFAEndlessLoop
     while (isRobotIdle < 2) {
         usleep(100'000);
-        this->broadcastMessage("strat;arduino;get state;1\n");
+        this->sendToClient("strat;arduino;get state;1\n", this->arduinoSocket);
         timeout++;
         /*if (timeout > 30) {
             this->broadcastMessage("strat;arduino;clear;1");

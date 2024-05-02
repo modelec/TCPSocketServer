@@ -134,6 +134,7 @@ private:
     std::thread gameThread;
 
     int lidarSocket = -1;
+    int arduinoSocket = -1;
 
     int firstTimeDropWhiteFlower = 0;
 
