@@ -972,16 +972,15 @@ void TCPServer::dropFlowers() {
     std::array<int, 2> whiteDropPosition{};
     if (team == BLUE) {
         purpleDropPosition = {300, 225};
-        whiteDropPosition = firstTimeDropWhiteFlower ? std::array{755, 300} : std::array{765, 300};
+        whiteDropPosition = firstTimeDropWhiteFlower ? std::array{755, 400} : std::array{765, 400};
     } else if (team == YELLOW) {
         purpleDropPosition = {2700, 225};
-        whiteDropPosition = firstTimeDropWhiteFlower ? std::array{2227, 300} : std::array{2237, 300};
+        whiteDropPosition = firstTimeDropWhiteFlower ? std::array{2227, 400} : std::array{2237, 400};
     }
 
     this->setSpeed(200);
 
     if (!pinceHavePurpleFlower.empty()) {
-        // TODO change that
         this->go(purpleDropPosition);
         awaitRobotIdle();
 
@@ -996,19 +995,16 @@ void TCPServer::dropFlowers() {
             this->openPince(toDrop);
             usleep(200'000);
 
-            this->go(this->robotPose.pos.x, this->robotPose.pos.y + 100);
+            this->go(this->robotPose.pos.x, this->robotPose.pos.y - 150);
+            awaitRobotIdle();
+
+            this->go(this->robotPose.pos.x, this->robotPose.pos.y + 150);
             awaitRobotIdle();
 
             pinceState[toDrop] = NONE;
             this->closePince(toDrop);
             usleep(200'000);
-
-            this->go(this->robotPose.pos.x, this->robotPose.pos.y - 100);
-            awaitRobotIdle();
         }
-
-        this->go(this->robotPose.pos.x, this->robotPose.pos.y + 150);
-        awaitRobotIdle();
     }
 
     this->setSpeed(200);
