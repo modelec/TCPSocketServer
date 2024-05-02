@@ -923,17 +923,17 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
     this->arucoTags.clear();
     std::optional<ArucoTag> tag = std::nullopt;
 
-    usleep(500'000);
-    for (int i = 0; i < 5; i++) {
+    usleep(200'000);
+    for (int i = 0; i < 4; i++) {
         this->broadcastMessage("strat;aruco;get aruco;1\n");
-        usleep(220'000);
+        usleep(110'000);
     }
     tag = getMostCenteredArucoTag(100, 800, -300, 300);
 
     int timeout = 0;
     while (!tag.has_value()) {
         this->broadcastMessage("strat;aruco;get aruco;1\n");
-        usleep(220'000);
+        usleep(110'000);
         tag = getMostCenteredArucoTag(100, 800, -300, 300);
 
         timeout++;
