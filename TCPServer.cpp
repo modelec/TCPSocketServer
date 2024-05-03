@@ -466,11 +466,8 @@ void TCPServer::startGame() {
             case GET_LIDAR_POS:
                 getLidarPos();
                 break;
-            case CHECKPOINT_BOTTOM_TO_TOP:
-                checkpoint(CHECKPOINT_BOTTOM_TO_TOP);
-                break;
-            case CHECKPOINT_TOP_TO_BOTTOM:
-                checkpoint(CHECKPOINT_TOP_TO_BOTTOM);
+            case CHECKPOINT_MIDDLE:
+                checkpoint(CHECKPOINT_MIDDLE);
                 break;
             case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
                 checkpoint(CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER);
@@ -481,14 +478,23 @@ void TCPServer::startGame() {
             case DROP_FLOWER_J2:
                 dropFlowers(DROP_FLOWER_J2);
                 break;
-            case TAKE_3_PLANT_TOP:
-                go3Plants(TAKE_3_PLANT_TOP);
+            case TAKE_3_PLANT_TOP_1:
+                go3Plants(TAKE_3_PLANT_TOP_1);
                 break;
-            case TAKE_3_PLANT_BOTTOM:
-                go3Plants(TAKE_3_PLANT_BOTTOM);
+            case TAKE_3_PLANT_BOTTOM_1:
+                go3Plants(TAKE_3_PLANT_BOTTOM_1);
+                break;
+            case TAKE_3_PLANT_TOP_2:
+                go3Plants(TAKE_3_PLANT_TOP_2);
+                break;
+            case TAKE_3_PLANT_BOTTOM_2:
+                go3Plants(TAKE_3_PLANT_BOTTOM_2);
                 break;
             case REMOVE_POT_J2:
                 removePot(REMOVE_POT_J2);
+                break;
+            case DROP_FLOWER_BASE_1:
+                dropFlowers(DROP_FLOWER_BASE_1);
                 break;
         }
         whereAmI++;
@@ -1220,50 +1226,7 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
     this->setSpeed(previousSpeed);
 }
 
-void TCPServer::checkpoint(const StratPattern sp) {
-    this->setSpeed(200);
-    if (team == BLUE) {
-        switch (sp) {
-            case CHECKPOINT_BOTTOM_TO_TOP:
-                this->go(500, 1000);
-                awaitRobotIdle();
-                this->go(500, 500);
-                usleep(500'000);
-                break;
-            case CHECKPOINT_TOP_TO_BOTTOM:
-                this->go(500, 1500);
-                this->awaitRobotIdle();
-                break;
-            case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
-                this->go(500, 1700);
-                usleep(500'000);
-                break;
-            default:
-                break;
-        }
-    } else if (team == YELLOW) {
-        switch (sp) {
-            case CHECKPOINT_BOTTOM_TO_TOP:
-                this->go(2500, 1000);
-                awaitRobotIdle();
-                this->go(2500, 500);
-                usleep(500'000);
-                break;
-            case CHECKPOINT_TOP_TO_BOTTOM:
-                this->go(2500, 1500);
-                this->awaitRobotIdle();
-                break;
-            case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
-                this->go(2500, 1700);
-                usleep(500'000);
-                break;
-            default:
-                break;
-        }
-    }
-}
-
-void TCPServer::dropFlowers(StratPattern sp) {
+void TCPServer::dropFlowers(const StratPattern sp) {
 
     std::array<int, 2> whiteDropSetup{};
     std::array<int, 2> whiteDropPosition{};
@@ -1295,12 +1258,10 @@ void TCPServer::dropFlowers(StratPattern sp) {
     this->go(whiteDropSetup);
     awaitRobotIdle();
 
-
     this->rotate(angle);
     awaitRobotIdle();
 
     this->leverBras();
-    usleep(500'000);
 
     this->setSpeed(130);
 
@@ -1326,25 +1287,39 @@ void TCPServer::dropFlowers(StratPattern sp) {
     this->transportBras();
 }
 
-void TCPServer::go3Plants(StratPattern sp) {
-    if (sp == TAKE_3_PLANT_TOP) {
-        this->go(500, 700);
-        awaitRobotIdle();
+void TCPServer::go3Plants(const StratPattern sp) {
+    std::array<int, 2> checkpoint{};
+    std::array<int, 2> plantPosition{};
 
-        this->setSpeed(180);
-        this->rotate(0);
-        awaitRobotIdle();
+    double angle;
+    if (sp == TAKE_3_PLANT_TOP_1) {
+        checkpoint = {700, 700};
+        plantPosition = {900, 700};
+        angle = 0;
     }
-    else if (sp == TAKE_3_PLANT_BOTTOM) {
-        this->go(500, 1300);
-        awaitRobotIdle();
-
-        this->setSpeed(180);
-        this->rotate(0);
-        awaitRobotIdle();
+    else if (sp == TAKE_3_PLANT_TOP_2) {
+        checkpoint = {700, 700};
+        plantPosition = {1100, 700};
+        angle = 0;
+    }
+    else if (sp == TAKE_3_PLANT_BOTTOM_1) {
+        checkpoint = {700, 1300};
+        plantPosition = {900, 1300};
+        angle = 0;
+    } else if (sp == TAKE_3_PLANT_BOTTOM_2) {
+        checkpoint = {700, 1300};
+        plantPosition = {1100, 1300};
+        angle = 0;
     } else {
         return;
     }
+
+    this->go(checkpoint);
+    awaitRobotIdle();
+
+    this->setSpeed(180);
+    this->rotate(angle);
+    awaitRobotIdle();
 
     this->setSpeed(200);
 
@@ -1353,7 +1328,7 @@ void TCPServer::go3Plants(StratPattern sp) {
     }
     usleep(200'000);
 
-    this->go(900, 1300);
+    this->go(plantPosition);
     awaitRobotIdle();
 
     for (int i = 0; i < 3; i++) {
@@ -1362,7 +1337,7 @@ void TCPServer::go3Plants(StratPattern sp) {
     }
     usleep(200'000);
 
-    this->go(800, 1300);
+    this->go(checkpoint);
     awaitRobotIdle();
 }
 
@@ -1404,6 +1379,36 @@ void TCPServer::getLidarPos() {
 
 }
 
+void TCPServer::checkpoint(const StratPattern sp) {
+    this->setSpeed(200);
+    if (team == BLUE) {
+        switch (sp) {
+            case CHECKPOINT_MIDDLE:
+                this->go(500, 1500);
+                this->awaitRobotIdle();
+                break;
+            case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
+                this->go(500, 1700);
+                usleep(500'000);
+                break;
+            default:
+                break;
+        }
+    } else if (team == YELLOW) {
+        switch (sp) {
+            case CHECKPOINT_MIDDLE:
+                this->go(2500, 1500);
+                this->awaitRobotIdle();
+                break;
+            case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
+                this->go(2500, 1700);
+                usleep(500'000);
+                break;
+            default:
+                break;
+        }
+    }
+}
 
 template<class X, class Y>
 void TCPServer::go(X x, Y y) {
