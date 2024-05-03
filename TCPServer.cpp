@@ -470,6 +470,9 @@ void TCPServer::startGame() {
             case CHECKPOINT_TOP_TO_BOTTOM:
                 checkpoint(CHECKPOINT_TOP_TO_BOTTOM);
                 break;
+            case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
+                checkpoint(CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER);
+                break;
         }
         whereAmI++;
     }
@@ -884,8 +887,6 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
             awaitRobotIdle();
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
-            this->go(500, 1800);
-            awaitRobotIdle();
             this->go(300, 1300);
             awaitRobotIdle();
 
