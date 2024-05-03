@@ -487,6 +487,9 @@ void TCPServer::startGame() {
             case TAKE_3_PLANT_BOTTOM:
                 go3Plants(TAKE_3_PLANT_BOTTOM);
                 break;
+            case REMOVE_POT_J2:
+                removePot(REMOVE_POT_J2);
+                break;
         }
         whereAmI++;
     }
@@ -1291,16 +1294,6 @@ void TCPServer::dropFlowers(StratPattern sp) {
             whiteDropPosition = std::array{762, 0};
             angle = PI / 2;
         } else if (sp == DROP_FLOWER_J2) {
-            if (!potJardiniere2Removed) {
-                this->go(200, 400);
-                awaitRobotIdle();
-                this->go(200, 900);
-                awaitRobotIdle();
-                this->go(220, 650);
-                awaitRobotIdle();
-                potJardiniere2Removed = true;
-            }
-
             whiteDropSetup = std::array{300, 612};
             whiteDropPosition = std::array{0, 612};
             angle = -PI;
@@ -1311,16 +1304,6 @@ void TCPServer::dropFlowers(StratPattern sp) {
             whiteDropPosition = std::array{2237, 0};
             angle = PI / 2;
         } else if (sp == DROP_FLOWER_J2) {
-            if (!potJardiniere2Removed) {
-                this->go(2800, 400);
-                awaitRobotIdle();
-                this->go(2800, 900);
-                awaitRobotIdle();
-                this->go(1780, 650);
-                awaitRobotIdle();
-                potJardiniere2Removed = true;
-            }
-
             whiteDropSetup = std::array{1700, 612};
             whiteDropPosition = std::array{0, 612};
             angle = 0;
@@ -1397,6 +1380,28 @@ void TCPServer::go3Plants(StratPattern sp) {
 
     this->go(800, 1300);
     awaitRobotIdle();
+}
+
+void TCPServer::removePot(StratPattern sp) {
+    if (team == BLUE) {
+        if (sp == REMOVE_POT_J2) {
+            this->go(230, 1000);
+            awaitRobotIdle();
+            this->go(200, 500);
+            awaitRobotIdle();
+            this->go(220, 650);
+            awaitRobotIdle();
+        }
+    } else if (team == YELLOW) {
+        if (sp == REMOVE_POT_J2) {
+            this->go(2770, 1000);
+            awaitRobotIdle();
+            this->go(2800, 500);
+            awaitRobotIdle();
+            this->go(2780, 650);
+            awaitRobotIdle();
+        }
+    }
 }
 
 void TCPServer::getLidarPos() {

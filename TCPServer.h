@@ -51,7 +51,9 @@ enum StratPattern {
     TAKE_3_PLANT_BOTTOM,
     TAKE_3_PLANT_TOP,
     DROP_FLOWER_J1,
-    DROP_FLOWER_J2
+    DROP_FLOWER_J2,
+    REMOVE_POT_J2,
+    DROP_FLOWER_BASE_1,
 };
 
 class TCPServer; // Forward declaration
@@ -116,8 +118,8 @@ private:
         TAKE_FLOWER_BOTTOM,
         TAKE_FLOWER_BOTTOM,*/
         TAKE_3_PLANT_BOTTOM,
-        DROP_FLOWER_J1,
-        CHECKPOINT_BOTTOM_TO_TOP,
+        REMOVE_POT_J2,
+        DROP_FLOWER_J2,
         /*DROP_PURPLE_FLOWER,
         DROP_WHITE_FLOWER_J1,*/
         // GET_LIDAR_POS,
@@ -125,7 +127,7 @@ private:
         TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,*/
         TAKE_3_PLANT_TOP,
-        DROP_FLOWER_J2,
+        DROP_FLOWER_J1,
         /*DROP_PURPLE_FLOWER,
         DROP_WHITE_FLOWER_J2,*/
         // GET_LIDAR_POS,
@@ -135,6 +137,8 @@ private:
         //TAKE_3_PLANT_TOP,
         /*DROP_WHITE_FLOWER_J2,
         DROP_PURPLE_FLOWER,*/
+        // TAKE_3_PLANT_TOP,
+        // DROP_FLOWER_BASE_1,
         GO_END
     };
 
@@ -150,8 +154,6 @@ private:
 
     int lidarSocket = -1;
     int arduinoSocket = -1;
-
-    bool potJardiniere2Removed = false;
 
 public:
     explicit TCPServer(int port);
@@ -220,6 +222,8 @@ public:
     void dropFlowers(StratPattern sp);
 
     void go3Plants(StratPattern sp);
+
+    void removePot(StratPattern sp);
     /*
      *  End Strategy function
      */
