@@ -1294,7 +1294,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     double angle;
     if (sp == TAKE_3_PLANT_TOP_1) {
         checkpoint = {700, 700};
-        plantPosition = {900, 700};
+        plantPosition = {950, 700};
         angle = 0;
     }
     else if (sp == TAKE_3_PLANT_TOP_2) {
@@ -1304,7 +1304,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     }
     else if (sp == TAKE_3_PLANT_BOTTOM_1) {
         checkpoint = {700, 1300};
-        plantPosition = {900, 1300};
+        plantPosition = {950, 1300};
         angle = 0;
     } else if (sp == TAKE_3_PLANT_BOTTOM_2) {
         checkpoint = {700, 1300};
@@ -1330,12 +1330,13 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     this->go(plantPosition);
     awaitRobotIdle();
+    usleep(500'000);
 
     for (int i = 0; i < 3; i++) {
         this->closePince(i);
         pinceState[i] = FLOWER;
     }
-    usleep(200'000);
+    usleep(1'000'000);
 
     this->go(checkpoint);
     awaitRobotIdle();
