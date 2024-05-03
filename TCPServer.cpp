@@ -650,8 +650,9 @@ void TCPServer::startGameTest() {
 
 
 void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
-    double robotPosX = this->robotPose.pos.x;
-    double robotPosY = this->robotPose.pos.y;
+
+    auto [robotPosX, robotPosY] = this->robotPose.pos;
+
     double theta = this->robotPose.theta;
     double decalage;
     if (pince < 0 || pince > 2) {
@@ -676,8 +677,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     this->baisserBras();
     this->openPince(pince);
 
-    double xPrime = arucoTag.pos()[0];
-    double yPrime = arucoTag.pos()[1];
+    auto [xPrime, yPrime] = arucoTag.pos();
     double roll = arucoTag.rot()[1];
 
     auto centerPlantX = (20 * std::cos(roll)) + xPrime;
