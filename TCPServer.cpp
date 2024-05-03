@@ -1331,6 +1331,7 @@ void TCPServer::go3Plants(StratPattern sp) {
         this->go(500, 700);
         awaitRobotIdle();
 
+        this->setSpeed(180);
         this->rotate(0);
         awaitRobotIdle();
     }
@@ -1338,11 +1339,14 @@ void TCPServer::go3Plants(StratPattern sp) {
         this->go(500, 1300);
         awaitRobotIdle();
 
+        this->setSpeed(180);
         this->rotate(0);
         awaitRobotIdle();
     } else {
         return;
     }
+
+    this->setSpeed(200);
 
     for (int i = 0; i < 3; i++) {
         this->openPince(i);

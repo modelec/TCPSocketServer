@@ -53,7 +53,7 @@ enum StratPattern {
     DROP_FLOWER_J1,
     DROP_FLOWER_J2,
     REMOVE_POT_J2,
-    DROP_FLOWER_BASE_1,
+    // DROP_FLOWER_BASE_1,
 };
 
 class TCPServer; // Forward declaration
