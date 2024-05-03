@@ -1041,7 +1041,7 @@ void TCPServer::dropWhiteFlowers(StratPattern sp) {
         } else if (sp == DROP_WHITE_FLOWER_J2) {
             this->go(200, 400);
             awaitRobotIdle();
-            this->go(180, 1000);
+            this->go(200, 1000);
             awaitRobotIdle();
             this->go(220, 650);
             awaitRobotIdle();
@@ -1058,7 +1058,7 @@ void TCPServer::dropWhiteFlowers(StratPattern sp) {
         } else if (sp == DROP_WHITE_FLOWER_J2) {
             this->go(2800, 400);
             awaitRobotIdle();
-            this->go(2800, 800);
+            this->go(2800, 1000);
             awaitRobotIdle();
             this->go(1780, 650);
             awaitRobotIdle();
