@@ -1047,6 +1047,8 @@ void TCPServer::dropWhiteFlowers(StratPattern sp) {
             awaitRobotIdle();
             this->go(180, 1000);
             awaitRobotIdle();
+            this->go(220, 650);
+            awaitRobotIdle();
 
             whiteDropSetup = std::array{300, 612};
             whiteDropPosition = std::array{0, 612};
@@ -1061,6 +1063,8 @@ void TCPServer::dropWhiteFlowers(StratPattern sp) {
             this->go(2800, 400);
             awaitRobotIdle();
             this->go(2800, 800);
+            awaitRobotIdle();
+            this->go(1780, 650);
             awaitRobotIdle();
 
             whiteDropSetup = std::array{1700, 612};
