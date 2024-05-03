@@ -112,15 +112,12 @@ private:
         TAKE_FLOWER_BOTTOM,
         TAKE_FLOWER_BOTTOM,
         CHECKPOINT_BOTTOM_TO_TOP,
-        // DROP_FLOWER,
         DROP_PURPLE_FLOWER,
         DROP_WHITE_FLOWER_J1,
         // GET_LIDAR_POS,
         TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,
-        // GET_LIDAR_POS,
-        // DROP_FLOWER,
         DROP_PURPLE_FLOWER,
         DROP_WHITE_FLOWER_J2,
         // GET_LIDAR_POS,
@@ -186,7 +183,7 @@ public:
 
     void awaitRobotIdle();
 
-    void handleArucoTag(ArucoTag &tag);
+    void handleArucoTag(const ArucoTag &tag);
 
     std::optional<ArucoTag> getBiggestArucoTag(float borneMinX, float borneMaxX, float borneMinY, float borneMaxY);
 

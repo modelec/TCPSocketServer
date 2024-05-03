@@ -287,7 +287,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         } else if (tokens[2] == "set pos") {
             std::vector<std::string> pos = TCPUtils::split(tokens[3], ",");
             this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]) / 100};
-            this->setPosition(this->robotPose, lidarSocket);
+            if (!awaitForLidar) {
+                this->setPosition(this->robotPose, lidarSocket);
+            }
         }
     } else if (tokens[2] == "test aruco") {
         int pince = std::stoi(tokens[3]);
@@ -664,13 +666,13 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     switch (pince) {
         case 0:
-            decalage = 85;
+            decalage = 75;
             break;
         case 1:
             decalage = 0;
             break;
         case 2:
-            decalage = -85;
+            decalage = -75;
             break;
         default:
             decalage = 0;
@@ -741,7 +743,7 @@ void TCPServer::awaitRobotIdle() {
     }
 }
 
-void TCPServer::handleArucoTag(ArucoTag &tag) {
+void TCPServer::handleArucoTag(const ArucoTag &tag) {
     if (!TCPUtils::contains(tag.name(), "flower")) {
         return;
     }
@@ -766,8 +768,8 @@ void TCPServer::handleArucoTag(ArucoTag &tag) {
     this->arucoTags.push_back(tag);
 }
 
-std::optional<ArucoTag> TCPServer::getBiggestArucoTag(float borneMinX, float borneMaxX, float borneMinY,
-                                                      float borneMaxY) {
+std::optional<ArucoTag> TCPServer::getBiggestArucoTag(const float borneMinX, const float borneMaxX, const float borneMinY,
+                                                      const float borneMaxY) {
     bool found = false;
     ArucoTag biggestTag = ArucoTag();
     for (const auto & tag : arucoTags) {
@@ -781,7 +783,7 @@ std::optional<ArucoTag> TCPServer::getBiggestArucoTag(float borneMinX, float bor
 }
 
 
-std::optional<ArucoTag> TCPServer::getMostCenteredArucoTag(float borneMinX, float borneMaxX, float borneMinY, float borneMaxY) {
+std::optional<ArucoTag> TCPServer::getMostCenteredArucoTag(const float borneMinX, const float borneMaxX, const float borneMinY, const float borneMaxY) {
     bool found = false;
     ArucoTag mostCenteredTag = ArucoTag();
     for (const auto & tag : arucoTags) {
@@ -827,7 +829,7 @@ void TCPServer::handleEmergency(int distance, double angle) {
     this->gameThread.detach();
 }
 
-void TCPServer::startTestAruco(int pince) {
+void TCPServer::startTestAruco(const int pince) {
     this->arucoTags.clear();
     std::optional<ArucoTag> tag = std::nullopt;
 
@@ -1000,7 +1002,7 @@ void TCPServer::dropPurpleFlowers() {
 
         this->baisserBras();
 
-        for (auto & toDrop : pinceHavePurpleFlower) {
+        for (const auto & toDrop : pinceHavePurpleFlower) {
             this->openPince(toDrop);
             usleep(200'000);
 
@@ -1023,7 +1025,7 @@ void TCPServer::dropPurpleFlowers() {
     this->setSpeed(200);
 }
 
-void TCPServer::dropWhiteFlowers(StratPattern sp) {
+void TCPServer::dropWhiteFlowers(const StratPattern sp) {
     std::vector<int> pinceHaveWhiteFlower;
 
     pinceHaveWhiteFlower.reserve(3);
@@ -1138,7 +1140,7 @@ void TCPServer::dropWhiteFlowers(StratPattern sp) {
     this->transportBras();
 }
 
-void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
+void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
     int previousSpeed = this->speed;
     this->setSpeed(200);
     if (team == BLUE) {
@@ -1224,7 +1226,7 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
     this->setSpeed(previousSpeed);
 }
 
-void TCPServer::checkpoint(StratPattern sp) {
+void TCPServer::checkpoint(const StratPattern sp) {
     this->setSpeed(200);
     if (team == BLUE) {
         switch (sp) {
@@ -1276,7 +1278,7 @@ void TCPServer::getLidarPos() {
     // ReSharper disable once CppDFAConstantConditions
     // ReSharper disable once CppDFAEndlessLoop
     while (awaitForLidar) {
-        usleep(200'000);
+        usleep(100'000);
     }
 
     // ReSharper disable once CppDFAUnreachableCode
