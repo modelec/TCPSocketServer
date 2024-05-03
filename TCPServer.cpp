@@ -883,7 +883,7 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
     this->setSpeed(200);
     if (team == BLUE) {
         if (sp == TAKE_FLOWER_TOP) {
-            this->go(300, 700);
+            this->go(500, 700);
             awaitRobotIdle();
 
             this->setSpeed(180);
@@ -891,7 +891,7 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
             awaitRobotIdle();
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
-            this->go(300, 1300);
+            this->go(500, 1300);
             awaitRobotIdle();
 
             this->setSpeed(180);
@@ -902,7 +902,7 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
         }
     } else if (team == YELLOW) {
         if (sp == TAKE_FLOWER_TOP) {
-            this->go(1700,  700);
+            this->go(1500,  700);
             awaitRobotIdle();
 
             this->setSpeed(180);
@@ -910,7 +910,7 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
             awaitRobotIdle();
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
-            this->go(1700, 1300);
+            this->go(1500, 1300);
             awaitRobotIdle();
 
             this->setSpeed(180);
@@ -1204,6 +1204,8 @@ void TCPServer::checkpoint(StratPattern sp) {
     if (team == BLUE) {
         switch (sp) {
             case CHECKPOINT_BOTTOM_TO_TOP:
+                this->go(500, 1000);
+                awaitRobotIdle();
                 this->go(500, 500);
                 this->awaitRobotIdle();
                 break;
@@ -1221,6 +1223,8 @@ void TCPServer::checkpoint(StratPattern sp) {
     } else if (team == YELLOW) {
         switch (sp) {
             case CHECKPOINT_BOTTOM_TO_TOP:
+                this->go(2500, 1000);
+                awaitRobotIdle();
                 this->go(2500, 500);
                 this->awaitRobotIdle();
                 break;
