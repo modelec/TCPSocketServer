@@ -1273,12 +1273,12 @@ void TCPServer::dropFlowers(const StratPattern sp) {
     pinceState[0] = NONE;
     pinceState[2] = NONE;
 
-    usleep(1'000'000);
+    usleep(500'000);
 
     this->closePince(0);
     this->closePince(2);
 
-    usleep(200'000);
+    usleep(100'000);
 
     this->fullyOpenPince(1);
     pinceState[1] = NONE;
@@ -1335,7 +1335,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     this->go(checkpoint);
     awaitRobotIdle();
 
-    this->setSpeed(180);
+    this->setSpeed(170);
     this->rotate(angle);
     awaitRobotIdle();
 
