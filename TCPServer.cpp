@@ -880,8 +880,11 @@ void TCPServer::goEnd() {
         this->middlePince(i);
         usleep(50'000);
     }
+    this->sendPoint(10);
 
     this->broadcastMessage("strat;all;end;1");
+    this->sendPoint(10);
+    this->sendPoint(5);
 }
 
 void TCPServer::findAndGoFlower(const StratPattern sp) {
@@ -1012,6 +1015,8 @@ void TCPServer::dropPurpleFlowers() {
             pinceState[toDrop] = NONE;
             this->closePince(toDrop);
             usleep(200'000);
+
+            this->sendPoint(3);
         }
     }
 
@@ -1113,6 +1118,8 @@ void TCPServer::dropWhiteFlowers(StratPattern sp) {
             pinceState[i] = NONE;
             this->closePince(i);
             usleep(100'000);
+
+            this->sendPoint(4);
         }
     }
 
@@ -1213,6 +1220,8 @@ void TCPServer::goAndTurnSolarPanel(StratPattern sp) {
                 break;
         }
     }
+
+    this->sendPoint(5);
 
     this->setSpeed(previousSpeed);
 }
@@ -1382,4 +1391,8 @@ void TCPServer::uncheckPanneau(int servo_moteur) {
 
 void TCPServer::askLidarPosition() {
     this->broadcastMessage("start;lidar;get pos;1\n");
+}
+
+void TCPServer::sendPoint(int point) {
+    this->broadcastMessage("strat;ihm;add point;" + std::to_string(point) + "\n");
 }

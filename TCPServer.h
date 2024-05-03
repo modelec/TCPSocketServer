@@ -268,5 +268,7 @@ public:
 
     void askLidarPosition();
 
+    void sendPoint(int point);
+
     ~TCPServer();
 };
