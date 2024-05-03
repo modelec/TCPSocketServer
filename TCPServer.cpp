@@ -1041,7 +1041,7 @@ void TCPServer::dropWhiteFlowers(StratPattern sp) {
         } else if (sp == DROP_WHITE_FLOWER_J2) {
             this->go(200, 400);
             awaitRobotIdle();
-            this->go(180, 800);
+            this->go(180, 1000);
             awaitRobotIdle();
 
             whiteDropSetup = std::array{300, 612};
@@ -1200,14 +1200,10 @@ void TCPServer::checkpoint(StratPattern sp) {
     if (team == BLUE) {
         switch (sp) {
             case CHECKPOINT_BOTTOM_TO_TOP:
-                this->go(500, 1500);
-                this->awaitRobotIdle();
                 this->go(500, 500);
                 this->awaitRobotIdle();
                 break;
             case CHECKPOINT_TOP_TO_BOTTOM:
-                this->go(500, 500);
-                this->awaitRobotIdle();
                 this->go(500, 1500);
                 this->awaitRobotIdle();
                 break;
@@ -1221,14 +1217,10 @@ void TCPServer::checkpoint(StratPattern sp) {
     } else if (team == YELLOW) {
         switch (sp) {
             case CHECKPOINT_BOTTOM_TO_TOP:
-                this->go(2500, 1500);
-                this->awaitRobotIdle();
                 this->go(2500, 500);
                 this->awaitRobotIdle();
                 break;
             case CHECKPOINT_TOP_TO_BOTTOM:
-                this->go(2500, 500);
-                this->awaitRobotIdle();
                 this->go(2500, 1500);
                 this->awaitRobotIdle();
                 break;
