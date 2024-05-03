@@ -122,12 +122,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         std::cerr << "Invalid message format, token size : " << std::to_string(tokens.size()) << " from message : " << message << std::endl;
         return;
     }
-    if (tokens[1] != "strat")
-    {
-        this->broadcastMessage(message, clientSocket);
-    }
-
-    // EMERGENCY
     if (tokens[2] == "stop proximity") {
         if (!gameStarted) return;
 
@@ -141,7 +135,11 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             std::thread([this, args]() { this->handleEmergency(std::stoi(args[0]), std::stod(args[1]) / 100); }).detach();
         }
     }
-
+    else if (tokens[1] != "strat")
+    {
+        this->broadcastMessage(message, clientSocket);
+    }
+    // EMERGENCY
     else if (tokens[0] == "tirette" && tokens[2] == "set state")
     {
         this->broadcastMessage(message, clientSocket);
