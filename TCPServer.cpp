@@ -683,7 +683,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     auto [xPrime, yPrime] = arucoTag.pos();
     double roll = arucoTag.rot()[1];
 
-    auto centerPlantX = (20 * std::cos(roll)) + xPrime;
+    auto centerPlantX = (20 * std::cos(roll)) + xPrime - 20;
     auto centerPlantY = (-20 * std::sin(roll)) + yPrime + decalage;
 
     double thetaPrime = std::atan2(centerPlantY, centerPlantX);
