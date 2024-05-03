@@ -1213,7 +1213,7 @@ void TCPServer::checkpoint(StratPattern sp) {
                 this->go(500, 1000);
                 awaitRobotIdle();
                 this->go(500, 500);
-                usleep(800'000);
+                usleep(500'000);
                 break;
             case CHECKPOINT_TOP_TO_BOTTOM:
                 this->go(500, 1500);
@@ -1221,7 +1221,7 @@ void TCPServer::checkpoint(StratPattern sp) {
                 break;
             case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
                 this->go(500, 1700);
-                usleep(800'000);
+                usleep(500'000);
                 break;
             default:
                 break;
@@ -1232,7 +1232,7 @@ void TCPServer::checkpoint(StratPattern sp) {
                 this->go(2500, 1000);
                 awaitRobotIdle();
                 this->go(2500, 500);
-                usleep(800'000);
+                usleep(500'000);
                 break;
             case CHECKPOINT_TOP_TO_BOTTOM:
                 this->go(2500, 1500);
@@ -1240,7 +1240,7 @@ void TCPServer::checkpoint(StratPattern sp) {
                 break;
             case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
                 this->go(2500, 1700);
-                usleep(800'000);
+                usleep(500'000);
                 break;
             default:
                 break;
