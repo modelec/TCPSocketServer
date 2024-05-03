@@ -1283,15 +1283,9 @@ void TCPServer::dropFlowers(const StratPattern sp) {
     this->fullyOpenPince(1);
     pinceState[1] = NONE;
 
-    usleep(1'000'000);
+    usleep(500'000);
 
     this->closePince(1);
-    /*for (int i = 0; i < 3; i++) {
-        this->openPince(i);
-        pinceState[i] = NONE;
-        this->sendPoint(4);
-    }
-    usleep(1'000'000);*/
 
     this->setSpeed(200);
 

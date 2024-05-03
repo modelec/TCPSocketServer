@@ -137,8 +137,8 @@ private:
         //TAKE_3_PLANT_TOP,
         /*DROP_WHITE_FLOWER_J2,
         DROP_PURPLE_FLOWER,*/
-        TAKE_3_PLANT_TOP_2,
-        DROP_FLOWER_BASE_1,
+        // TAKE_3_PLANT_TOP_2,
+        // DROP_FLOWER_BASE_1,
         GO_END
     };
 
