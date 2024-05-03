@@ -1354,7 +1354,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
         this->closePince(i);
         pinceState[i] = FLOWER;
     }
-    usleep(1'000'000);
+    usleep(500'000);
 
     this->go(checkpoint);
     awaitRobotIdle();
