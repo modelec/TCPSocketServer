@@ -743,6 +743,12 @@ void TCPServer::handleArucoTag(ArucoTag &tag) {
         return;
     }
 
+    auto rotArray = tag.rot();
+
+    if (rotArray[2] > 0.3 && rotArray[2] < -0.3 && rotArray[0] > 3 && rotArray[0] < 2.5) {
+        return;
+    }
+
     for (auto& t : arucoTags) {
         if (tag.id() == t.id()) {
             float tPosX = t.pos()[0];
