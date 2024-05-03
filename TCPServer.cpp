@@ -1364,14 +1364,14 @@ void TCPServer::dropFlowers(StratPattern sp) {
 }
 
 void TCPServer::go3Plants(StratPattern sp) {
-    if (sp == TAKE_FLOWER_TOP) {
+    if (sp == TAKE_3_PLANT_TOP) {
         this->go(500, 700);
         awaitRobotIdle();
 
         this->rotate(0);
         awaitRobotIdle();
     }
-    else if (sp == TAKE_FLOWER_BOTTOM) {
+    else if (sp == TAKE_3_PLANT_BOTTOM) {
         this->go(500, 1300);
         awaitRobotIdle();
 
