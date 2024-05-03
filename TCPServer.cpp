@@ -785,7 +785,7 @@ std::optional<ArucoTag> TCPServer::getMostCenteredArucoTag(float borneMinX, floa
     bool found = false;
     ArucoTag mostCenteredTag = ArucoTag();
     for (const auto & tag : arucoTags) {
-        // if (tag.getNbFind() < 2) continue;
+        if (tag.getNbFind() < 2) continue;
 
         auto [tagX, tagY] = tag.pos();
 
