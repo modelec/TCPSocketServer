@@ -731,10 +731,10 @@ void TCPServer::awaitRobotIdle() {
         usleep(100'000);
         this->sendToClient("strat;arduino;get state;1\n", this->arduinoSocket);
         timeout++;
-        if (timeout > 30) {
+        /*if (timeout > 30) {
             this->broadcastMessage("strat;arduino;clear;1");
             break;
-        }
+        }*/
     }
 }
 
