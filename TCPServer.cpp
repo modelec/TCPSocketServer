@@ -1304,12 +1304,12 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
 
     if (team == BLUE) {
         if (sp == DROP_FLOWER_BASE_1) {
-            dropPosition = {225, 400};
+            dropPosition = {300, 400};
         }
     }
     else if (team == YELLOW) {
         if (sp == DROP_FLOWER_BASE_1) {
-            dropPosition = {2775, 400};
+            dropPosition = {2700, 400};
         }
     }
 
