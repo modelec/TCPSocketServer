@@ -884,6 +884,8 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
             awaitRobotIdle();
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
+            this->go(500, 1800);
+            awaitRobotIdle();
             this->go(300, 1300);
             awaitRobotIdle();
 
