@@ -1232,7 +1232,7 @@ void TCPServer::checkpoint(StratPattern sp) {
                 this->go(2500, 1000);
                 awaitRobotIdle();
                 this->go(2500, 500);
-                usleep(8500'000);
+                usleep(800'000);
                 break;
             case CHECKPOINT_TOP_TO_BOTTOM:
                 this->go(2500, 1500);
