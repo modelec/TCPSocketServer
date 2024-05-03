@@ -144,6 +144,8 @@ private:
     int lidarSocket = -1;
     int arduinoSocket = -1;
 
+    bool potJardiniere2Removed = false;
+
 public:
     explicit TCPServer(int port);
 
