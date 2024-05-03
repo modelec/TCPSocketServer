@@ -1285,7 +1285,9 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
 
     usleep(500'000);
 
-    this->closePince(1);
+    this->openPince(1);
+    this->openPince(0);
+    this->openPince(2);
 
     this->setSpeed(200);
 
