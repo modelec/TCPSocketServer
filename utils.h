@@ -12,6 +12,7 @@
 enum PinceState {
     WHITE_FLOWER,
     PURPLE_FLOWER,
+    FLOWER,
     NONE
 };
 

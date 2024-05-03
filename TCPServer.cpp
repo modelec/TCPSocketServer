@@ -475,6 +475,18 @@ void TCPServer::startGame() {
             case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
                 checkpoint(CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER);
                 break;
+            case DROP_FLOWER_J1:
+                dropFlowers(DROP_FLOWER_J1);
+                break;
+            case DROP_FLOWER_J2:
+                dropFlowers(DROP_WHITE_FLOWER_J2);
+                break;
+            case TAKE_3_PLANT_TOP:
+                go3Plants(TAKE_3_PLANT_TOP);
+                break;
+            case TAKE_3_PLANT_BOTTOM:
+                go3Plants(TAKE_3_PLANT_BOTTOM);
+                break;
         }
         whereAmI++;
     }
@@ -1035,8 +1047,7 @@ void TCPServer::dropWhiteFlowers(const StratPattern sp) {
             case WHITE_FLOWER:
                 pinceHaveWhiteFlower.push_back(i);
             break;
-            case PURPLE_FLOWER:
-            case NONE:
+            default:
                 break;
         }
     }
@@ -1269,6 +1280,124 @@ void TCPServer::checkpoint(const StratPattern sp) {
     }
 }
 
+void TCPServer::dropFlowers(StratPattern sp) {
+
+    std::array<int, 2> whiteDropSetup{};
+    std::array<int, 2> whiteDropPosition{};
+    double angle = PI / 2;
+    if (team == BLUE) {
+        if (sp == DROP_FLOWER_J1) {
+            whiteDropSetup = std::array{762, 300};
+            whiteDropPosition = std::array{762, 0};
+            angle = PI / 2;
+        } else if (sp == DROP_FLOWER_J2) {
+            if (!potJardiniere2Removed) {
+                this->go(200, 400);
+                awaitRobotIdle();
+                this->go(200, 900);
+                awaitRobotIdle();
+                this->go(220, 650);
+                awaitRobotIdle();
+                potJardiniere2Removed = true;
+            }
+
+            whiteDropSetup = std::array{300, 612};
+            whiteDropPosition = std::array{0, 612};
+            angle = -PI;
+        }
+    } else if (team == YELLOW) {
+        if (sp == DROP_FLOWER_J1) {
+            whiteDropSetup = std::array{2237, 300};
+            whiteDropPosition = std::array{2237, 0};
+            angle = PI / 2;
+        } else if (sp == DROP_FLOWER_J2) {
+            if (!potJardiniere2Removed) {
+                this->go(2800, 400);
+                awaitRobotIdle();
+                this->go(2800, 900);
+                awaitRobotIdle();
+                this->go(1780, 650);
+                awaitRobotIdle();
+                potJardiniere2Removed = true;
+            }
+
+            whiteDropSetup = std::array{1700, 612};
+            whiteDropPosition = std::array{0, 612};
+            angle = 0;
+        }
+    }
+
+    this->setSpeed(200);
+
+    this->go(whiteDropSetup);
+    awaitRobotIdle();
+
+
+    this->rotate(angle);
+    awaitRobotIdle();
+
+    this->leverBras();
+    usleep(500'000);
+
+    this->setSpeed(130);
+
+    this->go(whiteDropPosition);
+    usleep(2'000'000);
+
+    for (int i = 0; i < 3; i++) {
+        this->openPince(i);
+        pinceState[i] = NONE;
+        this->sendPoint(4);
+    }
+    usleep(1'000'000);
+
+    this->setSpeed(200);
+
+    this->go(whiteDropSetup);
+    awaitRobotIdle();
+
+    for (int i = 0; i < 3; i++) {
+        this->closePince(i);
+    }
+
+    this->transportBras();
+}
+
+void TCPServer::go3Plants(StratPattern sp) {
+    if (sp == TAKE_FLOWER_TOP) {
+        this->go(500, 700);
+        awaitRobotIdle();
+
+        this->rotate(0);
+        awaitRobotIdle();
+    }
+    else if (sp == TAKE_FLOWER_BOTTOM) {
+        this->go(500, 1300);
+        awaitRobotIdle();
+
+        this->rotate(0);
+        awaitRobotIdle();
+    } else {
+        return;
+    }
+
+    for (int i = 0; i < 3; i++) {
+        this->openPince(i);
+    }
+    usleep(200'000);
+
+    this->go(900, 1300);
+    awaitRobotIdle();
+
+    for (int i = 0; i < 3; i++) {
+        this->closePince(i);
+        pinceState[i] = FLOWER;
+    }
+    usleep(200'000);
+
+    this->go(800, 1300);
+    awaitRobotIdle();
+}
 
 void TCPServer::getLidarPos() {
 

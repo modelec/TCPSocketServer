@@ -48,6 +48,10 @@ enum StratPattern {
     CHECKPOINT_BOTTOM_TO_TOP,
     CHECKPOINT_TOP_TO_BOTTOM,
     CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER,
+    TAKE_3_PLANT_BOTTOM,
+    TAKE_3_PLANT_TOP,
+    DROP_FLOWER_J1,
+    DROP_FLOWER_J2
 };
 
 class TCPServer; // Forward declaration
@@ -108,24 +112,29 @@ private:
         TURN_SOLAR_PANNEL_2,
         TURN_SOLAR_PANNEL_3,
         CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER,
+        /*TAKE_FLOWER_BOTTOM,
         TAKE_FLOWER_BOTTOM,
-        TAKE_FLOWER_BOTTOM,
-        TAKE_FLOWER_BOTTOM,
+        TAKE_FLOWER_BOTTOM,*/
+        TAKE_3_PLANT_BOTTOM,
+        DROP_FLOWER_J1,
         CHECKPOINT_BOTTOM_TO_TOP,
-        DROP_PURPLE_FLOWER,
-        DROP_WHITE_FLOWER_J1,
+        /*DROP_PURPLE_FLOWER,
+        DROP_WHITE_FLOWER_J1,*/
         // GET_LIDAR_POS,
+        /*TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,
-        TAKE_FLOWER_TOP,
-        TAKE_FLOWER_TOP,
-        DROP_PURPLE_FLOWER,
-        DROP_WHITE_FLOWER_J2,
+        TAKE_FLOWER_TOP,*/
+        TAKE_3_PLANT_TOP,
+        DROP_FLOWER_J2,
+        /*DROP_PURPLE_FLOWER,
+        DROP_WHITE_FLOWER_J2,*/
         // GET_LIDAR_POS,
+        /*TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,
-        TAKE_FLOWER_TOP,
-        TAKE_FLOWER_TOP,
-        DROP_WHITE_FLOWER_J2,
-        DROP_PURPLE_FLOWER,
+        TAKE_FLOWER_TOP,*/
+        //TAKE_3_PLANT_TOP,
+        /*DROP_WHITE_FLOWER_J2,
+        DROP_PURPLE_FLOWER,*/
         GO_END
     };
 
@@ -207,6 +216,10 @@ public:
     void getLidarPos();
 
     void checkpoint(StratPattern sp);
+
+    void dropFlowers(StratPattern sp);
+
+    void go3Plants(StratPattern sp);
     /*
      *  End Strategy function
      */
