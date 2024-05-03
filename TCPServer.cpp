@@ -1355,7 +1355,7 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
     this->go(dropPosition);
     awaitRobotIdle();
 
-    this->setSpeed(150);
+    this->setSpeed(170);
 
     this->rotate(angle);
     awaitRobotIdle();
@@ -1425,7 +1425,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     this->go(plantPosition[0]-400, plantPosition[1]);
     awaitRobotIdle();
 
-    this->setSpeed(150);
+    this->setSpeed(170);
     this->rotate(angle);
     awaitRobotIdle();
 
