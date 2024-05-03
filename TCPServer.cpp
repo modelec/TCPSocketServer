@@ -1210,22 +1210,30 @@ void TCPServer::checkpoint(StratPattern sp) {
                 this->go(500, 1500);
                 this->awaitRobotIdle();
                 break;
+            case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
+                this->go(500, 1700);
+                awaitRobotIdle();
+                break;
             default:
                 break;
         }
     } else if (team == YELLOW) {
         switch (sp) {
             case CHECKPOINT_BOTTOM_TO_TOP:
-                this->go(1500, 1500);
+                this->go(2500, 1500);
                 this->awaitRobotIdle();
-                this->go(1500, 500);
+                this->go(2500, 500);
                 this->awaitRobotIdle();
                 break;
             case CHECKPOINT_TOP_TO_BOTTOM:
-                this->go(1500, 500);
+                this->go(2500, 500);
                 this->awaitRobotIdle();
-                this->go(1500, 1500);
+                this->go(2500, 1500);
                 this->awaitRobotIdle();
+                break;
+            case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
+                this->go(2500, 1700);
+                awaitRobotIdle();
                 break;
             default:
                 break;
