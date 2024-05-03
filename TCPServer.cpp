@@ -1070,16 +1070,6 @@ void TCPServer::dropWhiteFlowers(const StratPattern sp) {
             whiteDropPosition = std::array{762, 0};
             angle = PI / 2;
         } else if (sp == DROP_WHITE_FLOWER_J2) {
-            if (!potJardiniere2Removed) {
-                this->go(200, 400);
-                awaitRobotIdle();
-                this->go(200, 900);
-                awaitRobotIdle();
-                this->go(220, 650);
-                awaitRobotIdle();
-                potJardiniere2Removed = true;
-            }
-
             whiteDropSetup = std::array{300, 612};
             whiteDropPosition = std::array{0, 612};
             angle = -PI;
@@ -1090,16 +1080,6 @@ void TCPServer::dropWhiteFlowers(const StratPattern sp) {
             whiteDropPosition = std::array{2237, 0};
             angle = PI / 2;
         } else if (sp == DROP_WHITE_FLOWER_J2) {
-            if (!potJardiniere2Removed) {
-                this->go(2800, 400);
-                awaitRobotIdle();
-                this->go(2800, 900);
-                awaitRobotIdle();
-                this->go(1780, 650);
-                awaitRobotIdle();
-                potJardiniere2Removed = true;
-            }
-
             whiteDropSetup = std::array{1700, 612};
             whiteDropPosition = std::array{0, 612};
             angle = 0;
