@@ -124,11 +124,11 @@ private:
         DROP_PURPLE_FLOWER,
         DROP_WHITE_FLOWER_J2,
         // GET_LIDAR_POS,
-        /*TAKE_FLOWER_TOP,
+        TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,
         DROP_WHITE_FLOWER_J2,
-        DROP_PURPLE_FLOWER,*/
+        DROP_PURPLE_FLOWER,
         GO_END
     };
 
