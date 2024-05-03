@@ -960,9 +960,9 @@ void TCPServer::dropPurpleFlowers() {
 
     std::array<int, 2> purpleDropPosition{};
     if (team == BLUE) {
-        purpleDropPosition = {225, 400};
+        purpleDropPosition = {200, 400};
     } else if (team == YELLOW) {
-        purpleDropPosition = {2775, 400};
+        purpleDropPosition = {1800, 400};
     }
 
     this->setSpeed(200);
@@ -1019,6 +1019,8 @@ void TCPServer::dropWhiteFlowers(StratPattern sp) {
         return;
     }
 
+    this->setSpeed(200);
+
     std::array<int, 2> whiteDropSetup{};
     std::array<int, 2> whiteDropPosition{};
     double angle = PI / 2;
@@ -1030,7 +1032,7 @@ void TCPServer::dropWhiteFlowers(StratPattern sp) {
         } else if (sp == DROP_WHITE_FLOWER_J2) {
             this->go(200, 400);
             awaitRobotIdle();
-            this->go(200, 800);
+            this->go(180, 800);
             awaitRobotIdle();
 
             whiteDropSetup = std::array{300, 612};
@@ -1070,7 +1072,7 @@ void TCPServer::dropWhiteFlowers(StratPattern sp) {
     this->setSpeed(130);
 
     this->go(whiteDropPosition);
-    usleep(7'000'000);
+    usleep(2'000'000);
 
     for (int i = 0; i < 3; i++) {
         if (pinceState[i] == WHITE_FLOWER) {
