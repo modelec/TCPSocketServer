@@ -1294,10 +1294,6 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
     this->go(whiteDropSetup);
     awaitRobotIdle();
 
-    for (int i = 0; i < 3; i++) {
-        this->closePince(i);
-    }
-
     this->transportBras();
 }
 
