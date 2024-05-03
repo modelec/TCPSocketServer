@@ -876,6 +876,11 @@ void TCPServer::goEnd() {
     this->rotate(this->endRobotPose.theta);
     awaitRobotIdle();
 
+    for (int i = 0 ; i < 3; i++) {
+        this->middlePince(i);
+        usleep(50'000);
+    }
+
     this->broadcastMessage("strat;all;end;1");
 }
 
@@ -941,12 +946,19 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
     }
 
     if (tag.has_value()) {
-        if (pinceState[1] == NONE) {
+        /*if (pinceState[1] == NONE) {
             goToAruco(tag.value(), 1);
         } else if (pinceState[2] == NONE) {
             goToAruco(tag.value(), 2);
         } else if (pinceState[0] == NONE) {
             goToAruco(tag.value(), 0);
+        }*/
+        if (pinceState[0] == NONE) {
+            goToAruco(tag.value(), 0);
+        } else if (pinceState[2] == NONE) {
+            goToAruco(tag.value(), 2);
+        } else if (pinceState[1] == NONE) {
+            goToAruco(tag.value(), 1);
         }
     }
 }
