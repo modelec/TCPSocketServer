@@ -496,6 +496,9 @@ void TCPServer::startGame() {
             case DROP_FLOWER_BASE_1:
                 dropBaseFlowers(DROP_FLOWER_BASE_1);
                 break;
+            case DROP_FLOWER_BASE_2:
+                dropBaseFlowers(DROP_FLOWER_BASE_2);
+                break;
         }
         whereAmI++;
     }
@@ -1303,16 +1306,40 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
 
 void TCPServer::dropBaseFlowers(StratPattern sp) {
     std::array<int, 2> dropPosition{};
+    double angle;
+    float distance;
 
     if (team == BLUE) {
         if (sp == DROP_FLOWER_BASE_1) {
             dropPosition = {300, 400};
+            angle = PI / 2;
+            distance = 150;
+        }
+        else if (sp == DROP_FLOWER_BASE_2) {
+            dropPosition = {300, 1600};
+            angle = -PI / 2;
+            distance = -150;
+        }
+        else {
+            return;
         }
     }
     else if (team == YELLOW) {
         if (sp == DROP_FLOWER_BASE_1) {
             dropPosition = {2700, 400};
+            angle = PI / 2;
+            distance = 150;
         }
+        else if (sp == DROP_FLOWER_BASE_2) {
+            dropPosition = {2700, 1600};
+            angle = -PI / 2;
+            distance = -150;
+        } else {
+            return;
+        }
+    }
+    else {
+        return;
     }
 
     this->setSpeed(200);
@@ -1322,7 +1349,7 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
 
     this->setSpeed(150);
 
-    this->rotate(PI / 2);
+    this->rotate(angle);
     awaitRobotIdle();
 
     this->baisserBras();
@@ -1332,10 +1359,10 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
 
     usleep(200'000);
 
-    this->go(this->robotPose.pos.x, this->robotPose.pos.y - 150);
+    this->go(this->robotPose.pos.x, this->robotPose.pos.y - distance);
     awaitRobotIdle();
 
-    this->go(this->robotPose.pos.x, this->robotPose.pos.y + 150);
+    this->go(this->robotPose.pos.x, this->robotPose.pos.y + distance);
     awaitRobotIdle();
 
     pinceState[0] = NONE;
@@ -1348,10 +1375,10 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
 
     usleep(200'000);
 
-    this->go(this->robotPose.pos.x, this->robotPose.pos.y - 150);
+    this->go(this->robotPose.pos.x, this->robotPose.pos.y - distance);
     awaitRobotIdle();
 
-    this->go(this->robotPose.pos.x, this->robotPose.pos.y + 150);
+    this->go(this->robotPose.pos.x, this->robotPose.pos.y + distance);
     awaitRobotIdle();
 
     pinceState[1] = NONE;
