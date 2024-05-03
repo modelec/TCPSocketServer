@@ -473,10 +473,10 @@ void TCPServer::startGame() {
                 checkpoint(CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER);
                 break;
             case DROP_FLOWER_J1:
-                dropFlowers(DROP_FLOWER_J1);
+                dropJardiniereFlowers(DROP_FLOWER_J1);
                 break;
             case DROP_FLOWER_J2:
-                dropFlowers(DROP_FLOWER_J2);
+                dropJardiniereFlowers(DROP_FLOWER_J2);
                 break;
             case TAKE_3_PLANT_TOP_1:
                 go3Plants(TAKE_3_PLANT_TOP_1);
@@ -494,7 +494,7 @@ void TCPServer::startGame() {
                 removePot(REMOVE_POT_J2);
                 break;
             case DROP_FLOWER_BASE_1:
-                dropFlowers(DROP_FLOWER_BASE_1);
+                dropBaseFlowers(DROP_FLOWER_BASE_1);
                 break;
         }
         whereAmI++;
@@ -1226,7 +1226,7 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
     this->setSpeed(previousSpeed);
 }
 
-void TCPServer::dropFlowers(const StratPattern sp) {
+void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
 
     std::array<int, 2> whiteDropSetup{};
     std::array<int, 2> whiteDropPosition{};
@@ -1299,6 +1299,73 @@ void TCPServer::dropFlowers(const StratPattern sp) {
     this->transportBras();
 }
 
+void TCPServer::dropBaseFlowers(StratPattern sp) {
+    std::array<int, 2> dropPosition{};
+
+    if (team == BLUE) {
+        if (sp == DROP_FLOWER_BASE_1) {
+            dropPosition = {225, 400};
+        }
+    }
+    else if (team == YELLOW) {
+        if (sp == DROP_FLOWER_BASE_1) {
+            dropPosition = {2775, 400};
+        }
+    }
+
+    this->setSpeed(200);
+
+    this->go(dropPosition);
+    awaitRobotIdle();
+
+    this->setSpeed(150);
+
+    this->rotate(PI / 2);
+    awaitRobotIdle();
+
+    this->baisserBras();
+
+    this->fullyOpenPince(0);
+    this->fullyOpenPince(2);
+
+    usleep(200'000);
+
+    this->go(this->robotPose.pos.x, this->robotPose.pos.y - 150);
+    awaitRobotIdle();
+
+    this->go(this->robotPose.pos.x, this->robotPose.pos.y + 150);
+    awaitRobotIdle();
+
+    pinceState[0] = NONE;
+    pinceState[2] = NONE;
+    this->closePince(0);
+    this->closePince(2);
+    usleep(200'000);
+
+    this->sendPoint(3);
+    this->sendPoint(3);
+
+    this->fullyOpenPince(1);
+
+    usleep(200'000);
+
+    this->go(this->robotPose.pos.x, this->robotPose.pos.y - 150);
+    awaitRobotIdle();
+
+    this->go(this->robotPose.pos.x, this->robotPose.pos.y + 150);
+    awaitRobotIdle();
+
+    pinceState[1] = NONE;
+    this->closePince(1);
+    usleep(200'000);
+
+    this->sendPoint(3);
+
+    this->transportBras();
+
+    this->setSpeed(200);
+}
+
 void TCPServer::go3Plants(const StratPattern sp) {
     std::array<int, 2> checkpoint{};
     std::array<int, 2> plantPosition{};
@@ -1306,7 +1373,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     double angle;
     if (sp == TAKE_3_PLANT_TOP_1) {
         checkpoint = {600, 700};
-        plantPosition = {950, 700};
+        plantPosition = {900, 700};
         angle = 0;
     }
     else if (sp == TAKE_3_PLANT_TOP_2) {
@@ -1316,7 +1383,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     }
     else if (sp == TAKE_3_PLANT_BOTTOM_1) {
         checkpoint = {600, 1300};
-        plantPosition = {950, 1300};
+        plantPosition = {900, 1300};
         angle = 0;
     } else if (sp == TAKE_3_PLANT_BOTTOM_2) {
         checkpoint = {600, 1300};
