@@ -1366,33 +1366,28 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
 }
 
 void TCPServer::go3Plants(const StratPattern sp) {
-    std::array<int, 2> checkpoint{};
     std::array<int, 2> plantPosition{};
 
     double angle;
     if (sp == TAKE_3_PLANT_TOP_1) {
-        checkpoint = {600, 700};
-        plantPosition = {950, 700};
+        plantPosition = {1000, 700};
         angle = 0;
     }
     else if (sp == TAKE_3_PLANT_TOP_2) {
-        checkpoint = {600, 700};
-        plantPosition = {1100, 700};
+        plantPosition = {1200, 700};
         angle = 0;
     }
     else if (sp == TAKE_3_PLANT_BOTTOM_1) {
-        checkpoint = {600, 1300};
-        plantPosition = {950, 1300};
+        plantPosition = {1000, 1300};
         angle = 0;
     } else if (sp == TAKE_3_PLANT_BOTTOM_2) {
-        checkpoint = {600, 1300};
-        plantPosition = {1100, 1300};
+        plantPosition = {1200, 1300};
         angle = 0;
     } else {
         return;
     }
 
-    this->go(checkpoint);
+    this->go(plantPosition[0]-400, plantPosition[1]);
     awaitRobotIdle();
 
     this->setSpeed(170);
@@ -1406,7 +1401,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     }
     usleep(200'000);
 
-    this->go(plantPosition);
+    this->go(plantPosition[0], this->robotPose.pos.y);
     awaitRobotIdle();
     usleep(500'000);
 
@@ -1416,7 +1411,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     }
     usleep(500'000);
 
-    this->go(checkpoint);
+    this->go(plantPosition[0]-400, plantPosition[1]);
     awaitRobotIdle();
 
     this->transportBras();
