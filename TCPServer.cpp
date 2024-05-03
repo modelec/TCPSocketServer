@@ -129,6 +129,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         this->gameThread.~thread();
         this->broadcastMessage("strat;arduino;clear;1");
 
+        this->broadcastMessage(message);
+
         std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
 
         if (!handleEmergencyFlag) {
@@ -1457,7 +1459,7 @@ void TCPServer::removePot(StratPattern sp) {
         if (sp == REMOVE_POT_J2) {
             this->go(230, 1000);
             awaitRobotIdle();
-            this->go(200, 400);
+            this->go(210, 400);
             awaitRobotIdle();
             this->go(230, 650);
             awaitRobotIdle();
