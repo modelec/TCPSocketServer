@@ -1268,12 +1268,30 @@ void TCPServer::dropFlowers(const StratPattern sp) {
     this->go(whiteDropPosition);
     usleep(2'000'000);
 
-    for (int i = 0; i < 3; i++) {
+    this->fullyOpenPince(0);
+    this->fullyOpenPince(2);
+    pinceState[0] = NONE;
+    pinceState[2] = NONE;
+
+    usleep(1'000'000);
+
+    this->closePince(0);
+    this->closePince(2);
+
+    usleep(200'000);
+
+    this->fullyOpenPince(1);
+    pinceState[1] = NONE;
+
+    usleep(1'000'000);
+
+    this->closePince(1);
+    /*for (int i = 0; i < 3; i++) {
         this->openPince(i);
         pinceState[i] = NONE;
         this->sendPoint(4);
     }
-    usleep(1'000'000);
+    usleep(1'000'000);*/
 
     this->setSpeed(200);
 
@@ -1293,21 +1311,21 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     double angle;
     if (sp == TAKE_3_PLANT_TOP_1) {
-        checkpoint = {700, 700};
+        checkpoint = {600, 700};
         plantPosition = {950, 700};
         angle = 0;
     }
     else if (sp == TAKE_3_PLANT_TOP_2) {
-        checkpoint = {700, 700};
+        checkpoint = {600, 700};
         plantPosition = {1100, 700};
         angle = 0;
     }
     else if (sp == TAKE_3_PLANT_BOTTOM_1) {
-        checkpoint = {700, 1300};
+        checkpoint = {600, 1300};
         plantPosition = {950, 1300};
         angle = 0;
     } else if (sp == TAKE_3_PLANT_BOTTOM_2) {
-        checkpoint = {700, 1300};
+        checkpoint = {600, 1300};
         plantPosition = {1100, 1300};
         angle = 0;
     } else {
@@ -1340,6 +1358,8 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     this->go(checkpoint);
     awaitRobotIdle();
+
+    this->transportBras();
 }
 
 void TCPServer::removePot(StratPattern sp) {
@@ -1495,6 +1515,10 @@ void TCPServer::leverBras() {
 
 void TCPServer::openPince(int pince) {
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;" + std::to_string(pince) + "\n");
+}
+
+void TCPServer::fullyOpenPince(int pince) {
+    this->broadcastMessage("strat;servo_moteur;ouvrir total pince;" + std::to_string(pince) + "\n");
 }
 
 void TCPServer::middlePince(int pince) {

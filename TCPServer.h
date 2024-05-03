@@ -266,6 +266,8 @@ public:
 
     void openPince(int pince);
 
+    void fullyOpenPince(int pince);
+
     void middlePince(int pince);
 
     void closePince(int pince);
