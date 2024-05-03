@@ -731,7 +731,7 @@ void TCPServer::awaitRobotIdle() {
     // ReSharper disable once CppDFAConstantConditions
     // ReSharper disable once CppDFAEndlessLoop
     while (isRobotIdle < 3) {
-        usleep(100'000);
+        usleep(50'000);
         this->sendToClient("strat;arduino;get state;1\n", this->arduinoSocket);
         timeout++;
         /*if (timeout > 30) {
@@ -886,7 +886,6 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
             this->go(500, 700);
             awaitRobotIdle();
 
-            this->setSpeed(180);
             this->rotate(0);
             awaitRobotIdle();
         }
@@ -894,7 +893,6 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
             this->go(500, 1300);
             awaitRobotIdle();
 
-            this->setSpeed(180);
             this->rotate(0);
             awaitRobotIdle();
         } else {
@@ -905,7 +903,6 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
             this->go(1500,  700);
             awaitRobotIdle();
 
-            this->setSpeed(180);
             this->rotate(-PI);
             awaitRobotIdle();
         }
@@ -913,7 +910,6 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
             this->go(1500, 1300);
             awaitRobotIdle();
 
-            this->setSpeed(180);
             this->rotate(-PI);
             awaitRobotIdle();
         } else {
