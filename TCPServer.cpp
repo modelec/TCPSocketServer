@@ -1271,6 +1271,14 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
     this->go(whiteDropPosition);
     usleep(2'000'000);
 
+    // reposition
+    if (sp == DROP_FLOWER_J1) {
+        this->setPosition(this->robotPose.pos.x, 140, -PI);
+    }
+    else if (sp == DROP_FLOWER_J2) {
+        this->setPosition(140, this->robotPose.pos.y, 0);
+    }
+
     this->fullyOpenPince(0);
     this->fullyOpenPince(2);
     pinceState[0] = NONE;
