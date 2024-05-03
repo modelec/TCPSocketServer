@@ -479,7 +479,7 @@ void TCPServer::startGame() {
                 dropFlowers(DROP_FLOWER_J1);
                 break;
             case DROP_FLOWER_J2:
-                dropFlowers(DROP_WHITE_FLOWER_J2);
+                dropFlowers(DROP_FLOWER_J2);
                 break;
             case TAKE_3_PLANT_TOP:
                 go3Plants(TAKE_3_PLANT_TOP);
