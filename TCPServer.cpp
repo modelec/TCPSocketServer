@@ -751,10 +751,8 @@ void TCPServer::handleArucoTag(ArucoTag &tag) {
 
     for (auto& t : arucoTags) {
         if (tag.id() == t.id()) {
-            float tPosX = t.pos()[0];
-            float tPosY = t.pos()[1];
-            float tagPosX = tag.pos()[0];
-            float tagPosY = tag.pos()[1];
+            auto [tPosX, tPosY] = t.pos();
+            auto [tagPosX, tagPosY] = tag.pos();
             if (tagPosX > tPosX - 10 && tagPosX < tPosX + 10 && tagPosY > tPosY - 10 && tagPosY < tPosY + 10) {
                 t.find();
                 return;
@@ -878,34 +876,38 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
     this->setSpeed(200);
     if (team == BLUE) {
         if (sp == TAKE_FLOWER_TOP) {
-            this->go(1000, 250);
+            this->go(300, 700);
             awaitRobotIdle();
 
-            this->rotate(-PI/2);
+            this->setSpeed(180);
+            this->rotate(0);
             awaitRobotIdle();
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
-            this->go(1000, 1790);
+            this->go(300, 1300);
             awaitRobotIdle();
 
-            this->rotate(PI/2);
+            this->setSpeed(180);
+            this->rotate(0);
             awaitRobotIdle();
         } else {
             return;
         }
     } else if (team == YELLOW) {
         if (sp == TAKE_FLOWER_TOP) {
-            this->go(2000, 250);
+            this->go(1700,  700);
             awaitRobotIdle();
 
-            this->rotate(-PI/2);
+            this->setSpeed(180);
+            this->rotate(-PI);
             awaitRobotIdle();
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
-            this->go(2000, 1790);
+            this->go(1700, 1300);
             awaitRobotIdle();
 
-            this->rotate(PI/2);
+            this->setSpeed(180);
+            this->rotate(-PI);
             awaitRobotIdle();
         } else {
             return;
@@ -914,22 +916,20 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
         return;
     }
 
-
     this->arucoTags.clear();
     std::optional<ArucoTag> tag = std::nullopt;
 
-    usleep(200'000);
     for (int i = 0; i < 4; i++) {
         this->broadcastMessage("strat;aruco;get aruco;1\n");
         usleep(110'000);
     }
-    tag = getMostCenteredArucoTag(100, 800, -300, 300);
+    tag = getMostCenteredArucoTag(100, 800, -200, 200);
 
     int timeout = 0;
     while (!tag.has_value()) {
         this->broadcastMessage("strat;aruco;get aruco;1\n");
         usleep(110'000);
-        tag = getMostCenteredArucoTag(100, 800, -300, 300);
+        tag = getMostCenteredArucoTag(100, 800, -200, 200);
 
         timeout++;
         if (timeout > 3) {
