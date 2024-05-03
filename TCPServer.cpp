@@ -664,13 +664,13 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
 
     switch (pince) {
         case 0:
-            decalage = 60;
+            decalage = 85;
             break;
         case 1:
             decalage = 0;
             break;
         case 2:
-            decalage = -60;
+            decalage = -85;
             break;
         default:
             decalage = 0;
@@ -683,7 +683,7 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     auto [xPrime, yPrime] = arucoTag.pos();
     double roll = arucoTag.rot()[1];
 
-    auto centerPlantX = (20 * std::cos(roll)) + xPrime - 20;
+    auto centerPlantX = (20 * std::cos(roll)) + xPrime - 20 + (decalage / 10);
     auto centerPlantY = (-20 * std::sin(roll)) + yPrime + decalage;
 
     double thetaPrime = std::atan2(centerPlantY, centerPlantX);
@@ -883,8 +883,6 @@ void TCPServer::goEnd() {
     this->sendPoint(10);
 
     this->broadcastMessage("strat;all;end;1");
-    this->sendPoint(10);
-    this->sendPoint(5);
 }
 
 void TCPServer::findAndGoFlower(const StratPattern sp) {
