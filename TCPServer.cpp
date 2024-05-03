@@ -1373,7 +1373,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     double angle;
     if (sp == TAKE_3_PLANT_TOP_1) {
         checkpoint = {600, 700};
-        plantPosition = {900, 700};
+        plantPosition = {950, 700};
         angle = 0;
     }
     else if (sp == TAKE_3_PLANT_TOP_2) {
@@ -1383,7 +1383,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     }
     else if (sp == TAKE_3_PLANT_BOTTOM_1) {
         checkpoint = {600, 1300};
-        plantPosition = {900, 1300};
+        plantPosition = {950, 1300};
         angle = 0;
     } else if (sp == TAKE_3_PLANT_BOTTOM_2) {
         checkpoint = {600, 1300};
