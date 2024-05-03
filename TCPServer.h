@@ -108,7 +108,6 @@ private:
 
     Team team;
 
-    // TODO drop white flower in other jardienière (if time)
     std::vector<StratPattern> stratPatterns = {
         TURN_SOLAR_PANNEL_1,
         TURN_SOLAR_PANNEL_2,

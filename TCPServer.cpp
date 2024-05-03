@@ -1380,9 +1380,9 @@ void TCPServer::removePot(StratPattern sp) {
         if (sp == REMOVE_POT_J2) {
             this->go(2770, 1000);
             awaitRobotIdle();
-            this->go(2800, 500);
+            this->go(2800, 400);
             awaitRobotIdle();
-            this->go(2780, 650);
+            this->go(2770, 650);
             awaitRobotIdle();
         }
     }
