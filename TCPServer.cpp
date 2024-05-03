@@ -1062,7 +1062,6 @@ void TCPServer::dropWhiteFlowers(StratPattern sp) {
     this->go(whiteDropSetup);
     awaitRobotIdle();
 
-    this->setSpeed(130);
 
     this->rotate(angle);
     awaitRobotIdle();
@@ -1070,8 +1069,10 @@ void TCPServer::dropWhiteFlowers(StratPattern sp) {
     this->leverBras();
     usleep(500'000);
 
+    this->setSpeed(130);
+
     this->go(whiteDropPosition);
-    usleep(4'000'000);
+    usleep(7'000'000);
 
     for (int i = 0; i < 3; i++) {
         if (pinceState[i] == WHITE_FLOWER) {
