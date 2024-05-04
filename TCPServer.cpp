@@ -125,7 +125,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     if (tokens[2] == "stop proximity") {
         if (!gameStarted) return;
 
-/*        this->stopEmergency = true;
+        this->stopEmergency = true;
         this->gameThread.~thread();
         this->broadcastMessage("strat;arduino;clear;1");
 
@@ -135,19 +135,16 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
         if (!handleEmergencyFlag) {
             std::thread([this, args]() { this->handleEmergency(std::stoi(args[0]), std::stod(args[1]) / 100); }).detach();
-        }*/
+        }
     }
-    else if (tokens[1] != "strat")
-    {
+    else if (tokens[1] != "strat") {
         this->broadcastMessage(message, clientSocket);
     }
     // EMERGENCY
-    else if (tokens[0] == "tirette" && tokens[2] == "set state")
-    {
+    else if (tokens[0] == "tirette" && tokens[2] == "set state") {
         this->broadcastMessage(message, clientSocket);
     }
-    else if (tokens[2] == "ready")
-    {
+    else if (tokens[2] == "ready") {
         for (ClientTCP& client : clients)
         {
             if (client.name == tokens[0])
@@ -178,7 +175,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         this->setPosition(this->lidarCalculatePos);
         awaitForLidar = false;
     }
-
     else if (tokens[0] == "ihm") {
         if (tokens[2] == "spawn") {
             int spawnPointNb = std::stoi(tokens[3]);
@@ -188,13 +184,13 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             switch (spawnPointNb) {
                 case 3:
                     this->team = BLUE;
-                    /*spawnPoint[0] = 250;
+                    spawnPoint[0] = 250;
                     spawnPoint[1] = 1800;
-                    spawnPoint[2] = 0;*/
-
-                    spawnPoint[0] = 500;
-                    spawnPoint[1] = 1000;
                     spawnPoint[2] = 0;
+
+                    /*spawnPoint[0] = 500;
+                    spawnPoint[1] = 1000;
+                    spawnPoint[2] = 0;*/
 
                     // For test
                     /*finishPoint[0] = 400;
@@ -441,11 +437,11 @@ void TCPServer::checkIfAllClientsReady()
 void TCPServer::startGame() {
     for (int i = whereAmI; i < stratPatterns.size(); i++) {
 
-        /*auto time = std::chrono::system_clock::now();
+        auto time = std::chrono::system_clock::now();
         if (time - gameStart > std::chrono::seconds(82)) {
             this->goEnd();
             return;
-        }*/
+        }
 
         switch (stratPatterns[i]) {
             case TURN_SOLAR_PANNEL_1:
@@ -1283,7 +1279,7 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
     this->go(whiteDropPosition);
     usleep(2'000'000);
 
-    // reposition
+    // reposition, TODO remove when lidar is working
     if (sp == DROP_FLOWER_J1) {
         this->setPosition(this->robotPose.pos.x, 142, this->robotPose.theta);
     }
@@ -1408,45 +1404,77 @@ void TCPServer::go3Plants(const StratPattern sp) {
     double direction;
 
     double angle;
-    if (sp == TAKE_3_PLANT_TOP_1) {
-        plantPosition = {950, 700};
+    if (team == BLUE) {
         angle = 0;
         direction = 1;
+        if (sp == TAKE_3_PLANT_TOP_1) {
+            plantPosition = {950, 700};
+        }
+        else if (sp == TAKE_3_PLANT_TOP_2) {
+            plantPosition = {1200, 700};
+        }
+        else if (sp == TAKE_3_PLANT_BOTTOM_1) {
+            plantPosition = {950, 1300};
+        }
+        else if (sp == TAKE_3_PLANT_BOTTOM_2) {
+            plantPosition = {1200, 1300};
+        }
+        else {
+            return;
+        }
     }
-    else if (sp == TAKE_3_PLANT_TOP_2) {
-        plantPosition = {1200, 700};
-        angle = 0;
-        direction = 1;
+    else if (team == YELLOW) {
+        angle = -PI;
+        direction = -1;
+
+        if (sp == TAKE_3_PLANT_TOP_1) {
+            plantPosition = {2050, 700};
+        }
+        else if (sp == TAKE_3_PLANT_TOP_2) {
+            plantPosition = {1800, 700};
+        }
+        else if (sp == TAKE_3_PLANT_BOTTOM_1) {
+            plantPosition = {2050, 1300};
+        }
+        else if (sp == TAKE_3_PLANT_BOTTOM_2) {
+            plantPosition = {1800, 1300};
+        }
+        else {
+            return;
+        }
     }
-    else if (sp == TAKE_3_PLANT_BOTTOM_1) {
-        plantPosition = {950, 1300};
-        angle = 0;
-        direction = 1;
-    } else if (sp == TAKE_3_PLANT_BOTTOM_2) {
-        plantPosition = {1200, 1300};
-        angle = 0;
-        direction = 1;
-    } else {
+    else {
         return;
     }
 
     this->setMaxSpeed();
 
-    this->transit(plantPosition[0]-400, plantPosition[1], 150);
+    this->transit(plantPosition[0]-600, plantPosition[1], 150);
     awaitRobotIdle();
 
-    this->setSpeed(150);
     this->rotate(angle);
     awaitRobotIdle();
 
     this->setMaxSpeed();
+
+    this->go(plantPosition[0]-400, plantPosition[1]);
+    awaitRobotIdle();
+
+    this->setSpeed(150);
+
+    this->rotate(angle);
+    awaitRobotIdle();
+
+    this->setMaxSpeed();
+
+    // TODO Check for falling flowers
 
     for (int i = 0; i < 3; i++) {
         this->openPince(i);
     }
     usleep(200'000);
 
-    this->transit(plantPosition[0], this->robotPose.pos.y, 130);
+    this->go(plantPosition);
     awaitRobotIdle();
 
     usleep(500'000);
