@@ -125,7 +125,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     if (tokens[2] == "stop proximity") {
         if (!gameStarted) return;
 
-        this->stopEmergency = true;
+/*        this->stopEmergency = true;
         this->gameThread.~thread();
         this->broadcastMessage("strat;arduino;clear;1");
 
@@ -135,7 +135,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
         if (!handleEmergencyFlag) {
             std::thread([this, args]() { this->handleEmergency(std::stoi(args[0]), std::stod(args[1]) / 100); }).detach();
-        }
+        }*/
     }
     else if (tokens[1] != "strat")
     {
