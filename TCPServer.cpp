@@ -1274,10 +1274,10 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
 
     // reposition
     if (sp == DROP_FLOWER_J1) {
-        this->setPosition(this->robotPose.pos.x, 134, angle);
+        this->setPosition(this->robotPose.pos.x, 142, this->robotPose.theta);
     }
     else if (sp == DROP_FLOWER_J2) {
-        this->setPosition(134, this->robotPose.pos.y, angle);
+        this->setPosition(142, this->robotPose.pos.y, this->robotPose.theta);
     }
 
     this->fullyOpenPince(0);
