@@ -1277,7 +1277,12 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
         this->setPosition(this->robotPose.pos.x, 142, this->robotPose.theta);
     }
     else if (sp == DROP_FLOWER_J2) {
-        this->setPosition(142, this->robotPose.pos.y, this->robotPose.theta);
+        if (team == BLUE) {
+            this->setPosition(142, this->robotPose.pos.y, this->robotPose.theta);
+        }
+        else if (team == YELLOW) {
+            this->setPosition(2858, this->robotPose.pos.y, this->robotPose.theta);
+        }
     }
 
     this->fullyOpenPince(0);
