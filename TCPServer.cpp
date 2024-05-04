@@ -239,7 +239,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             for (int j = 0; j < 3; j++) {
                 std::cout << "AHHHHHHHHHHHHHHHHHH  " << this->initRobotPose.pos.x << " " << this->initRobotPose.pos.y << " " << this->initRobotPose.theta << std::endl;
                 this->setPosition(this->initRobotPose);
-                usleep(200'000);
+                usleep(1'000'000);
             }
 
             this->broadcastMessage("strat;lidar;set team;" + std::to_string((this->team == BLUE ? 0 : 1)) + "\n");
