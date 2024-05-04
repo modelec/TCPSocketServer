@@ -119,8 +119,7 @@ private:
         TAKE_FLOWER_BOTTOM,
         TAKE_FLOWER_BOTTOM,*/
         TAKE_3_PLANT_BOTTOM_1,
-        REMOVE_POT_J2,
-        DROP_FLOWER_J2,
+        DROP_FLOWER_BASE_2,
         /*DROP_PURPLE_FLOWER,
         DROP_WHITE_FLOWER_J1,*/
         // GET_LIDAR_POS,
@@ -141,7 +140,8 @@ private:
         TAKE_3_PLANT_TOP_2,
         DROP_FLOWER_BASE_1,
         TAKE_3_PLANT_BOTTOM_2,
-        DROP_FLOWER_BASE_2,
+        REMOVE_POT_J2,
+        DROP_FLOWER_J2,
         GO_END
     };
 
