@@ -227,8 +227,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             file << finishPoint[0] << " " << finishPoint[1];
             file.close();
 
-            this->sendToClient("strat;lidar;set team;" + std::to_string(this->team) + "\n", lidarSocket);
-            this->sendToClient("strat;lidar;set beacon;1", lidarSocket);
+            this->broadcastMessage("strat;lidar;set team;" + std::to_string(this->team) + "\n");
+            this->broadcastMessage("strat;lidar;set beacon;1");
 
             this->robotPose = {spawnPoint[0], spawnPoint[1], spawnPoint[2]};
             this->initRobotPose = {spawnPoint[0], spawnPoint[1], spawnPoint[2]};
