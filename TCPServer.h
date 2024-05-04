@@ -223,6 +223,7 @@ public:
     void checkpoint(StratPattern sp);
 
     void dropJardiniereFlowers(StratPattern sp);
+
     void dropBaseFlowers(StratPattern sp);
 
     void go3Plants(StratPattern sp);

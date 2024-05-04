@@ -1369,10 +1369,9 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
 
     this->baisserBras();
 
-    this->fullyOpenPince(0);
-    this->fullyOpenPince(2);
-
-    usleep(200'000);
+    for (int i = 0; i < 3; i++) {
+        this->openPince(i);
+    }
 
     this->go(this->robotPose.pos.x, this->robotPose.pos.y - distance);
     awaitRobotIdle();
@@ -1380,25 +1379,10 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
     this->go(this->robotPose.pos.x, this->robotPose.pos.y + distance);
     awaitRobotIdle();
 
-    pinceState[0] = NONE;
-    pinceState[2] = NONE;
-    this->closePince(0);
-    this->closePince(2);
-    usleep(200'000);
-
-    this->fullyOpenPince(1);
-
-    usleep(200'000);
-
-    this->go(this->robotPose.pos.x, this->robotPose.pos.y - distance);
-    awaitRobotIdle();
-
-    this->go(this->robotPose.pos.x, this->robotPose.pos.y + distance*5);
-    awaitRobotIdle();
-
-    pinceState[1] = NONE;
-    this->closePince(1);
-    usleep(200'000);
+    for (int i = 0; i < 3; i++) {
+        pinceState[i] = NONE;
+        this->closePince(i);
+    }
 
     this->sendPoint(3);
 
@@ -1425,11 +1409,11 @@ void TCPServer::go3Plants(const StratPattern sp) {
     else if (sp == TAKE_3_PLANT_BOTTOM_1) {
         plantPosition = {950, 1300};
         angle = 0;
-        direction = -1;
+        direction = 1;
     } else if (sp == TAKE_3_PLANT_BOTTOM_2) {
         plantPosition = {1200, 1300};
         angle = 0;
-        direction = -1;
+        direction = 1;
     } else {
         return;
     }
@@ -1458,7 +1442,10 @@ void TCPServer::go3Plants(const StratPattern sp) {
     }
     usleep(500'000);
 
-    this->go(plantPosition[0]-300, plantPosition[1]);
+    this->rotate(angle);
+    awaitRobotIdle();
+
+    this->go(this->robotPose.pos.x-300, this->robotPose.pos.y);
     awaitRobotIdle();
 
     for (int i = 0; i < 3; i++) {
