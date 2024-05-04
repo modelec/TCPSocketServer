@@ -1408,22 +1408,27 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
 
 void TCPServer::go3Plants(const StratPattern sp) {
     std::array<int, 2> plantPosition{};
+    double direction;
 
     double angle;
     if (sp == TAKE_3_PLANT_TOP_1) {
         plantPosition = {950, 700};
         angle = 0;
+        direction = 1;
     }
     else if (sp == TAKE_3_PLANT_TOP_2) {
         plantPosition = {1200, 700};
         angle = 0;
+        direction = 1;
     }
     else if (sp == TAKE_3_PLANT_BOTTOM_1) {
         plantPosition = {950, 1300};
         angle = 0;
+        direction = -1;
     } else if (sp == TAKE_3_PLANT_BOTTOM_2) {
         plantPosition = {1200, 1300};
         angle = 0;
+        direction = -1;
     } else {
         return;
     }
@@ -1452,8 +1457,21 @@ void TCPServer::go3Plants(const StratPattern sp) {
     }
     usleep(500'000);
 
-    this->go(plantPosition[0]-400, plantPosition[1]);
+    this->go(plantPosition[0]-700, plantPosition[1]);
     awaitRobotIdle();
+
+    for (int i = 0; i < 3; i++) {
+        this->openPince(i);
+    }
+    usleep(200'000);
+
+    this->go(this->robotPose.pos.x + (200 * direction), this->robotPose.pos.y);
+    awaitRobotIdle();
+
+    for (int i = 0; i < 3; i++) {
+        this->closePince(i);
+    }
+    usleep(500'000);
 
     this->transportBras();
 }
