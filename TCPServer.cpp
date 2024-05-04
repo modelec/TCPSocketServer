@@ -758,6 +758,7 @@ void TCPServer::awaitRobotIdle() {
     int timeout = 0;
     // ReSharper disable once CppDFAConstantConditions
     // ReSharper disable once CppDFAEndlessLoop
+    usleep(100'000);
     while (isRobotIdle < 3) {
         usleep(50'000);
         this->sendToClient("strat;arduino;get state;1\n", this->arduinoSocket);
