@@ -237,7 +237,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             this->endRobotPose = {finishPoint[0], finishPoint[1], finishPoint[2]};
 
             for (int j = 0; j < 3; j++) {
-                std::cout << "AHHHHHHHHHHHHHHHHHH  " << this->initRobotPose.pos.x << " " << this->initRobotPose.pos.y << " " << this->initRobotPose.theta << std::endl;
                 this->setPosition(this->initRobotPose);
                 usleep(1'000'000);
             }
@@ -254,6 +253,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             this->gameStart = std::chrono::system_clock::now();
 
             this->setSpeed(200);
+
+            this->go(this->initRobotPose[0], this->initRobotPose[1]);
 
             switch (this->team) {
                 case BLUE:
