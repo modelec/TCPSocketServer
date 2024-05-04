@@ -232,7 +232,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             file << finishPoint[0] << " " << finishPoint[1];
             file.close();
 
-            this->broadcastMessage("strat;lidar;set team;" + std::to_string(this->team) + "\n");
+            this->broadcastMessage("strat;lidar;set team;" + std::to_string((this->team == BLUE ? 0 : 1)) + "\n");
             this->broadcastMessage("strat;lidar;set beacon;1");
 
             this->robotPose = {spawnPoint[0], spawnPoint[1], spawnPoint[2]};
