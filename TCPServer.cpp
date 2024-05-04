@@ -232,9 +232,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             file << finishPoint[0] << " " << finishPoint[1];
             file.close();
 
-            this->broadcastMessage("strat;lidar;set team;" + std::to_string((this->team == BLUE ? 0 : 1)) + "\n");
-            this->broadcastMessage("strat;lidar;set beacon;1\n");
-
             this->robotPose = {spawnPoint[0], spawnPoint[1], spawnPoint[2]};
             this->initRobotPose = {spawnPoint[0], spawnPoint[1], spawnPoint[2]};
             this->endRobotPose = {finishPoint[0], finishPoint[1], finishPoint[2]};
@@ -243,6 +240,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 this->setPosition(this->initRobotPose);
                 usleep(200'000);
             }
+
+            this->broadcastMessage("strat;lidar;set team;" + std::to_string((this->team == BLUE ? 0 : 1)) + "\n");
+            this->broadcastMessage("strat;lidar;set beacon;1\n");
         }
         else if (tokens[1] == "strat" && tokens[2] == "start")
         {
@@ -439,11 +439,11 @@ void TCPServer::checkIfAllClientsReady()
 void TCPServer::startGame() {
     for (int i = whereAmI; i < stratPatterns.size(); i++) {
 
-        auto time = std::chrono::system_clock::now();
+        /*auto time = std::chrono::system_clock::now();
         if (time - gameStart > std::chrono::seconds(82)) {
             this->goEnd();
             return;
-        }
+        }*/
 
         switch (stratPatterns[i]) {
             case TURN_SOLAR_PANNEL_1:
