@@ -170,6 +170,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         this->sendToClient("strat;" + tokens[0] + ";set speed;" + std::to_string(this->speed) + "\n", clientSocket);
     }
     else if (tokens[0] == "lidar" && tokens[2] == "set pos") {
+        this->broadcastMessage(tokens[0] + ";client;" + tokens[2] + ";" + tokens[3] + "\n");
         std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
         this->lidarCalculatePos = {std::stof(args[0]), std::stof(args[1]), std::stof(args[2]) / 100};
         this->setPosition(this->lidarCalculatePos);

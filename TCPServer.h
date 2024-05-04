@@ -154,7 +154,7 @@ private:
         // TAKE_3_PLANT_TOP_2,
         // DROP_FLOWER_BASE_1,
 
-        GO_END
+        // GO_END
     };
 
     // This is the index of the current pattern
