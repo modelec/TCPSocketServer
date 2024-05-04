@@ -17,7 +17,7 @@
 
 #include "utils.h"
 
-#define MAX_SPEED 250
+#define MAX_SPEED 200
 #define MIN_SPEED 150
 
 struct ClientTCP
