@@ -1151,7 +1151,7 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
     if (team == BLUE) {
         switch (sp) {
             case TURN_SOLAR_PANNEL_1:
-                this->go(250, 1790);
+                this->go(250, 1800);
                 awaitRobotIdle();
 
                 this->rotate(0);
@@ -1162,7 +1162,7 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 this->uncheckPanneau(7);
                 break;
             case TURN_SOLAR_PANNEL_2:
-                this->go(470, 1790);
+                this->go(470, 1800);
                 awaitRobotIdle();
 
                 this->rotate(0);
@@ -1173,7 +1173,7 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 this->uncheckPanneau(7);
                 break;
             case TURN_SOLAR_PANNEL_3:
-                this->go(675, 1790);
+                this->go(675, 1800);
                 awaitRobotIdle();
 
                 this->rotate(0);
