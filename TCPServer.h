@@ -114,17 +114,17 @@ private:
         TURN_SOLAR_PANNEL_1,
         TURN_SOLAR_PANNEL_2,
         TURN_SOLAR_PANNEL_3,
-        // CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER,
+        CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER,
 
         /*TAKE_FLOWER_BOTTOM,
         TAKE_FLOWER_BOTTOM,
         TAKE_FLOWER_BOTTOM,*/
 
-        // TAKE_3_PLANT_BOTTOM_1,
-        // DROP_FLOWER_BASE_2,
-        // TAKE_3_PLANT_BOTTOM_2,
-        // REMOVE_POT_J2,
-        // DROP_FLOWER_J2,
+        TAKE_3_PLANT_BOTTOM_1,
+        DROP_FLOWER_BASE_2,
+        TAKE_3_PLANT_BOTTOM_2,
+        REMOVE_POT_J2,
+        DROP_FLOWER_J2,
 
         /*DROP_PURPLE_FLOWER,
         DROP_WHITE_FLOWER_J1,*/
@@ -133,8 +133,8 @@ private:
         TAKE_FLOWER_TOP,
         TAKE_FLOWER_TOP,*/
 
-        // TAKE_3_PLANT_TOP_1,
-        // DROP_FLOWER_J1,
+        TAKE_3_PLANT_TOP_1,
+        DROP_FLOWER_J1,
 
         /*DROP_PURPLE_FLOWER,
         DROP_WHITE_FLOWER_J2,*/
@@ -146,8 +146,8 @@ private:
         /*DROP_WHITE_FLOWER_J2,
         DROP_PURPLE_FLOWER,*/
 
-        // TAKE_3_PLANT_TOP_2,
-        // DROP_FLOWER_BASE_1,
+        TAKE_3_PLANT_TOP_2,
+        DROP_FLOWER_BASE_1,
 
         GO_END
     };
