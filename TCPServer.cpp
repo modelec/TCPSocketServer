@@ -227,6 +227,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             file << finishPoint[0] << " " << finishPoint[1];
             file.close();
 
+            this->sendToClient("strat;lidar;set team;" + std::to_string(this->team) + "\n", lidarSocket);
+            this->sendToClient("strat;lidar;set beacon;1", lidarSocket);
+
             this->robotPose = {spawnPoint[0], spawnPoint[1], spawnPoint[2]};
             this->initRobotPose = {spawnPoint[0], spawnPoint[1], spawnPoint[2]};
             this->endRobotPose = {finishPoint[0], finishPoint[1], finishPoint[2]};
@@ -768,6 +771,7 @@ void TCPServer::awaitRobotIdle() {
             break;
         }
     }
+    usleep(50'000);
 }
 
 void TCPServer::handleArucoTag(const ArucoTag &tag) {
@@ -1146,8 +1150,7 @@ void TCPServer::dropWhiteFlowers(const StratPattern sp) {
 }
 
 void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
-    int previousSpeed = this->speed;
-    this->setMaxSpeed();
+    this->setSpeed(170);
     if (team == BLUE) {
         switch (sp) {
             case TURN_SOLAR_PANNEL_1:
@@ -1227,8 +1230,6 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
     }
 
     this->sendPoint(5);
-
-    this->setSpeed(previousSpeed);
 }
 
 void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
@@ -1420,10 +1421,12 @@ void TCPServer::go3Plants(const StratPattern sp) {
         return;
     }
 
-    this->go(plantPosition[0]-400, plantPosition[1]);
+    this->setMaxSpeed();
+
+    this->transit(plantPosition[0]-400, plantPosition[1], 150);
     awaitRobotIdle();
 
-    this->setSpeed(170);
+    this->setSpeed(150);
     this->rotate(angle);
     awaitRobotIdle();
 
@@ -1434,8 +1437,9 @@ void TCPServer::go3Plants(const StratPattern sp) {
     }
     usleep(200'000);
 
-    this->go(plantPosition[0], this->robotPose.pos.y);
+    this->transit(plantPosition[0], this->robotPose.pos.y, 130);
     awaitRobotIdle();
+
     usleep(500'000);
 
     for (int i = 0; i < 3; i++) {
@@ -1444,7 +1448,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     }
     usleep(500'000);
 
-    this->setSpeed(170);
+    this->setSpeed(150);
     this->rotate(angle);
     awaitRobotIdle();
 
@@ -1470,7 +1474,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
 }
 
 void TCPServer::removePot(StratPattern sp) {
-    this->setSpeed(200);
+    this->setMaxSpeed();
     if (team == BLUE) {
         if (sp == REMOVE_POT_J2) {
             this->go(230, 1000);
