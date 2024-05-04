@@ -1002,8 +1002,7 @@ void TCPServer::dropPurpleFlowers() {
             case PURPLE_FLOWER:
                 pinceHavePurpleFlower.push_back(i);
                 break;
-            case WHITE_FLOWER:
-            case NONE:
+            default:
                 break;
         }
     }
@@ -1388,7 +1387,7 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
     this->go(this->robotPose.pos.x, this->robotPose.pos.y - distance);
     awaitRobotIdle();
 
-    this->go(this->robotPose.pos.x, this->robotPose.pos.y + distance);
+    this->go(this->robotPose.pos.x, this->robotPose.pos.y + distance*5);
     awaitRobotIdle();
 
     pinceState[1] = NONE;
@@ -1407,18 +1406,18 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     double angle;
     if (sp == TAKE_3_PLANT_TOP_1) {
-        plantPosition = {1000, 700};
+        plantPosition = {950, 700};
         angle = 0;
     }
     else if (sp == TAKE_3_PLANT_TOP_2) {
-        plantPosition = {1300, 700};
+        plantPosition = {1200, 700};
         angle = 0;
     }
     else if (sp == TAKE_3_PLANT_BOTTOM_1) {
-        plantPosition = {1000, 1300};
+        plantPosition = {950, 1300};
         angle = 0;
     } else if (sp == TAKE_3_PLANT_BOTTOM_2) {
-        plantPosition = {1300, 1300};
+        plantPosition = {1200, 1300};
         angle = 0;
     } else {
         return;
