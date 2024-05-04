@@ -203,7 +203,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 case 6:
                     this->team = YELLOW;
                     spawnPoint[0] = 1750;
-                    spawnPoint[1] = 1790;
+                    spawnPoint[1] = 1800;
                     spawnPoint[2] = PI;
 
                     finishPoint[0] = 2600;
@@ -215,11 +215,11 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     this->team = TEST;
                     spawnPoint[0] = 1200;
                     spawnPoint[1] = 1800;
-                    spawnPoint[2] = 1.57;
+                    spawnPoint[2] = PI / 2;
 
                     finishPoint[0] = 1200;
                     finishPoint[1] = 1800;
-                    finishPoint[2] = 1.57;
+                    finishPoint[2] = PI / 2;
                     break;
             }
 
@@ -1147,7 +1147,7 @@ void TCPServer::dropWhiteFlowers(const StratPattern sp) {
 
 void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
     int previousSpeed = this->speed;
-    this->setSpeed(200);
+    this->setMaxSpeed();
     if (team == BLUE) {
         switch (sp) {
             case TURN_SOLAR_PANNEL_1:
@@ -1162,7 +1162,7 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 this->uncheckPanneau(7);
                 break;
             case TURN_SOLAR_PANNEL_2:
-                this->go(465, 1800);
+                this->go(455, 1800);
                 awaitRobotIdle();
 
                 this->rotate(0);
@@ -1258,7 +1258,7 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
         }
     }
 
-    this->setSpeed(200);
+    this->setMaxSpeed();
 
     this->go(whiteDropSetup);
     awaitRobotIdle();
@@ -1307,7 +1307,7 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
     this->openPince(0);
     this->openPince(2);
 
-    this->setSpeed(200);
+    this->setMaxSpeed();
 
     this->go(whiteDropSetup);
     awaitRobotIdle();
@@ -1357,7 +1357,7 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
         return;
     }
 
-    this->setSpeed(200);
+    this->setMaxSpeed();
 
     this->go(dropPosition);
     awaitRobotIdle();
@@ -1366,6 +1366,8 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
 
     this->rotate(angle);
     awaitRobotIdle();
+
+    this->setMaxSpeed();
 
     this->baisserBras();
 
@@ -1388,7 +1390,7 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
 
     this->transportBras();
 
-    this->setSpeed(200);
+    this->setMaxSpeed();
 }
 
 void TCPServer::go3Plants(const StratPattern sp) {
@@ -1425,7 +1427,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     this->rotate(angle);
     awaitRobotIdle();
 
-    this->setSpeed(200);
+    this->setMaxSpeed();
 
     for (int i = 0; i < 3; i++) {
         this->openPince(i);
@@ -1442,8 +1444,11 @@ void TCPServer::go3Plants(const StratPattern sp) {
     }
     usleep(500'000);
 
+    this->setSpeed(170);
     this->rotate(angle);
     awaitRobotIdle();
+
+    this->setMaxSpeed();
 
     this->go(this->robotPose.pos.x-300, this->robotPose.pos.y);
     awaitRobotIdle();
@@ -1465,6 +1470,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
 }
 
 void TCPServer::removePot(StratPattern sp) {
+    this->setSpeed(200);
     if (team == BLUE) {
         if (sp == REMOVE_POT_J2) {
             this->go(230, 1000);
@@ -1503,7 +1509,7 @@ void TCPServer::getLidarPos() {
 }
 
 void TCPServer::checkpoint(const StratPattern sp) {
-    this->setSpeed(200);
+    this->setMaxSpeed();
     if (team == BLUE) {
         switch (sp) {
             case CHECKPOINT_MIDDLE:
@@ -1551,6 +1557,14 @@ void TCPServer::rotate(X angle) {
 void TCPServer::setSpeed(const int speed) {
     this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
     this->speed = speed;
+}
+
+void TCPServer::setMaxSpeed() {
+    this->setSpeed(MAX_SPEED);
+}
+
+void TCPServer::setMinSpeed() {
+    this->setSpeed(MIN_SPEED);
 }
 
 template<class X, class Y>

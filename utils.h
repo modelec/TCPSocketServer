@@ -7,7 +7,7 @@
 #include <ostream>
 #include <cmath>
 
-#define PI 3.14159265358979323846
+#define PI M_PI
 
 enum PinceState {
     WHITE_FLOWER,

@@ -17,6 +17,9 @@
 
 #include "utils.h"
 
+#define MAX_SPEED 250
+#define MIN_SPEED 150
+
 struct ClientTCP
 {
     std::string name;
@@ -244,6 +247,10 @@ public:
 
     // Call to broadcast
     void setSpeed(int speed);
+
+    void setMaxSpeed();
+
+    void setMinSpeed();
 
     template<class X, class Y>
     void go(X x, Y y);
