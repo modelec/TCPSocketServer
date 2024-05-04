@@ -1457,7 +1457,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     }
     usleep(500'000);
 
-    this->go(plantPosition[0]-700, plantPosition[1]);
+    this->go(plantPosition[0]-300, plantPosition[1]);
     awaitRobotIdle();
 
     for (int i = 0; i < 3; i++) {
