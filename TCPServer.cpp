@@ -1162,7 +1162,7 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 this->uncheckPanneau(7);
                 break;
             case TURN_SOLAR_PANNEL_2:
-                this->go(470, 1800);
+                this->go(465, 1800);
                 awaitRobotIdle();
 
                 this->rotate(0);
