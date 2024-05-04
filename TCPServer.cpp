@@ -188,9 +188,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             switch (spawnPointNb) {
                 case 3:
                     this->team = BLUE;
-                    spawnPoint[0] = 250;
+                    /*spawnPoint[0] = 250;
                     spawnPoint[1] = 1800;
-                    spawnPoint[2] = 0;
+                    spawnPoint[2] = 0;*/
 
                     /*spawnPoint[0] = 500;
                     spawnPoint[1] = 1000;
@@ -756,7 +756,9 @@ void TCPServer::askArduinoPos() {
     }
 
     while (!this->_shouldStop) {
-        this->sendToClient("strat;arduino;get pos;1\n", this->arduinoSocket);
+        if (!awaitForLidar) {
+            this->sendToClient("strat;arduino;get pos;1\n", this->arduinoSocket);
+        };
         usleep(200'000);
     }
 }
