@@ -182,8 +182,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     else if (tokens[0] == "ihm") {
         if (tokens[2] == "spawn") {
             int spawnPointNb = std::stoi(tokens[3]);
-            float spawnPoint[3];
-            float finishPoint[3];
+            std::array<float, 3> spawnPoint{};
+            std::array<float, 3> finishPoint{};
 
             switch (spawnPointNb) {
                 case 3:
@@ -192,9 +192,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     spawnPoint[1] = 1800;
                     spawnPoint[2] = 0;*/
 
-                    /*spawnPoint[0] = 500;
+                    spawnPoint[0] = 500;
                     spawnPoint[1] = 1000;
-                    spawnPoint[2] = 0;*/
+                    spawnPoint[2] = 0;
 
                     // For test
                     /*finishPoint[0] = 400;
