@@ -64,7 +64,7 @@ private:
     std::string _name;
     std::array<float, 2> _pos = {0, 0};
     std::array<float, 3> _rot = {0, 0, 0};
-    int nbFind = 0;
+    int nbFind = 1;
 };
 
 double distanceToTag(const ArucoTag& tag);
