@@ -847,13 +847,16 @@ std::vector<int> TCPServer::getNotFallenFlowers(float BorneMin, float BorneMax) 
     for (auto & tag : arucoTags) {
         if (TCPUtils::endWith(tag.name(), "flower") && tag.getNbFind() >= 1) {
             auto roll = tag.rot()[1];
+            auto xPos = tag.pos()[0];
             auto yPos = tag.pos()[1];
 
             if (roll < BorneMin && roll > BorneMax) {
-                if (yPos > 70) {
+                if (xPos > 800) continue;
+
+                if (yPos > 70 && yPos < 200) {
                     res[2] = -1;
                 }
-                else if (yPos < -70) {
+                else if (yPos < -70 && yPos > -200) {
                     res[0] = -1;
                 }
                 else {
