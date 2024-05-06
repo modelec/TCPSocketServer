@@ -122,7 +122,6 @@ private:
         TURN_SOLAR_PANNEL_2,
         TURN_SOLAR_PANNEL_3,
         CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER,
-        GET_LIDAR_POS,
 
         /*TAKE_FLOWER_BOTTOM,
         TAKE_FLOWER_BOTTOM,
@@ -130,6 +129,8 @@ private:
 
         TAKE_3_PLANT_BOTTOM_1,
         DROP_FLOWER_BASE_2,
+        GET_LIDAR_POS,
+
         TAKE_3_PLANT_BOTTOM_2,
         REMOVE_POT_J2,
         DROP_FLOWER_J2,
