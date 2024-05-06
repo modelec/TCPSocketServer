@@ -1456,13 +1456,13 @@ void TCPServer::go3Plants(const StratPattern sp) {
         angle = 0;
         direction = 1;
         if (sp == TAKE_3_PLANT_TOP_1) {
-            plantPosition = {950, 700};
+            plantPosition = {900, 700};
         }
         else if (sp == TAKE_3_PLANT_TOP_2) {
             plantPosition = {1200, 700};
         }
         else if (sp == TAKE_3_PLANT_BOTTOM_1) {
-            plantPosition = {950, 1300};
+            plantPosition = {900, 1300};
         }
         else if (sp == TAKE_3_PLANT_BOTTOM_2) {
             plantPosition = {1200, 1300};
@@ -1476,13 +1476,13 @@ void TCPServer::go3Plants(const StratPattern sp) {
         direction = -1;
 
         if (sp == TAKE_3_PLANT_TOP_1) {
-            plantPosition = {2050, 700};
+            plantPosition = {2100, 700};
         }
         else if (sp == TAKE_3_PLANT_TOP_2) {
             plantPosition = {1800, 700};
         }
         else if (sp == TAKE_3_PLANT_BOTTOM_1) {
-            plantPosition = {2050, 1300};
+            plantPosition = {2100, 1300};
         }
         else if (sp == TAKE_3_PLANT_BOTTOM_2) {
             plantPosition = {1800, 1300};
@@ -1507,7 +1507,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     this->setMaxSpeed();
 
-    this->go(plantPosition[0]-400, this->robotPose.pos.y);
+    this->go(plantPosition[0]-400, plantPosition[1]);
     awaitRobotIdle();
 
     this->setSpeed(150);
