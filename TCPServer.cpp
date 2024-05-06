@@ -171,7 +171,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
         this->lidarCalculatePos = {std::stof(args[0]), std::stof(args[1]), std::stof(args[2]) / 100};
         this->setPosition(this->lidarCalculatePos);
-        usleep(100'000);
+        usleep(50'000);
         this->setPosition(this->lidarCalculatePos);
         awaitForLidar = false;
     }
