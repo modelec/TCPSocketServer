@@ -167,9 +167,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         this->sendToClient("strat;" + tokens[0] + ";set speed;" + std::to_string(this->speed) + "\n", clientSocket);
     }
     else if (tokens[0] == "lidar" && tokens[2] == "set pos") {
-        this->broadcastMessage(tokens[0] + ";client;" + tokens[2] + ";" + tokens[3] + "\n");
         std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
-        this->lidarCalculatePos = {std::stof(args[0]), std::stof(args[1]), std::stof(args[2]) / 100};
+        // TODO replace angle with the real angle calculated by the lidar when working
+        this->lidarCalculatePos = {std::stof(args[0]), std::stof(args[1]), /*std::stof(args[2]) / 100*/ this->robotPose.theta};
         this->setPosition(this->lidarCalculatePos);
         usleep(50'000);
         this->setPosition(this->lidarCalculatePos);
@@ -183,26 +183,27 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
             switch (spawnPointNb) {
                 case 3:
-                    this->team = BLUE;
+                    this->setTeam(BLUE);
                     spawnPoint[0] = 250;
                     spawnPoint[1] = 1800;
                     spawnPoint[2] = 0;
+
+                    finishPoint[0] = 400;
+                    finishPoint[1] = 500;
+                    finishPoint[2] = PI / 2;
+
+                    // For test
 
                     /*spawnPoint[0] = 500;
                     spawnPoint[1] = 1000;
                     spawnPoint[2] = 0;*/
 
-                    // For test
                     /*finishPoint[0] = 400;
                     finishPoint[1] = 1790;
                     finishPoint[2] = 0;*/
-
-                    finishPoint[0] = 400;
-                    finishPoint[1] = 500;
-                    finishPoint[2] = PI / 2;
                     break;
                 case 6:
-                    this->team = YELLOW;
+                    this->setTeam(YELLOW);
                     spawnPoint[0] = 1750;
                     spawnPoint[1] = 1800;
                     spawnPoint[2] = PI;
@@ -212,16 +213,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     finishPoint[2] = PI / 2;
                     break;
 
-                case 0:
-                    this->team = LIDAR;
-                    spawnPoint[0] = 500;
-                    spawnPoint[1] = 1000;
-                    spawnPoint[2] = 0;
-
-                    finishPoint[0] = 400;
-                    finishPoint[1] = 500;
-                    finishPoint[2] = PI / 2;
-                    break;
                 default:
                     this->team = TEST;
                     spawnPoint[0] = 1200;
@@ -247,7 +238,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 usleep(1'000'000);
             }
 
-            this->broadcastMessage("strat;lidar;set team;" + std::to_string((this->team == BLUE ? 0 : 1)) + "\n");
+            this->broadcastMessage("strat;lidar;set team;" + std::to_string(this->team) + "\n");
             this->broadcastMessage("strat;lidar;set beacon;1\n");
         }
         else if (tokens[1] == "strat" && tokens[2] == "start")
@@ -269,10 +260,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     break;
                 case TEST:
                     this->gameThread = std::thread([this]() { this->startGameTest(); });
-                    break;
-                case LIDAR:
-                    this->stratPatterns = { SLEEP_5S, GET_LIDAR_POS };
-                    this->gameThread = std::thread([this]() { this->startGame(); });
                     break;
             }
 
@@ -410,7 +397,10 @@ void TCPServer::stop() {
     for (auto& thread : clientThreads) {
         thread.join();
     }
-    this->gameThread.join();
+
+    if (gameStarted) {
+        this->gameThread.~thread();
+    }
 
     // Close the server socket
     close(serverSocket);
@@ -864,25 +854,38 @@ std::optional<ArucoTag> TCPServer::getMostCenteredArucoTag(const float borneMinX
     return found ? std::optional(mostCenteredTag) : std::nullopt;
 }
 
-std::vector<int> TCPServer::getNotFallenFlowers() const {
-    std::vector<int> res = {0, 1, 2};
+std::vector<PinceState> TCPServer::getNotFallenFlowers() const {
+    std::vector<PinceState> res = {FLOWER, FLOWER, FLOWER};
     for (auto & tag : arucoTags) {
         if (TCPUtils::endWith(tag.name(), "flower") && tag.getNbFind() >= 1) {
             auto angle = tag.rot()[0];
             auto xPos = tag.pos()[0];
             auto yPos = tag.pos()[1];
 
-            if (angle > 2.7f && angle < -2.f) {
-                if (xPos > 800) continue;
+            if (xPos > 700) continue;
 
-                if (yPos > 70 && yPos < 200) {
-                    res[2] = -1;
-                }
-                else if (yPos < -70 && yPos > -200) {
-                    res[0] = -1;
+            if (yPos > 70 && yPos < 200) {
+                if (angle > 2.7f && angle < -2.f) {
+                    res[2] = NONE;
                 }
                 else {
-                    res[1] = -1;
+                    res[2] = (TCPUtils::contains(tag.name(), "White") ? WHITE_FLOWER : PURPLE_FLOWER);
+                }
+            }
+            else if (yPos < -70 && yPos > -200) {
+                if (angle > 2.7f && angle < -2.f) {
+                    res[0] = NONE;
+                }
+                else {
+                    res[0] = (TCPUtils::contains(tag.name(), "White") ? WHITE_FLOWER : PURPLE_FLOWER);
+                }
+            }
+            else {
+                if (angle > 2.7f && angle < -2.f) {
+                    res[1] = NONE;
+                }
+                else {
+                    res[1] = (TCPUtils::contains(tag.name(), "White") ? WHITE_FLOWER : PURPLE_FLOWER);
                 }
             }
         }
@@ -897,12 +900,17 @@ void TCPServer::handleEmergency(int distance, double angle) {
     usleep(2'000'000);
     this->stopEmergency = false;
     usleep(500'000);
+    // ReSharper disable once CppDFAConstantConditions
     if (this->stopEmergency) {
         // TODO here go back by twenty centimeter
+        // ReSharper disable once CppDFAUnreachableCode
+        double newAngle = this->robotPose.theta + angle;
+        double newX = this->robotPose.pos.x + 200 * std::cos(newAngle);
+        double newY = this->robotPose.pos.y + 200 * std::sin(newAngle);
         usleep(200'000);
+        this->go(newX, newY);
+        awaitRobotIdle();
     }
-
-    this->handleEmergencyFlag = false;
 
     this->gameThread.~thread();
 
@@ -911,6 +919,8 @@ void TCPServer::handleEmergency(int distance, double angle) {
     this->gameThread = std::thread([this]() { this->startGame(); });
 
     this->gameThread.detach();
+
+    this->handleEmergencyFlag = false;
 }
 
 void TCPServer::startTestAruco(const int pince) {
@@ -1327,23 +1337,16 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
     this->go(whiteDropPosition);
     usleep(2'000'000);
 
-    // reposition, TODO remove when lidar is working
-    if (sp == DROP_FLOWER_J1) {
-        this->setPosition(this->robotPose.pos.x, 142, this->robotPose.theta);
+    if (pinceState[0] != NONE) {
+        this->fullyOpenPince(0);
+        pinceState[0] = NONE;
+        this->sendPoint(3+1);
     }
-    else if (sp == DROP_FLOWER_J2) {
-        if (team == BLUE) {
-            this->setPosition(142, this->robotPose.pos.y, this->robotPose.theta);
-        }
-        else if (team == YELLOW) {
-            this->setPosition(2858, this->robotPose.pos.y, this->robotPose.theta);
-        }
+    if (pinceState[2] != NONE) {
+        this->fullyOpenPince(2);
+        pinceState[2] = NONE;
+        this->sendPoint(3+1);
     }
-
-    this->fullyOpenPince(0);
-    this->fullyOpenPince(2);
-    pinceState[0] = NONE;
-    pinceState[2] = NONE;
 
     usleep(500'000);
 
@@ -1352,13 +1355,16 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
 
     usleep(100'000);
 
-    this->fullyOpenPince(1);
-    pinceState[1] = NONE;
+    if (pinceState[1] != NONE) {
+        this->fullyOpenPince(1);
+        pinceState[1] = NONE;
+        this->sendPoint(3+1);
+    }
 
     usleep(500'000);
 
-    this->openPince(1);
     this->openPince(0);
+    this->openPince(1);
     this->openPince(2);
 
     this->setMaxSpeed();
@@ -1367,10 +1373,6 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
     awaitRobotIdle();
 
     this->transportBras();
-
-    this->sendPoint(4);
-    this->sendPoint(4);
-    this->sendPoint(4);
 }
 
 void TCPServer::dropBaseFlowers(StratPattern sp) {
@@ -1435,12 +1437,21 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
     this->go(this->robotPose.pos.x, this->robotPose.pos.y + distance);
     awaitRobotIdle();
 
+    bool detectedPurple = false;
+
     for (int i = 0; i < 3; i++) {
+        if (pinceState[i] == PURPLE_FLOWER) {
+            detectedPurple = true;
+            this->sendPoint(3);
+        }
+
         pinceState[i] = NONE;
         this->closePince(i);
     }
 
-    this->sendPoint(3);
+    if (!detectedPurple) {
+        this->sendPoint(3);
+    }
 
     this->transportBras();
 
@@ -1523,10 +1534,10 @@ void TCPServer::go3Plants(const StratPattern sp) {
         usleep(110'000);
     }
 
-    std::vector<int> pinceCanTakeFLower = getNotFallenFlowers();
+    std::vector<PinceState> pinceCanTakeFLower = getNotFallenFlowers();
 
     for (int i = 0; i < 3; i++) {
-        if (pinceCanTakeFLower[i] != -1) {
+        if (pinceCanTakeFLower[i] != NONE) {
             this->openPince(i);
         }
     }
@@ -1539,7 +1550,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     for (int i = 0; i < 3; i++) {
         this->closePince(i);
-        pinceState[i] = FLOWER;
+        pinceState[i] = pinceCanTakeFLower[i];
     }
     usleep(500'000);
 
@@ -1764,4 +1775,9 @@ void TCPServer::askLidarPosition() {
 
 void TCPServer::sendPoint(int point) {
     this->broadcastMessage("strat;ihm;add point;" + std::to_string(point) + "\n");
+}
+
+void TCPServer::setTeam(Team team) {
+    this->team = team;
+    this->broadcastMessage("strat;all;set team;" + std::to_string(team) + "\n");
 }

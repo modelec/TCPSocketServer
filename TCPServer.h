@@ -10,8 +10,6 @@
 #include <vector>
 #include <algorithm>
 #include <atomic>
-#include <map>
-#include <cmath>
 #include <fstream>
 #include <optional>
 
@@ -35,7 +33,6 @@ enum Team {
     BLUE,
     YELLOW,
     TEST,
-    LIDAR
 };
 
 enum StratPattern {
@@ -220,7 +217,7 @@ public:
 
     std::optional<ArucoTag> getMostCenteredArucoTag(float borneMinX, float borneMaxX, float borneMinY, float borneMaxY);
 
-    std::vector<int> getNotFallenFlowers() const;
+    std::vector<PinceState> getNotFallenFlowers() const;
 
     void handleEmergency(int distance, double angle);
 
@@ -313,6 +310,8 @@ public:
     void askLidarPosition();
 
     void sendPoint(int point);
+
+    void setTeam(Team team);
 
     ~TCPServer();
 };
