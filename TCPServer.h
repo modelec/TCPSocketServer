@@ -219,7 +219,7 @@ public:
 
     std::optional<ArucoTag> getMostCenteredArucoTag(float borneMinX, float borneMaxX, float borneMinY, float borneMaxY);
 
-    std::vector<int> getNotFallenFlowers();
+    std::vector<int> getNotFallenFlowers() const;
 
     void handleEmergency(int distance, double angle);
 

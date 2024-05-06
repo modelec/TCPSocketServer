@@ -864,7 +864,7 @@ std::optional<ArucoTag> TCPServer::getMostCenteredArucoTag(const float borneMinX
     return found ? std::optional(mostCenteredTag) : std::nullopt;
 }
 
-std::vector<int> TCPServer::getNotFallenFlowers() {
+std::vector<int> TCPServer::getNotFallenFlowers() const {
     std::vector<int> res = {0, 1, 2};
     for (auto & tag : arucoTags) {
         if (TCPUtils::endWith(tag.name(), "flower") && tag.getNbFind() >= 1) {
