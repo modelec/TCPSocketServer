@@ -271,7 +271,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     this->gameThread = std::thread([this]() { this->startGameTest(); });
                     break;
                 case LIDAR:
-                    this->stratPatterns = { GET_LIDAR_POS };
+                    this->stratPatterns = { SLEEP_5S, GET_LIDAR_POS };
                     this->gameThread = std::thread([this]() { this->startGame(); });
             }
 
@@ -519,6 +519,15 @@ void TCPServer::startGame() {
                 break;
             case DROP_FLOWER_BASE_2:
                 dropBaseFlowers(DROP_FLOWER_BASE_2);
+                break;
+            case SLEEP_1S:
+                usleep(1'000'000);
+                break;
+            case SLEEP_5S:
+                usleep(5'000'000);
+                break;
+            case SLEEP_10S:
+                usleep(10'000'000);
                 break;
         }
         whereAmI++;
