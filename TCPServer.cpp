@@ -1585,8 +1585,6 @@ void TCPServer::removePot(StratPattern sp) {
 
 void TCPServer::getLidarPos() {
 
-    usleep(10'000'000);
-
     this->askLidarPosition();
 
     awaitForLidar = true;
