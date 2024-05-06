@@ -868,11 +868,11 @@ std::vector<int> TCPServer::getNotFallenFlowers() const {
     std::vector<int> res = {0, 1, 2};
     for (auto & tag : arucoTags) {
         if (TCPUtils::endWith(tag.name(), "flower") && tag.getNbFind() >= 1) {
-            auto roll = tag.rot()[1];
+            auto angle = tag.rot()[0];
             auto xPos = tag.pos()[0];
             auto yPos = tag.pos()[1];
 
-            if (roll > 2.7f && roll < -2.f) {
+            if (angle > 2.7f && angle < -2.f) {
                 if (xPos > 800) continue;
 
                 if (yPos > 70 && yPos < 200) {
@@ -1592,6 +1592,8 @@ void TCPServer::removePot(StratPattern sp) {
 }
 
 void TCPServer::getLidarPos() {
+
+    this->broadcastMessage("strat;arduino;clear;1\n");
 
     this->askLidarPosition();
 
