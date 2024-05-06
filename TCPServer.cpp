@@ -273,6 +273,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 case LIDAR:
                     this->stratPatterns = { SLEEP_5S, GET_LIDAR_POS };
                     this->gameThread = std::thread([this]() { this->startGame(); });
+                    break;
             }
 
             this->gameThread.detach();
