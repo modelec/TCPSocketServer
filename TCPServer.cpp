@@ -789,7 +789,7 @@ void TCPServer::awaitRobotIdle() {
     int timeout = 0;
     // ReSharper disable once CppDFAConstantConditions
     // ReSharper disable once CppDFAEndlessLoop
-    usleep(100'000);
+    usleep(50'000);
     while (isRobotIdle < 3) {
         usleep(50'000);
         this->sendToClient("strat;arduino;get state;1\n", this->arduinoSocket);
@@ -799,7 +799,6 @@ void TCPServer::awaitRobotIdle() {
             break;
         }
     }
-    usleep(50'000);
 }
 
 void TCPServer::handleArucoTag(const ArucoTag &tag) {
@@ -1508,7 +1507,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     this->setMaxSpeed();
 
-    this->go(plantPosition[0]-400, plantPosition[1]);
+    this->go(plantPosition[0]-400, this->robotPose.pos.y);
     awaitRobotIdle();
 
     this->setSpeed(150);
@@ -1518,15 +1517,12 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     this->setMaxSpeed();
 
-    // TODO Check for falling flowers
-
     this->arucoTags.clear();
     for (int i = 0; i < 5; i++) {
         this->broadcastMessage("strat;aruco;get aruco;1\n");
         usleep(110'000);
     }
 
-    // TODO, Les bornes ici est l'angle que la plante doit avoir pour etre considére comme tombée (par rapport a la caméra)
     std::vector<int> pinceCanTakeFLower = getNotFallenFlowers();
 
     for (int i = 0; i < 3; i++) {
@@ -1536,7 +1532,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     }
     usleep(200'000);
 
-    this->go(plantPosition);
+    this->go(plantPosition[0], this->robotPose.pos.y);
     awaitRobotIdle();
 
     usleep(500'000);
