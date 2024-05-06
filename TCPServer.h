@@ -34,7 +34,8 @@ struct ClientTCP
 enum Team {
     BLUE,
     YELLOW,
-    TEST
+    TEST,
+    LIDAR
 };
 
 enum StratPattern {

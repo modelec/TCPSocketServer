@@ -212,6 +212,16 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     finishPoint[2] = PI / 2;
                     break;
 
+                case 0:
+                    this->team = LIDAR;
+                    spawnPoint[0] = 500;
+                    spawnPoint[1] = 1000;
+                    spawnPoint[2] = 0;
+
+                    finishPoint[0] = 400;
+                    finishPoint[1] = 500;
+                    finishPoint[2] = PI / 2;
+                    break;
                 default:
                     this->team = TEST;
                     spawnPoint[0] = 1200;
@@ -260,6 +270,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 case TEST:
                     this->gameThread = std::thread([this]() { this->startGameTest(); });
                     break;
+                case LIDAR:
+                    this->stratPatterns = { GET_LIDAR_POS };
+                    this->gameThread = std::thread([this]() { this->startGame(); });
             }
 
             this->gameThread.detach();
