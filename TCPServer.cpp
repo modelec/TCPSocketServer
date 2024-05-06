@@ -864,7 +864,7 @@ std::optional<ArucoTag> TCPServer::getMostCenteredArucoTag(const float borneMinX
     return found ? std::optional(mostCenteredTag) : std::nullopt;
 }
 
-std::vector<int> TCPServer::getNotFallenFlowers(float BorneMin, float BorneMax) {
+std::vector<int> TCPServer::getNotFallenFlowers() {
     std::vector<int> res = {0, 1, 2};
     for (auto & tag : arucoTags) {
         if (TCPUtils::endWith(tag.name(), "flower") && tag.getNbFind() >= 1) {
@@ -872,7 +872,7 @@ std::vector<int> TCPServer::getNotFallenFlowers(float BorneMin, float BorneMax) 
             auto xPos = tag.pos()[0];
             auto yPos = tag.pos()[1];
 
-            if (roll < BorneMin && roll > BorneMax) {
+            if (roll > 2.7f && roll < -2.f) {
                 if (xPos > 800) continue;
 
                 if (yPos > 70 && yPos < 200) {
@@ -1524,7 +1524,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     }
 
     // TODO, Les bornes ici est l'angle que la plante doit avoir pour etre considére comme tombée (par rapport a la caméra)
-    std::vector<int> pinceCanTakeFLower = getNotFallenFlowers(0.3, 0.5);
+    std::vector<int> pinceCanTakeFLower = getNotFallenFlowers();
 
     for (int i = 0; i < 3; i++) {
         if (pinceCanTakeFLower[i] != -1) {
