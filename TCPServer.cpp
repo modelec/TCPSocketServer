@@ -1225,7 +1225,7 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(7);
-                usleep(700'000);
+                usleep(300'000);
                 this->uncheckPanneau(7);
                 break;
             case TURN_SOLAR_PANNEL_2:
@@ -1236,7 +1236,7 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(7);
-                usleep(700'000);
+                usleep(300'000);
                 this->uncheckPanneau(7);
                 break;
             case TURN_SOLAR_PANNEL_3:
@@ -1247,7 +1247,7 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(7);
-                usleep(700'000);
+                usleep(300'000);
                 this->uncheckPanneau(7);
                 break;
             default:
@@ -1263,29 +1263,29 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 awaitRobotIdle();
 
                 this->checkPanneau(6);
-                usleep(700'000);
+                usleep(300'000);
                 this->uncheckPanneau(6);
                 break;
             case TURN_SOLAR_PANNEL_2:
-                this->go(2530, 1790);
+                this->go(2545, 1790);
                 awaitRobotIdle();
 
                 this->rotate(PI);
                 awaitRobotIdle();
 
                 this->checkPanneau(6);
-                usleep(700'000);
+                usleep(300'000);
                 this->uncheckPanneau(6);
                 break;
             case TURN_SOLAR_PANNEL_3:
-                this->go(2325, 1790);
+                this->go(2350, 1790);
                 awaitRobotIdle();
 
                 this->rotate(PI);
                 awaitRobotIdle();
 
                 this->checkPanneau(6);
-                usleep(700'000);
+                usleep(300'000);
                 this->uncheckPanneau(6);
                 break;
             default:
