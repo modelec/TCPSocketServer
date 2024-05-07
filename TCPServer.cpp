@@ -773,7 +773,7 @@ void TCPServer::askArduinoPos() {
 
     while (!this->_shouldStop) {
         this->sendToClient("strat;arduino;get pos;1\n", this->arduinoSocket);
-        usleep(100'000);
+        usleep(20'000);
     }
 }
 
