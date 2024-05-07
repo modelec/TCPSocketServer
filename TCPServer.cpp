@@ -295,7 +295,13 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             std::vector<std::string> pos = TCPUtils::split(tokens[3], ",");
             this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]) / 100};
             if (!awaitForLidar) {
-                std::string toSend = "strat;lidar;set pos;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "," + std::to_string(static_cast<int>(this->robotPose.theta * 100)) + "\n";
+                std::string toSend;
+
+                if (this->robotPose.theta < 0 ) {
+                    toSend = "strat;lidar;set pos;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "," + std::to_string(static_cast<int>((this->robotPose.theta + 2 * PI) * 100)) + "\n";
+                } else {
+                    toSend = "strat;lidar;set pos;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "," + std::to_string(static_cast<int>(this->robotPose.theta * 100)) + "\n";
+                }
                 this->broadcastMessage(toSend, clientSocket);
             }
         }
