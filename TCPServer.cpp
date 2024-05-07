@@ -295,7 +295,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             std::vector<std::string> pos = TCPUtils::split(tokens[3], ",");
             this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]) / 100};
             if (!awaitForLidar) {
-                this->setPosition(this->robotPose, lidarSocket);
+                std::string toSend = "strat;lidar;set pos;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "," + std::to_string(static_cast<int>(this->robotPose.theta * 100)) + "\n";
+                this->broadcastMessage(toSend, clientSocket);
             }
         }
     } else if (tokens[2] == "test aruco") {
@@ -765,10 +766,8 @@ void TCPServer::askArduinoPos() {
     }
 
     while (!this->_shouldStop) {
-        if (!awaitForLidar) {
-            this->sendToClient("strat;arduino;get pos;1\n", this->arduinoSocket);
-        };
-        usleep(200'000);
+        this->sendToClient("strat;arduino;get pos;1\n", this->arduinoSocket);
+        usleep(100'000);
     }
 }
 
@@ -1719,7 +1718,7 @@ void TCPServer::setPosition(const Position pos, const int clientSocket) {
     if (clientSocket == -1) {
         this->broadcastMessage("strat;all;set pos;" + std::to_string(static_cast<int>(pos.pos.x)) + "," + std::to_string(static_cast<int>(pos.pos.y)) + "," + std::to_string(static_cast<int>(pos.theta * 100)) + "\n");
     } else {
-        this->sendToClient("strat;all;set pos;" + std::to_string(static_cast<int>(pos.pos.x)) + "," + std::to_string(static_cast<int>(pos.pos.y)) + "," + std::to_string(static_cast<int>(pos.theta * 100)) + "\n", clientSocket);
+        this->sendToClient("strat;lidar;set pos;" + std::to_string(static_cast<int>(pos.pos.x)) + "," + std::to_string(static_cast<int>(pos.pos.y)) + "," + std::to_string(static_cast<int>(pos.theta * 100)) + "\n", clientSocket);
     }
 }
 
