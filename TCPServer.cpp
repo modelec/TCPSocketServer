@@ -251,8 +251,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
             this->setSpeed(200);
 
-            this->go(this->initRobotPose.pos.x, this->initRobotPose.pos.y);
-
             switch (this->team) {
                 case BLUE:
                 case YELLOW:
