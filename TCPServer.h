@@ -124,8 +124,8 @@ private:
         TAKE_FLOWER_BOTTOM,
         TAKE_FLOWER_BOTTOM,*/
 
-        TAKE_3_PLANT_BOTTOM_1,
-        DROP_FLOWER_BASE_2,
+        /*TAKE_3_PLANT_BOTTOM_1,
+        DROP_FLOWER_BASE_2,*/
 
         TAKE_3_PLANT_BOTTOM_2,
         GET_LIDAR_POS,
