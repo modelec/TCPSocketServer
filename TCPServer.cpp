@@ -125,7 +125,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     if (tokens[2] == "stop proximity") {
         if (!gameStarted) return;
 
-        /*this->stopEmergency = true;
+        this->stopEmergency = true;
         this->gameThread.~thread();
         this->broadcastMessage("strat;arduino;clear;1");
 
@@ -135,7 +135,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
         if (!handleEmergencyFlag) {
             std::thread([this, args]() { this->handleEmergency(std::stoi(args[0]), std::stod(args[1]) / 100); }).detach();
-        }*/
+        }
     }
     else if (tokens[1] != "strat") {
         this->broadcastMessage(message, clientSocket);
@@ -784,11 +784,11 @@ void TCPServer::awaitRobotIdle() {
     while (isRobotIdle < 2) {
         usleep(50'000);
         this->sendToClient("strat;arduino;get state;1\n", this->arduinoSocket);
-        /*timeout++;
+        timeout++;
         if (timeout > 80) {
             this->broadcastMessage("strat;arduino;clear;1");
             break;
-        }*/
+        }
     }
 }
 
@@ -905,12 +905,12 @@ void TCPServer::handleEmergency(int distance, double angle) {
     if (this->stopEmergency) {
         // TODO here go back by twenty centimeter
         // ReSharper disable once CppDFAUnreachableCode
-        double newAngle = this->robotPose.theta + angle;
+        /*double newAngle = this->robotPose.theta + angle;
         double newX = this->robotPose.pos.x + 200 * std::cos(newAngle);
         double newY = this->robotPose.pos.y + 200 * std::sin(newAngle);
         usleep(200'000);
         this->go(newX, newY);
-        awaitRobotIdle();
+        awaitRobotIdle();*/
     }
 
     this->gameThread.~thread();
