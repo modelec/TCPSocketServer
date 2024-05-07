@@ -1307,8 +1307,8 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
             whiteDropPosition = std::array{762, 0};
             angle = PI / 2;
         } else if (sp == DROP_FLOWER_J2) {
-            whiteDropSetup = std::array{300, 612};
-            whiteDropPosition = std::array{0, 612};
+            whiteDropSetup = std::array{300, 607};
+            whiteDropPosition = std::array{0, 607};
             angle = -PI;
         }
     } else if (team == YELLOW) {
@@ -1317,8 +1317,8 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
             whiteDropPosition = std::array{2237, 0};
             angle = PI / 2;
         } else if (sp == DROP_FLOWER_J2) {
-            whiteDropSetup = std::array{1700, 612};
-            whiteDropPosition = std::array{0, 612};
+            whiteDropSetup = std::array{1700, 607};
+            whiteDropPosition = std::array{0, 607};
             angle = 0;
         }
     }
@@ -1491,13 +1491,13 @@ void TCPServer::go3Plants(const StratPattern sp) {
             plantPosition = {2100, 700};
         }
         else if (sp == TAKE_3_PLANT_TOP_2) {
-            plantPosition = {1800, 700};
+            plantPosition = {1900, 700};
         }
         else if (sp == TAKE_3_PLANT_BOTTOM_1) {
             plantPosition = {2100, 1300};
         }
         else if (sp == TAKE_3_PLANT_BOTTOM_2) {
-            plantPosition = {1800, 1300};
+            plantPosition = {1900, 1300};
         }
         else {
             return;
@@ -1564,7 +1564,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     this->setMaxSpeed();
 
-    this->go(this->robotPose.pos.x-300, this->robotPose.pos.y);
+    this->go(this->robotPose.pos.x - (300 * direction), this->robotPose.pos.y);
     awaitRobotIdle();
 
     for (int i = 0; i < 3; i++) {
@@ -1599,13 +1599,14 @@ void TCPServer::removePot(StratPattern sp) {
         }
     } else if (team == YELLOW) {
         if (sp == REMOVE_POT_J2) {
-            this->go(2800, 1000);
+            this->transit(2770, 1100, 150);
             awaitRobotIdle();
-            this->setSpeed(150);
-            this->go(2820, 400);
+            this->go(2810, 900);
+            awaitRobotIdle();
+            this->go(2810, 400);
             awaitRobotIdle();
             this->setMaxSpeed();
-            this->go(2780, 650);
+            this->go(2770, 650);
             awaitRobotIdle();
         }
     }
