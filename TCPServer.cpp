@@ -1523,8 +1523,6 @@ void TCPServer::go3Plants(const StratPattern sp) {
     this->go(plantPosition[0]-300, plantPosition[1]);
     awaitRobotIdle();
 
-    this->setSpeed(150);
-
     this->rotate(angle);
     awaitRobotIdle();
 
