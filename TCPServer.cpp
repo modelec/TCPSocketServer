@@ -1676,7 +1676,8 @@ void TCPServer::setSpeed(const int speed) {
 }
 
 void TCPServer::setMaxSpeed() {
-    this->setSpeed(MAX_SPEED);
+    // this->setSpeed(MAX_SPEED);
+    this->setSpeed(200);
 }
 
 void TCPServer::setMinSpeed() {
