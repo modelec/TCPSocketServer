@@ -1589,9 +1589,8 @@ void TCPServer::removePot(StratPattern sp) {
     this->setMaxSpeed();
     if (team == BLUE) {
         if (sp == REMOVE_POT_J2) {
-            this->go(230, 1100);
+            this->transit(230, 1100, 150);
             awaitRobotIdle();
-            this->setSpeed(150);
             this->go(190, 900);
             awaitRobotIdle();
             this->go(190, 400);
