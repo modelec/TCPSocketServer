@@ -783,11 +783,11 @@ void TCPServer::awaitRobotIdle() {
     while (isRobotIdle < 2) {
         usleep(50'000);
         this->sendToClient("strat;arduino;get state;1\n", this->arduinoSocket);
-        timeout++;
+        /*timeout++;
         if (timeout > 80) {
             this->broadcastMessage("strat;arduino;clear;1");
             break;
-        }
+        }*/
     }
 }
 
