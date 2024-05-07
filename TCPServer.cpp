@@ -151,7 +151,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             {
                 client.isReady = true;
                 client.socket = clientSocket;
-                if (client.name == "lidar") {
+                if (TCPUtils::contains(client.name, "lidar")) {
                     this->lidarSocket = clientSocket;
                 }
                 std::cout << client.socket << " | " << client.name << " is ready" << std::endl;
@@ -171,7 +171,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         // TODO replace angle with the real angle calculated by the lidar when working
         this->lidarCalculatePos = {std::stof(args[0]), std::stof(args[1]), /*std::stof(args[2]) / 100*/ this->robotPose.theta};
         this->setPosition(this->lidarCalculatePos);
-        usleep(50'000);
+        usleep(100'000);
         this->setPosition(this->lidarCalculatePos);
         awaitForLidar = false;
     }
@@ -1613,9 +1613,10 @@ void TCPServer::getLidarPos() {
 
     usleep(100'000);
 
+    awaitForLidar = true;
+
     this->askLidarPosition();
 
-    awaitForLidar = true;
     // ReSharper disable once CppDFAConstantConditions
     // ReSharper disable once CppDFAEndlessLoop
     while (awaitForLidar) {
