@@ -1509,7 +1509,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     this->setMaxSpeed();
 
-    this->transit(plantPosition[0]-500, plantPosition[1], 170);
+    this->transit(plantPosition[0]-600, plantPosition[1], 170);
     // this->go(plantPosition[0]-500, plantPosition[1]);
     awaitRobotIdle();
 
@@ -1520,7 +1520,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     this->setMaxSpeed();
 
-    this->go(plantPosition[0]-300, plantPosition[1]);
+    this->go(plantPosition[0]-400, plantPosition[1]);
     awaitRobotIdle();
 
     this->rotate(angle);
