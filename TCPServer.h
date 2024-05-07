@@ -115,6 +115,7 @@ private:
     Team team;
 
     std::vector<StratPattern> stratPatterns = {
+        GET_LIDAR_POS,
         TURN_SOLAR_PANNEL_1,
         TURN_SOLAR_PANNEL_2,
         TURN_SOLAR_PANNEL_3,
@@ -124,6 +125,7 @@ private:
         TAKE_FLOWER_BOTTOM,
         TAKE_FLOWER_BOTTOM,*/
 
+        GET_LIDAR_POS,
         TAKE_3_PLANT_BOTTOM_1,
         DROP_FLOWER_BASE_2,
 
