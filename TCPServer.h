@@ -126,12 +126,11 @@ private:
 
         TAKE_3_PLANT_BOTTOM_1,
         DROP_FLOWER_BASE_2,
-        GET_LIDAR_POS,
 
         TAKE_3_PLANT_BOTTOM_2,
+        GET_LIDAR_POS,
         REMOVE_POT_J2,
         DROP_FLOWER_J2,
-        GET_LIDAR_POS,
 
         /*DROP_PURPLE_FLOWER,
         DROP_WHITE_FLOWER_J1,*/
@@ -141,6 +140,7 @@ private:
         TAKE_FLOWER_TOP,*/
 
         TAKE_3_PLANT_TOP_1,
+        GET_LIDAR_POS,
         DROP_FLOWER_J1,
 
         /*DROP_PURPLE_FLOWER,

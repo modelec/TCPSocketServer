@@ -1610,6 +1610,10 @@ void TCPServer::getLidarPos() {
 
     this->broadcastMessage("strat;arduino;clear;1\n");
 
+    usleep(1'000'000);
+
+    this->setPosition(this->robotPose, this->lidarSocket);
+
     this->askLidarPosition();
 
     awaitForLidar = true;
