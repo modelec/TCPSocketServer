@@ -1473,13 +1473,13 @@ void TCPServer::go3Plants(const StratPattern sp) {
             plantPosition = {900, 700};
         }
         else if (sp == TAKE_3_PLANT_TOP_2) {
-            plantPosition = {1200, 700};
+            plantPosition = {1100, 700};
         }
         else if (sp == TAKE_3_PLANT_BOTTOM_1) {
             plantPosition = {900, 1300};
         }
         else if (sp == TAKE_3_PLANT_BOTTOM_2) {
-            plantPosition = {1200, 1300};
+            plantPosition = {1100, 1300};
         }
         else {
             return;
@@ -1512,7 +1512,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     this->setMaxSpeed();
 
     // this->transit(plantPosition[0]-600, plantPosition[1], 150);
-    this->go(plantPosition[0]-600, plantPosition[1]);
+    this->go(plantPosition[0]-500, plantPosition[1]);
     awaitRobotIdle();
 
     this->baisserBras();
@@ -1522,7 +1522,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     this->setMaxSpeed();
 
-    this->go(plantPosition[0]-400, plantPosition[1]);
+    this->go(plantPosition[0]-300, plantPosition[1]);
     awaitRobotIdle();
 
     this->setSpeed(150);
@@ -1589,10 +1589,10 @@ void TCPServer::removePot(StratPattern sp) {
     this->setMaxSpeed();
     if (team == BLUE) {
         if (sp == REMOVE_POT_J2) {
-            this->go(220, 1000);
+            this->go(210, 1100);
             awaitRobotIdle();
             this->setSpeed(150);
-            this->go(200, 400);
+            this->go(190, 400);
             awaitRobotIdle();
             this->setMaxSpeed();
             this->go(230, 650);
