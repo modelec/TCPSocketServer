@@ -1615,7 +1615,16 @@ void TCPServer::getLidarPos() {
 
     usleep(1'000'000);
 
-    this->setPosition(this->robotPose, this->lidarSocket);
+
+    std::string toSend;
+    if (this->robotPose.theta < 0) {
+        toSend = "strat;lidar;set pos;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "," + std::to_string(static_cast<int>((this->robotPose.theta + 2 * PI) * 100)) + "\n";
+    }
+    else {
+        toSend = "strat;lidar;set pos;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "," + std::to_string(static_cast<int>(this->robotPose.theta * 100)) + "\n";
+    }
+
+    this->broadcastMessage(toSend);
 
     usleep(100'000);
 
