@@ -1612,13 +1612,15 @@ void TCPServer::getLidarPos() {
 
     this->setPosition(this->robotPose, this->lidarSocket);
 
+    usleep(100'000);
+
     this->askLidarPosition();
 
     awaitForLidar = true;
     // ReSharper disable once CppDFAConstantConditions
     // ReSharper disable once CppDFAEndlessLoop
     while (awaitForLidar) {
-        usleep(100'000);
+        usleep(50'000);
     }
 
     // ReSharper disable once CppDFAUnreachableCode
@@ -1678,8 +1680,7 @@ void TCPServer::setSpeed(const int speed) {
 }
 
 void TCPServer::setMaxSpeed() {
-    // this->setSpeed(MAX_SPEED);
-    this->setSpeed(200);
+    this->setSpeed(MAX_SPEED);
 }
 
 void TCPServer::setMinSpeed() {
