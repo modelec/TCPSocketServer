@@ -170,10 +170,15 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
         // TODO replace angle with the real angle calculated by the lidar when working
         this->lidarCalculatePos = {std::stof(args[0]), std::stof(args[1]), /*std::stof(args[2]) / 100*/ this->robotPose.theta};
-        this->setPosition(this->lidarCalculatePos);
-        usleep(100'000);
-        this->setPosition(this->lidarCalculatePos);
-        awaitForLidar = false;
+        if (lidarCalculatePos.pos.x == -1 || lidarCalculatePos.pos.y == -1) {
+            this->askLidarPosition();
+        }
+        else {
+            this->setPosition(this->lidarCalculatePos);
+            usleep(100'000);
+            this->setPosition(this->lidarCalculatePos);
+            awaitForLidar = false;
+        }
     }
     else if (tokens[0] == "ihm") {
         if (tokens[2] == "spawn") {
@@ -295,14 +300,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             std::vector<std::string> pos = TCPUtils::split(tokens[3], ",");
             this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]) / 100};
             if (!awaitForLidar) {
-                std::string toSend;
-
-                if (this->robotPose.theta < 0 ) {
-                    toSend = "strat;lidar;set pos;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "," + std::to_string(static_cast<int>((this->robotPose.theta + 2 * PI) * 100)) + "\n";
-                } else {
-                    toSend = "strat;lidar;set pos;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "," + std::to_string(static_cast<int>(this->robotPose.theta * 100)) + "\n";
-                }
-                this->broadcastMessage(toSend, clientSocket);
+                this->setPosition(this->robotPose, lidarSocket);
             }
         }
     } else if (tokens[2] == "test aruco") {
@@ -1619,16 +1617,7 @@ void TCPServer::getLidarPos() {
 
     usleep(1'000'000);
 
-
-    std::string toSend;
-    if (this->robotPose.theta < 0) {
-        toSend = "strat;lidar;set pos;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "," + std::to_string(static_cast<int>((this->robotPose.theta + 2 * PI) * 100)) + "\n";
-    }
-    else {
-        toSend = "strat;lidar;set pos;" + std::to_string(static_cast<int>(this->robotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->robotPose.pos.y)) + "," + std::to_string(static_cast<int>(this->robotPose.theta * 100)) + "\n";
-    }
-
-    this->broadcastMessage(toSend);
+    this->setPosition(this->robotPose, lidarSocket);
 
     usleep(100'000);
 
