@@ -235,7 +235,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
             for (int j = 0; j < 3; j++) {
                 this->setPosition(this->initRobotPose);
-                usleep(1'000'000);
+                usleep(100'000);
             }
 
             this->broadcastMessage("strat;lidar;set team;" + std::to_string(this->team) + "\n");
