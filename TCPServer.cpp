@@ -906,12 +906,15 @@ std::vector<PinceState> TCPServer::getNotFallenFlowers() const {
 void TCPServer::handleEmergency(int distance, double angle) {
     this->handleEmergencyFlag = true;
 
+    this->broadcastMessage("strat;arduino;clear;2\n");
+
     // TODO handle here the emergency like wait for 2 second and then if emergency is again on, that means the robot of the other team do not move, if that go back otherwise continue
     usleep(2'000'000);
     // ReSharper disable once CppDFAConstantConditions
     while (this->stopEmergency) {
         // TODO here go back by twenty centimeter
         // ReSharper disable once CppDFAUnreachableCode
+        this->broadcastMessage("strat;arduino;clear;3\n");
 
         this->stopEmergency = false;
         usleep(500'000);
@@ -923,6 +926,7 @@ void TCPServer::handleEmergency(int distance, double angle) {
         this->go(newX, newY);
         awaitRobotIdle();*/
     }
+    this->broadcastMessage("strat;arduino;clear;4\n");
 
     try {
         this->gameThread.~thread();
