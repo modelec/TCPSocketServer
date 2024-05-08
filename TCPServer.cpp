@@ -541,7 +541,7 @@ void TCPServer::startGame() {
                 break;
         }
 
-        if (!stopEmergency) whereAmI++;
+        whereAmI++;
     }
 }
 
