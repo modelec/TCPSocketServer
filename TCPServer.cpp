@@ -917,7 +917,7 @@ void TCPServer::handleEmergency(int distance, double angle) {
         this->broadcastMessage("strat;arduino;clear;3\n");
 
         this->stopEmergency = false;
-        usleep(500'000);
+        usleep(1'000'000);
 
         /*double newAngle = this->robotPose.theta + angle;
         double newX = this->robotPose.pos.x + 200 * std::cos(newAngle);
