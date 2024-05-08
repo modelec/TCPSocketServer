@@ -213,7 +213,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     break;
                 case 6:
                     this->setTeam(YELLOW);
-                    spawnPoint[0] = 1750;
+                    spawnPoint[0] = 2750;
                     spawnPoint[1] = 1800;
                     spawnPoint[2] = PI;
 
@@ -1259,7 +1259,7 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 this->uncheckPanneau(7);
                 break;
             case TURN_SOLAR_PANNEL_2:
-                this->go(455, 1800);
+                this->go(460, 1800);
                 awaitRobotIdle();
 
                 this->rotate(0);
@@ -1270,7 +1270,7 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 this->uncheckPanneau(7);
                 break;
             case TURN_SOLAR_PANNEL_3:
-                this->go(650, 1800);
+                this->go(665, 1800);
                 awaitRobotIdle();
 
                 this->rotate(0);
@@ -1286,7 +1286,7 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
     } else if (team == YELLOW) {
         switch (sp) {
             case TURN_SOLAR_PANNEL_1:
-                this->go(2750, 1790);
+                this->go(2750, 1800);
                 awaitRobotIdle();
 
                 this->rotate(PI);
@@ -1297,7 +1297,7 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 this->uncheckPanneau(6);
                 break;
             case TURN_SOLAR_PANNEL_2:
-                this->go(2545, 1790);
+                this->go(2540, 1800);
                 awaitRobotIdle();
 
                 this->rotate(PI);
@@ -1308,7 +1308,7 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 this->uncheckPanneau(6);
                 break;
             case TURN_SOLAR_PANNEL_3:
-                this->go(2350, 1790);
+                this->go(2335, 1800);
                 awaitRobotIdle();
 
                 this->rotate(PI);
