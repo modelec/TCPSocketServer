@@ -533,7 +533,8 @@ void TCPServer::startGame() {
                 awaitRobotIdle();
                 break;
         }
-        whereAmI++;
+
+        if (!stopEmergency) whereAmI++;
     }
 }
 
