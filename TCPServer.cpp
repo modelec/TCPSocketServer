@@ -122,7 +122,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         std::cerr << "Invalid message format, token size : " << std::to_string(tokens.size()) << " from message : " << message << std::endl;
         return;
     }
-    if (tokens[2] == "stop proximity") {
+    if (TCPUtils::contains(tokens[2], "stop proximity")) {
         if (!gameStarted) return;
 
         this->broadcastMessage("strat;arduino;clear;1\n");
