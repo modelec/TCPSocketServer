@@ -443,6 +443,8 @@ void TCPServer::checkIfAllClientsReady()
 void TCPServer::startGame() {
     for (int i = whereAmI; i < stratPatterns.size(); i++) {
 
+        if (stopEmergency) return;
+
         auto time = std::chrono::system_clock::now();
         if (time - gameStart > std::chrono::seconds(82)) {
             this->goEnd();
@@ -1341,6 +1343,8 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
         }
     }
 
+    if (stopEmergency) return;
+
     this->setMaxSpeed();
 
     this->go(whiteDropSetup);
@@ -1367,6 +1371,8 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
         this->sendPoint(3+1);
     }
 
+    if (stopEmergency) return;
+
     usleep(500'000);
 
     this->closePince(0);
@@ -1379,6 +1385,8 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
         pinceState[1] = NONE;
         this->sendPoint(3+1);
     }
+
+    if (stopEmergency) return;
 
     usleep(500'000);
 
@@ -1432,6 +1440,8 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
         return;
     }
 
+    if (stopEmergency) return;
+
     this->setMaxSpeed();
 
     this->go(dropPosition);
@@ -1445,6 +1455,8 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
     this->setMaxSpeed();
 
     this->baisserBras();
+
+    if (stopEmergency) return;
 
     for (int i = 0; i < 3; i++) {
         this->openPince(i);
@@ -1467,6 +1479,8 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
         pinceState[i] = NONE;
         this->closePince(i);
     }
+
+    if (stopEmergency) return;
 
     if (!detectedPurple) {
         this->sendPoint(3);
@@ -1525,6 +1539,8 @@ void TCPServer::go3Plants(const StratPattern sp) {
         return;
     }
 
+    if (stopEmergency) return;
+
     this->setMaxSpeed();
 
     this->transit(plantPosition[0]-600, plantPosition[1], 170);
@@ -1548,6 +1564,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     for (int i = 0; i < 5; i++) {
         this->broadcastMessage("strat;aruco;get aruco;1\n");
         usleep(110'000);
+        if (stopEmergency) return;
     }
 
     std::vector<PinceState> pinceCanTakeFLower = getNotFallenFlowers();
@@ -1565,6 +1582,8 @@ void TCPServer::go3Plants(const StratPattern sp) {
     this->setMaxSpeed();
 
     usleep(500'000);
+
+    if (stopEmergency) return;
 
     for (int i = 0; i < 3; i++) {
         this->closePince(i);
@@ -1768,34 +1787,42 @@ void TCPServer::setPosition(const Position pos, const std::string &toSend) {
 }
 
 void TCPServer::baisserBras() {
+    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
 }
 
 void TCPServer::transportBras() {
+    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;transport bras;1\n");
 }
 
 void TCPServer::leverBras() {
+    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
 }
 
 void TCPServer::openPince(int pince) {
+    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;" + std::to_string(pince) + "\n");
 }
 
 void TCPServer::fullyOpenPince(int pince) {
+    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;ouvrir total pince;" + std::to_string(pince) + "\n");
 }
 
 void TCPServer::middlePince(int pince) {
+    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;middle pince;" + std::to_string(pince) + "\n");
 }
 
 void TCPServer::closePince(int pince) {
+    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n");
 }
 
 void TCPServer::checkPanneau(int servo_moteur) {
+    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;check panneau;" + std::to_string(servo_moteur) + "\n");
 }
 
@@ -1804,6 +1831,7 @@ void TCPServer::uncheckPanneau(int servo_moteur) {
 }
 
 void TCPServer::askLidarPosition() {
+    if (stopEmergency) return;
     this->broadcastMessage("start;lidar;get pos;1\n");
 }
 
