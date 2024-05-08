@@ -126,8 +126,10 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         if (!gameStarted) return;
 
         this->stopEmergency = true;
-        this->gameThread.~thread();
+
         this->broadcastMessage("strat;arduino;clear;1\n");
+
+        this->gameThread.~thread();
 
         std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
 
@@ -794,6 +796,9 @@ void TCPServer::awaitRobotIdle() {
         usleep(50'000);
         this->sendToClient("strat;arduino;get state;1\n", this->arduinoSocket);
         timeout++;
+        if (stopEmergency) {
+            std::terminate();
+        }
         if (timeout > 80) {
             this->broadcastMessage("strat;arduino;clear;1");
             break;
