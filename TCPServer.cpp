@@ -435,6 +435,7 @@ void TCPServer::checkIfAllClientsReady()
 
     if (allReady)
     {
+        std::cout << "All clients are ready" << std::endl;
         this->broadcastMessage("strat;all;ready;1\n");
         std::thread([this]() { askArduinoPos(); }).detach();
     }
