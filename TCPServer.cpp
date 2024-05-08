@@ -936,12 +936,6 @@ void TCPServer::handleEmergency(int distance, double angle) {
     }
     this->broadcastMessage("strat;arduino;clear;4\n");
 
-    try {
-        this->gameThread.~thread();
-    } catch (const std::exception& ex) {
-        std::cout << ex.what() << std::endl;
-    }
-
     this->gameStarted = false;
 
     this->gameThread = std::thread([this]() { this->startGame(); });
