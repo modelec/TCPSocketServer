@@ -247,6 +247,10 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
         else if (tokens[1] == "strat" && tokens[2] == "start")
         {
+            if (this->gameStarted) {
+                return;
+            }
+
             this->broadcastMessage(message, clientSocket);
 
             this->gameStarted = true;
