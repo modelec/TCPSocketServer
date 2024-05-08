@@ -127,9 +127,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
         this->stopEmergency = true;
         this->gameThread.~thread();
-        this->broadcastMessage("strat;arduino;clear;1");
-
-        this->broadcastMessage(message);
+        this->broadcastMessage("strat;arduino;clear;1\n");
 
         std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
 
