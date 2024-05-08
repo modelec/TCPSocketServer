@@ -927,7 +927,11 @@ void TCPServer::handleEmergency(int distance, double angle) {
         awaitRobotIdle();*/
     }
 
-    this->gameThread.~thread();
+    try {
+        this->gameThread.~thread();
+    } catch (const std::exception& ex) {
+        std::cout << ex.what() << std::endl;
+    }
 
     this->gameStarted = false;
 
