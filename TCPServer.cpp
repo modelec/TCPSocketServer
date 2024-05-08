@@ -1612,6 +1612,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     }
     usleep(200'000);
 
+    this->setSpeed(150);
     this->go(this->robotPose.pos.x + (200 * direction), this->robotPose.pos.y);
     awaitRobotIdle();
 
