@@ -175,6 +175,8 @@ private:
     int lidarSocket = -1;
     int arduinoSocket = -1;
 
+    int lidarGetPosTimeout = 0;
+
 public:
     explicit TCPServer(int port);
 
