@@ -123,6 +123,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         return;
     }
     if (TCPUtils::contains(tokens[2], "stop proximity")) {
+        if (!gameStarted) return;
+
         this->broadcastMessage("strat;arduino;clear;1\n");
 
         this->stopEmergency = true;
