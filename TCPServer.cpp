@@ -125,11 +125,13 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     if (TCPUtils::contains(tokens[2], "stop proximity")) {
         if (!gameStarted) return;
 
+        std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
+
+        if (stoi(args[0]) == -1) return;
+
         this->broadcastMessage("strat;arduino;clear;1\n");
 
         this->stopEmergency = true;
-
-        std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
 
         if (!handleEmergencyFlag) {
             std::thread([this, args]() { this->handleEmergency(std::stoi(args[0]), std::stod(args[1]) / 100); }).detach();
