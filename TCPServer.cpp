@@ -522,6 +522,14 @@ void TCPServer::startGame() {
             case SLEEP_10S:
                 usleep(10'000'000);
                 break;
+            case ROTATE_0:
+                this->rotate(0);
+                awaitRobotIdle();
+                break;
+            case ROTATE_270:
+                this->rotate(-PI/2);
+                awaitRobotIdle();
+                break;
         }
         whereAmI++;
     }
@@ -901,9 +909,13 @@ void TCPServer::handleEmergency(int distance, double angle) {
     this->stopEmergency = false;
     usleep(500'000);
     // ReSharper disable once CppDFAConstantConditions
-    if (this->stopEmergency) {
+    while (this->stopEmergency) {
         // TODO here go back by twenty centimeter
         // ReSharper disable once CppDFAUnreachableCode
+
+        this->stopEmergency = false;
+        usleep(500'000);
+
         /*double newAngle = this->robotPose.theta + angle;
         double newX = this->robotPose.pos.x + 200 * std::cos(newAngle);
         double newY = this->robotPose.pos.y + 200 * std::sin(newAngle);
@@ -911,8 +923,6 @@ void TCPServer::handleEmergency(int distance, double angle) {
         this->go(newX, newY);
         awaitRobotIdle();*/
     }
-
-    this->gameThread.~thread();
 
     this->gameStarted = false;
 
@@ -1556,7 +1566,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     this->rotate(angle);
     awaitRobotIdle();
 
-    this->setMaxSpeed();
+    this->setSpeed(160);
 
     this->go(this->robotPose.pos.x - (300 * direction), this->robotPose.pos.y);
     awaitRobotIdle();

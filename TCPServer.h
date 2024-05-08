@@ -60,6 +60,8 @@ enum StratPattern {
     SLEEP_1S,
     SLEEP_5S,
     SLEEP_10S,
+    ROTATE_0,
+    ROTATE_270,
 };
 
 class TCPServer; // Forward declaration
@@ -131,6 +133,7 @@ private:
         GET_LIDAR_POS,
         REMOVE_POT_J2,
         DROP_FLOWER_J2,
+        ROTATE_270,
 
         /*DROP_PURPLE_FLOWER,
         DROP_WHITE_FLOWER_J1,*/
