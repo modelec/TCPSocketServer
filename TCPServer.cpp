@@ -925,7 +925,7 @@ void TCPServer::handleEmergency(int distance, double angle) {
 
         this->stopEmergency = false;
 
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
 
         /*double newAngle = this->robotPose.theta + angle;
         double newX = this->robotPose.pos.x + 200 * std::cos(newAngle);
