@@ -123,8 +123,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         return;
     }
     if (TCPUtils::contains(tokens[2], "stop proximity")) {
-        if (!gameStarted) return;
-
         this->broadcastMessage("strat;arduino;clear;1\n");
 
         this->stopEmergency = true;
@@ -917,7 +915,8 @@ void TCPServer::handleEmergency(int distance, double angle) {
         this->broadcastMessage("strat;arduino;clear;3\n");
 
         this->stopEmergency = false;
-        usleep(1'000'000);
+
+        std::this_thread::sleep_for(std::chrono::seconds(2));
 
         /*double newAngle = this->robotPose.theta + angle;
         double newX = this->robotPose.pos.x + 200 * std::cos(newAngle);
