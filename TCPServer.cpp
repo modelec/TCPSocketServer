@@ -129,8 +129,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
         this->stopEmergency = true;
 
-        this->gameThread.~thread();
-
         std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
 
         if (!handleEmergencyFlag) {
@@ -928,6 +926,8 @@ void TCPServer::handleEmergency(int distance, double angle) {
         this->go(newX, newY);
         awaitRobotIdle();*/
     }
+
+    this->gameThread.~thread();
 
     this->gameStarted = false;
 
