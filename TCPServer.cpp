@@ -906,8 +906,6 @@ void TCPServer::handleEmergency(int distance, double angle) {
 
     // TODO handle here the emergency like wait for 2 second and then if emergency is again on, that means the robot of the other team do not move, if that go back otherwise continue
     usleep(2'000'000);
-    this->stopEmergency = false;
-    usleep(500'000);
     // ReSharper disable once CppDFAConstantConditions
     while (this->stopEmergency) {
         // TODO here go back by twenty centimeter
