@@ -435,7 +435,6 @@ void TCPServer::checkIfAllClientsReady()
 
     if (allReady)
     {
-        std::cout << "All clients are ready" << std::endl;
         this->broadcastMessage("strat;all;ready;1\n");
         std::thread([this]() { askArduinoPos(); }).detach();
     }
@@ -793,14 +792,6 @@ void TCPServer::awaitRobotIdle() {
         usleep(50'000);
         this->sendToClient("strat;arduino;get state;1\n", this->arduinoSocket);
         timeout++;
-        if (stopEmergency) {
-            try {
-                std::terminate();
-            }
-            catch (const std::exception& ex) {
-                std::cout << ex.what() << std::endl;
-            }
-        }
         if (timeout > 80) {
             this->broadcastMessage("strat;arduino;clear;1");
             break;
@@ -935,6 +926,12 @@ void TCPServer::handleEmergency(int distance, double angle) {
         awaitRobotIdle();*/
     }
     this->broadcastMessage("strat;arduino;clear;4\n");
+
+    try {
+        this->gameThread.~thread();
+    } catch (const std::exception& ex) {
+        std::cout << ex.what() << std::endl;
+    }
 
     this->gameStarted = false;
 
@@ -1686,39 +1683,47 @@ void TCPServer::checkpoint(const StratPattern sp) {
 
 template<class X, class Y>
 void TCPServer::go(X x, Y y) {
+    if (stopEmergency) return;
     this->broadcastMessage("strat;arduino;go;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "\n");
 }
 
 template<class X>
 void TCPServer::go(std::array<X, 2> data) {
+    if (stopEmergency) return;
     this->broadcastMessage("strat;arduino;go;" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "\n");
 }
 
 template<class X>
 void TCPServer::rotate(X angle) {
+    if (stopEmergency) return;
     this->broadcastMessage("strat;arduino;angle;" + std::to_string(static_cast<int>(angle * 100)) + "\n");
 }
 
 void TCPServer::setSpeed(const int speed) {
+    if (stopEmergency) return;
     this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
     this->speed = speed;
 }
 
 void TCPServer::setMaxSpeed() {
+    if (stopEmergency) return;
     this->setSpeed(MAX_SPEED);
 }
 
 void TCPServer::setMinSpeed() {
+    if (stopEmergency) return;
     this->setSpeed(MIN_SPEED);
 }
 
 template<class X, class Y>
 void TCPServer::transit(X x, Y y, const int endSpeed) {
+    if (stopEmergency) return;
     this->broadcastMessage("strat;arduino;transit;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "," + std::to_string(endSpeed) + "\n");
 }
 
 template<class X>
 void TCPServer::transit(std::array<X, 2> data, const int endSpeed) {
+    if (stopEmergency) return;
     this->broadcastMessage("strat;arduino;transit;" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "," + std::to_string(endSpeed) + "\n");
 }
 
