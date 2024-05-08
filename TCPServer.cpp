@@ -246,8 +246,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 this->setPosition(this->initRobotPose);
                 usleep(100'000);
             }
-
-            this->broadcastMessage("strat;lidar;set team;" + std::to_string(this->team) + "\n");
         }
         else if (tokens[1] == "strat" && tokens[2] == "start")
         {
