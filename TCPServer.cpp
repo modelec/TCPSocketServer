@@ -447,6 +447,7 @@ void TCPServer::checkIfAllClientsReady()
 }
 
 void TCPServer::startGame() {
+    gameStarted = true;
     for (int i = whereAmI; i < stratPatterns.size(); i++) {
 
         if (stopEmergency) return;
