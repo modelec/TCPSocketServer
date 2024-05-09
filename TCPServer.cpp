@@ -1339,22 +1339,22 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
     double angle = PI / 2;
     if (team == BLUE) {
         if (sp == DROP_FLOWER_J1) {
-            whiteDropSetup = std::array{762, 300};
-            whiteDropPosition = std::array{762, 0};
+            whiteDropSetup = std::array{755, 300};
+            whiteDropPosition = std::array{755, 0};
             angle = PI / 2;
         } else if (sp == DROP_FLOWER_J2) {
-            whiteDropSetup = std::array{300, 607};
-            whiteDropPosition = std::array{0, 607};
+            whiteDropSetup = std::array{300, 590};
+            whiteDropPosition = std::array{0, 590};
             angle = -PI;
         }
     } else if (team == YELLOW) {
         if (sp == DROP_FLOWER_J1) {
-            whiteDropSetup = std::array{2237, 300};
-            whiteDropPosition = std::array{2237, 0};
+            whiteDropSetup = std::array{2245, 300};
+            whiteDropPosition = std::array{2245, 0};
             angle = PI / 2;
         } else if (sp == DROP_FLOWER_J2) {
-            whiteDropSetup = std::array{1700, 607};
-            whiteDropPosition = std::array{0, 607};
+            whiteDropSetup = std::array{2700, 590};
+            whiteDropPosition = std::array{0, 590};
             angle = 0;
         }
     }
@@ -1556,7 +1556,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     this->rotate(angle);
     awaitRobotIdle();
 
-    this->go(plantPosition[0]-(400*direction), plantPosition[1]);
+    this->transit(plantPosition[0]-(400*direction), plantPosition[1], 150);
     awaitRobotIdle();
 
     this->rotate(angle);
