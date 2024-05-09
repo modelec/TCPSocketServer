@@ -175,6 +175,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             if (lidarGetPosTimeout > 10) {
                 awaitForLidar = false;
             }
+            lidarGetPosTimeout++;
             this->askLidarPosition();
         }
         else {
