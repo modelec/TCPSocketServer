@@ -167,7 +167,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         this->sendToClient("strat;" + tokens[0] + ";set speed;" + std::to_string(this->speed) + "\n", clientSocket);
     }
     else if (tokens[0] == "lidar" && tokens[2] == "set pos") {
-        lidarGetPosTimeout++;
         std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
         // TODO replace angle with the real angle calculated by the lidar when working
         this->lidarCalculatePos = {std::stof(args[0]), std::stof(args[1]), /*std::stof(args[2]) / 100*/ this->robotPose.theta};
