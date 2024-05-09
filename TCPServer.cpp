@@ -1009,8 +1009,10 @@ void TCPServer::goEnd() {
     this->rotate(this->endRobotPose.theta);
     awaitRobotIdle();
 
+    this->baisserBras();
+
     for (int i = 0 ; i < 3; i++) {
-        this->middlePince(i);
+        this->openPince(i);
         usleep(50'000);
     }
     this->sendPoint(10);
