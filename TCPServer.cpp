@@ -1377,12 +1377,10 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
     if (pinceState[0] != NONE) {
         this->fullyOpenPince(0);
         pinceState[0] = NONE;
-        this->sendPoint(3+1);
     }
     if (pinceState[2] != NONE) {
         this->fullyOpenPince(2);
         pinceState[2] = NONE;
-        this->sendPoint(3+1);
     }
 
     usleep(500'000);
