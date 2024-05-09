@@ -804,6 +804,7 @@ void TCPServer::awaitRobotIdle() {
         timeout++;
         if (stopEmergency) {
             while (stopEmergency) {
+                stopEmergency = false;
                 usleep(100'000);
             }
             this->broadcastMessage(lastArduinoCommand);
