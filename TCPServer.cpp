@@ -1361,7 +1361,7 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
 
     this->setMaxSpeed();
 
-    this->go(whiteDropSetup);
+    this->transit(whiteDropSetup, 170);
     awaitRobotIdle();
 
     this->rotate(angle);
@@ -1597,7 +1597,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     this->setSpeed(160);
 
-    this->go(this->robotPose.pos.x - (300 * direction), this->robotPose.pos.y);
+    this->go(this->robotPose.pos.x - (200 * direction), this->robotPose.pos.y);
     awaitRobotIdle();
 
     for (int i = 0; i < 3; i++) {
@@ -1606,7 +1606,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     usleep(200'000);
 
     this->setSpeed(150);
-    this->go(this->robotPose.pos.x + (200 * direction), this->robotPose.pos.y);
+    this->go(this->robotPose.pos.x + (75 * direction), this->robotPose.pos.y);
     awaitRobotIdle();
 
     for (int i = 0; i < 3; i++) {
@@ -1636,9 +1636,9 @@ void TCPServer::removePot(StratPattern sp) {
             this->transit(2750, 1100, 150);
             awaitRobotIdle();
             this->setMaxSpeed();
-            this->go(2790, 900);
+            this->go(2780, 900);
             awaitRobotIdle();
-            this->go(2800, 400);
+            this->go(2790, 400);
             awaitRobotIdle();
             this->go(2750, 650);
             awaitRobotIdle();
@@ -1688,6 +1688,8 @@ void TCPServer::checkpoint(const StratPattern sp) {
                 this->awaitRobotIdle();
                 break;
             case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
+                this->go(800, 1800);
+                awaitRobotIdle();
                 this->go(500, 1700);
                 usleep(500'000);
                 break;
@@ -1701,6 +1703,8 @@ void TCPServer::checkpoint(const StratPattern sp) {
                 this->awaitRobotIdle();
                 break;
             case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
+                this->go(2200, 1800);
+                awaitRobotIdle();
                 this->go(2500, 1700);
                 usleep(500'000);
                 break;
