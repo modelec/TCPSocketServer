@@ -1343,8 +1343,8 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
             whiteDropPosition = std::array{755, 0};
             angle = PI / 2;
         } else if (sp == DROP_FLOWER_J2) {
-            whiteDropSetup = std::array{300, 590};
-            whiteDropPosition = std::array{0, 590};
+            whiteDropSetup = std::array{300, 600};
+            whiteDropPosition = std::array{0, 600};
             angle = -PI;
         }
     } else if (team == YELLOW) {
@@ -1353,8 +1353,8 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
             whiteDropPosition = std::array{2245, 0};
             angle = PI / 2;
         } else if (sp == DROP_FLOWER_J2) {
-            whiteDropSetup = std::array{2700, 590};
-            whiteDropPosition = std::array{0, 590};
+            whiteDropSetup = std::array{2700, 600};
+            whiteDropPosition = std::array{3000, 600};
             angle = 0;
         }
     }
