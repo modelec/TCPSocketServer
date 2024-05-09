@@ -1551,6 +1551,8 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     this->baisserBras();
 
+    this->setMaxSpeed();
+
     this->rotate(angle);
     awaitRobotIdle();
 
