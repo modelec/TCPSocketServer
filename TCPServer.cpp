@@ -1349,8 +1349,8 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
         }
     } else if (team == YELLOW) {
         if (sp == DROP_FLOWER_J1) {
-            whiteDropSetup = std::array{2245, 300};
-            whiteDropPosition = std::array{2245, 0};
+            whiteDropSetup = std::array{2230, 300};
+            whiteDropPosition = std::array{2230, 0};
             angle = PI / 2;
         } else if (sp == DROP_FLOWER_J2) {
             whiteDropSetup = std::array{2700, 600};
