@@ -451,7 +451,7 @@ void TCPServer::startGame() {
     for (int i = whereAmI; i < stratPatterns.size(); i++) {
 
         auto time = std::chrono::system_clock::now();
-        if (time - gameStart > std::chrono::seconds(82)) {
+        if (time - gameStart > std::chrono::seconds(87)) {
             this->goEnd();
             return;
         }
