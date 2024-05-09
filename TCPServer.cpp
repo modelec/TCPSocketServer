@@ -1662,10 +1662,16 @@ void TCPServer::getLidarPos() {
 
     this->askLidarPosition();
 
+    int timeout = 0;
+
     // ReSharper disable once CppDFAConstantConditions
     // ReSharper disable once CppDFAEndlessLoop
     while (awaitForLidar) {
         usleep(50'000);
+        timeout++;
+        if (timeout > 100) {
+            break;
+        }
     }
 
     // ReSharper disable once CppDFAUnreachableCode
