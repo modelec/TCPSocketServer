@@ -177,6 +177,8 @@ private:
 
     int lidarGetPosTimeout = 0;
 
+    std::string lastArduinoCommand{};
+
 public:
     explicit TCPServer(int port);
 

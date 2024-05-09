@@ -133,9 +133,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
         this->stopEmergency = true;
 
-        if (!handleEmergencyFlag) {
-            std::thread([this, args]() { this->handleEmergency(std::stoi(args[0]), std::stod(args[1]) / 100); }).detach();
-        }
+        // if (!handleEmergencyFlag) {
+            // std::thread([this, args]() { this->handleEmergency(std::stoi(args[0]), std::stod(args[1]) / 100); }).detach();
+        // }
     }
     else if (tokens[1] != "strat") {
         this->broadcastMessage(message, clientSocket);
@@ -802,6 +802,13 @@ void TCPServer::awaitRobotIdle() {
         usleep(50'000);
         this->sendToClient("strat;arduino;get state;1\n", this->arduinoSocket);
         timeout++;
+        if (stopEmergency) {
+            while (stopEmergency) {
+                usleep(100'000);
+            }
+            this->broadcastMessage(lastArduinoCommand);
+            awaitRobotIdle();
+        }
         if (timeout > 80) {
             this->broadcastMessage("strat;arduino;clear;1");
             break;
@@ -912,7 +919,7 @@ std::vector<PinceState> TCPServer::getNotFallenFlowers() const {
 }
 
 void TCPServer::handleEmergency(int distance, double angle) {
-    this->handleEmergencyFlag = true;
+    /*this->handleEmergencyFlag = true;
 
     this->broadcastMessage("strat;arduino;clear;2\n");
 
@@ -926,7 +933,7 @@ void TCPServer::handleEmergency(int distance, double angle) {
 
         this->stopEmergency = false;
 
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::seconds(1));*/
 
         /*double newAngle = this->robotPose.theta + angle;
         double newX = this->robotPose.pos.x + 200 * std::cos(newAngle);
@@ -934,7 +941,7 @@ void TCPServer::handleEmergency(int distance, double angle) {
         usleep(200'000);
         this->go(newX, newY);
         awaitRobotIdle();*/
-    }
+    /*}
     this->broadcastMessage("strat;arduino;clear;4\n");
 
     try {
@@ -949,7 +956,7 @@ void TCPServer::handleEmergency(int distance, double angle) {
 
     this->gameThread.detach();
 
-    this->handleEmergencyFlag = false;
+    this->handleEmergencyFlag = false;*/
 }
 
 void TCPServer::startTestAruco(const int pince) {
@@ -1713,47 +1720,44 @@ void TCPServer::checkpoint(const StratPattern sp) {
 
 template<class X, class Y>
 void TCPServer::go(X x, Y y) {
-    if (stopEmergency) return;
+    lastArduinoCommand = "strat;arduino;go;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "\n";
     this->broadcastMessage("strat;arduino;go;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "\n");
 }
 
 template<class X>
 void TCPServer::go(std::array<X, 2> data) {
-    if (stopEmergency) return;
+    lastArduinoCommand = "strat;arduino;go;" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "\n";
     this->broadcastMessage("strat;arduino;go;" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "\n");
 }
 
 template<class X>
 void TCPServer::rotate(X angle) {
-    if (stopEmergency) return;
+    lastArduinoCommand = "strat;arduino;angle;" + std::to_string(static_cast<int>(angle * 100)) + "\n";
     this->broadcastMessage("strat;arduino;angle;" + std::to_string(static_cast<int>(angle * 100)) + "\n");
 }
 
 void TCPServer::setSpeed(const int speed) {
-    if (stopEmergency) return;
     this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
     this->speed = speed;
 }
 
 void TCPServer::setMaxSpeed() {
-    if (stopEmergency) return;
     this->setSpeed(MAX_SPEED);
 }
 
 void TCPServer::setMinSpeed() {
-    if (stopEmergency) return;
     this->setSpeed(MIN_SPEED);
 }
 
 template<class X, class Y>
 void TCPServer::transit(X x, Y y, const int endSpeed) {
-    if (stopEmergency) return;
+    lastArduinoCommand = "strat;arduino;transit;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "," + std::to_string(endSpeed) + "\n";
     this->broadcastMessage("strat;arduino;transit;" + std::to_string(static_cast<int>(x)) + "," + std::to_string(static_cast<int>(y)) + "," + std::to_string(endSpeed) + "\n");
 }
 
 template<class X>
 void TCPServer::transit(std::array<X, 2> data, const int endSpeed) {
-    if (stopEmergency) return;
+    lastArduinoCommand = "strat;arduino;transit;" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "," + std::to_string(endSpeed) + "\n";
     this->broadcastMessage("strat;arduino;transit;" + std::to_string(static_cast<int>(data[0])) + "," + std::to_string(static_cast<int>(data[1])) + "," + std::to_string(endSpeed) + "\n");
 }
 
@@ -1798,42 +1802,34 @@ void TCPServer::setPosition(const Position pos, const std::string &toSend) {
 }
 
 void TCPServer::baisserBras() {
-    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
 }
 
 void TCPServer::transportBras() {
-    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;transport bras;1\n");
 }
 
 void TCPServer::leverBras() {
-    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
 }
 
 void TCPServer::openPince(int pince) {
-    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;ouvrir pince;" + std::to_string(pince) + "\n");
 }
 
 void TCPServer::fullyOpenPince(int pince) {
-    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;ouvrir total pince;" + std::to_string(pince) + "\n");
 }
 
 void TCPServer::middlePince(int pince) {
-    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;middle pince;" + std::to_string(pince) + "\n");
 }
 
 void TCPServer::closePince(int pince) {
-    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n");
 }
 
 void TCPServer::checkPanneau(int servo_moteur) {
-    if (stopEmergency) return;
     this->broadcastMessage("strat;servo_moteur;check panneau;" + std::to_string(servo_moteur) + "\n");
 }
 
@@ -1842,7 +1838,6 @@ void TCPServer::uncheckPanneau(int servo_moteur) {
 }
 
 void TCPServer::askLidarPosition() {
-    if (stopEmergency) return;
     this->broadcastMessage("start;lidar;get pos;1\n");
 }
 
