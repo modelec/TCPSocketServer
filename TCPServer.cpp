@@ -450,8 +450,6 @@ void TCPServer::startGame() {
     gameStarted = true;
     for (int i = whereAmI; i < stratPatterns.size(); i++) {
 
-        if (stopEmergency) return;
-
         auto time = std::chrono::system_clock::now();
         if (time - gameStart > std::chrono::seconds(82)) {
             this->goEnd();
@@ -801,7 +799,6 @@ void TCPServer::awaitRobotIdle() {
     while (isRobotIdle < 2) {
         usleep(50'000);
         this->sendToClient("strat;arduino;get state;1\n", this->arduinoSocket);
-        timeout++;
         if (stopEmergency) {
             while (stopEmergency) {
                 stopEmergency = false;
@@ -810,6 +807,7 @@ void TCPServer::awaitRobotIdle() {
             this->broadcastMessage(lastArduinoCommand);
             awaitRobotIdle();
         }
+        timeout++;
         if (timeout > 80) {
             this->broadcastMessage("strat;arduino;clear;1");
             break;
@@ -1361,8 +1359,6 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
         }
     }
 
-    if (stopEmergency) return;
-
     this->setMaxSpeed();
 
     this->go(whiteDropSetup);
@@ -1389,8 +1385,6 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
         this->sendPoint(3+1);
     }
 
-    if (stopEmergency) return;
-
     usleep(500'000);
 
     this->closePince(0);
@@ -1403,8 +1397,6 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
         pinceState[1] = NONE;
         this->sendPoint(3+1);
     }
-
-    if (stopEmergency) return;
 
     usleep(500'000);
 
@@ -1458,8 +1450,6 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
         return;
     }
 
-    if (stopEmergency) return;
-
     this->setMaxSpeed();
 
     this->go(dropPosition);
@@ -1473,8 +1463,6 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
     this->setMaxSpeed();
 
     this->baisserBras();
-
-    if (stopEmergency) return;
 
     for (int i = 0; i < 3; i++) {
         this->openPince(i);
@@ -1497,8 +1485,6 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
         pinceState[i] = NONE;
         this->closePince(i);
     }
-
-    if (stopEmergency) return;
 
     if (!detectedPurple) {
         this->sendPoint(3);
@@ -1557,8 +1543,6 @@ void TCPServer::go3Plants(const StratPattern sp) {
         return;
     }
 
-    if (stopEmergency) return;
-
     this->setMaxSpeed();
 
     this->transit(plantPosition[0]-(600*direction), plantPosition[1], 170);
@@ -1582,7 +1566,6 @@ void TCPServer::go3Plants(const StratPattern sp) {
     for (int i = 0; i < 5; i++) {
         this->broadcastMessage("strat;aruco;get aruco;1\n");
         usleep(110'000);
-        if (stopEmergency) return;
     }
 
     std::vector<PinceState> pinceCanTakeFLower = getNotFallenFlowers();
@@ -1600,8 +1583,6 @@ void TCPServer::go3Plants(const StratPattern sp) {
     this->setMaxSpeed();
 
     usleep(500'000);
-
-    if (stopEmergency) return;
 
     for (int i = 0; i < 3; i++) {
         this->closePince(i);
