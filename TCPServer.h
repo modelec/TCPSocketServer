@@ -216,7 +216,7 @@ public:
 
     [[nodiscard]] bool shouldStop() const;
 
-    void awaitRobotIdle();
+    int awaitRobotIdle();
 
     void handleArucoTag(const ArucoTag &tag);
 

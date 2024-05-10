@@ -531,11 +531,11 @@ void TCPServer::startGame() {
                 break;
             case ROTATE_0:
                 this->rotate(0);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
                 break;
             case ROTATE_270:
                 this->rotate(-PI/2);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
                 break;
         }
 
@@ -589,7 +589,7 @@ void TCPServer::startGameTest() {
 
     // pi/4
     this->broadcastMessage("strat;arduino;angle;314\n");
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     // ReSharper disable once CppDFAUnreachableCode
 
@@ -631,7 +631,7 @@ void TCPServer::startGameTest() {
     }
 
     this->broadcastMessage("strat;arduino;angle;157\n");
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     // this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
 
@@ -677,10 +677,10 @@ void TCPServer::startGameTest() {
     std::string toSend = "strat;arduino;go;762,300\n";
     this->broadcastMessage(toSend);
     usleep(200'000);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->broadcastMessage("strat;arduino;angle;157\n");
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->broadcastMessage("strat;arduino;speed;150\n");
     this->broadcastMessage("strat;arduino;go;762,0\n");
@@ -702,11 +702,11 @@ void TCPServer::startGameTest() {
 
     toSend = "strat;arduino;go;" + std::to_string(static_cast<int>(this->endRobotPose.pos.x)) + "," + std::to_string(static_cast<int>(this->endRobotPose.pos.y)) + "\n";
     this->broadcastMessage(toSend);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     toSend = "strat;arduino;angle;" + std::to_string(static_cast<int>(this->endRobotPose.theta * 100)) + "\n";
     this->broadcastMessage(toSend);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     // toSend = "start;arduino;angle;" + std::to_string(this->endRobotPose.theta * 100) + "\n";
     // this->broadcastMessage(toSend);
@@ -756,14 +756,14 @@ void TCPServer::goToAruco(const ArucoTag &arucoTag, const int pince) {
     this->setSpeed(200);
 
     this->rotate(this->robotPose.theta /*+ rotate*/ - thetaPrime);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     double robotPosForPotX = (centerPlantX * std::cos(theta) + centerPlantY * std::sin(theta)) + robotPosX;
     double robotPosForPotY = (-centerPlantX * std::sin(theta) + centerPlantY * std::cos(theta)) + robotPosY;
 
 
     this->transit(robotPosForPotX, robotPosForPotY, 130);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->closePince(pince);
     usleep(500'000);
@@ -790,7 +790,7 @@ void TCPServer::askArduinoPos() {
     }
 }
 
-void TCPServer::awaitRobotIdle() {
+int TCPServer::awaitRobotIdle() {
     isRobotIdle = 0;
     int timeout = 0;
     // ReSharper disable once CppDFAConstantConditions
@@ -807,12 +807,19 @@ void TCPServer::awaitRobotIdle() {
             this->broadcastMessage(lastArduinoCommand);
             awaitRobotIdle();
         }
+        if (gameStarted) {
+            auto time = std::chrono::system_clock::now();
+            if (time - gameStart > std::chrono::seconds(87)) {
+                return -1;
+            }
+        }
         timeout++;
         if (timeout > 80) {
             this->broadcastMessage("strat;arduino;clear;1");
-            break;
+            return -2;
         }
     }
+    return 0;
 }
 
 void TCPServer::handleArucoTag(const ArucoTag &tag) {
@@ -939,7 +946,7 @@ void TCPServer::handleEmergency(int distance, double angle) {
         double newY = this->robotPose.pos.y + 200 * std::sin(newAngle);
         usleep(200'000);
         this->go(newX, newY);
-        awaitRobotIdle();*/
+        if (awaitRobotIdle() < 0) return;*/
     /*}
     this->broadcastMessage("strat;arduino;clear;4\n");
 
@@ -998,14 +1005,14 @@ void TCPServer::goEnd() {
 
     for (const auto& checkpoint : checkponts) {
         this->go(checkpoint);
-        awaitRobotIdle();
+        if (awaitRobotIdle() < 0) return;
     }
 
     this->go(this->endRobotPose.pos.x, this->endRobotPose.pos.y);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
     this->setSpeed(180);
     this->rotate(this->endRobotPose.theta);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->baisserBras();
 
@@ -1023,34 +1030,34 @@ void TCPServer::findAndGoFlower(const StratPattern sp) {
     if (team == BLUE) {
         if (sp == TAKE_FLOWER_TOP) {
             this->go(500, 700);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
 
             this->rotate(0);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
             this->go(500, 1300);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
 
             this->rotate(0);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
         } else {
             return;
         }
     } else if (team == YELLOW) {
         if (sp == TAKE_FLOWER_TOP) {
             this->go(1500,  700);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
 
             this->rotate(-PI);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
         }
         else if (sp == TAKE_FLOWER_BOTTOM) {
             this->go(1500, 1300);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
 
             this->rotate(-PI);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
         } else {
             return;
         }
@@ -1123,12 +1130,12 @@ void TCPServer::dropPurpleFlowers() {
 
     if (!pinceHavePurpleFlower.empty()) {
         this->go(purpleDropPosition);
-        awaitRobotIdle();
+        if (awaitRobotIdle() < 0) return;
 
         this->setSpeed(150);
 
         this->rotate(PI / 2);
-        awaitRobotIdle();
+        if (awaitRobotIdle() < 0) return;
 
         this->baisserBras();
 
@@ -1137,10 +1144,10 @@ void TCPServer::dropPurpleFlowers() {
             usleep(200'000);
 
             this->go(this->robotPose.pos.x, this->robotPose.pos.y - 150);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
 
             this->go(this->robotPose.pos.x, this->robotPose.pos.y + 150);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
 
             pinceState[toDrop] = NONE;
             this->closePince(toDrop);
@@ -1205,11 +1212,11 @@ void TCPServer::dropWhiteFlowers(const StratPattern sp) {
     this->setSpeed(200);
 
     this->go(whiteDropSetup);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
 
     this->rotate(angle);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->leverBras();
     usleep(500'000);
@@ -1240,7 +1247,7 @@ void TCPServer::dropWhiteFlowers(const StratPattern sp) {
     this->setSpeed(200);
 
     this->go(whiteDropSetup);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     for (int i = 0; i < 3; i++) {
         this->closePince(i);
@@ -1255,10 +1262,10 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
         switch (sp) {
             case TURN_SOLAR_PANNEL_1:
                 this->go(250, 1800);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
 
                 this->rotate(0);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
 
                 this->checkPanneau(7);
                 usleep(300'000);
@@ -1266,10 +1273,10 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 break;
             case TURN_SOLAR_PANNEL_2:
                 this->go(460, 1800);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
 
                 this->rotate(0);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
 
                 this->checkPanneau(7);
                 usleep(300'000);
@@ -1277,10 +1284,10 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 break;
             case TURN_SOLAR_PANNEL_3:
                 this->go(690, 1800);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
 
                 this->rotate(0);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
 
                 this->checkPanneau(7);
                 usleep(300'000);
@@ -1293,10 +1300,10 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
         switch (sp) {
             case TURN_SOLAR_PANNEL_1:
                 this->go(2750, 1800);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
 
                 this->rotate(PI);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
 
                 this->checkPanneau(6);
                 usleep(300'000);
@@ -1304,10 +1311,10 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 break;
             case TURN_SOLAR_PANNEL_2:
                 this->go(2540, 1800);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
 
                 this->rotate(PI);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
 
                 this->checkPanneau(6);
                 usleep(300'000);
@@ -1315,10 +1322,10 @@ void TCPServer::goAndTurnSolarPanel(const StratPattern sp) {
                 break;
             case TURN_SOLAR_PANNEL_3:
                 this->go(2310, 1800);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
 
                 this->rotate(PI);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
 
                 this->checkPanneau(6);
                 usleep(300'000);
@@ -1362,10 +1369,10 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
     this->setMaxSpeed();
 
     this->transit(whiteDropSetup, 170);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->rotate(angle);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->leverBras();
 
@@ -1407,7 +1414,7 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
     this->setMaxSpeed();
 
     this->go(whiteDropSetup);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->transportBras();
 }
@@ -1453,12 +1460,12 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
     this->setMaxSpeed();
 
     this->go(dropPosition);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->setSpeed(170);
 
     this->rotate(angle);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->setMaxSpeed();
 
@@ -1469,10 +1476,10 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
     }
 
     this->go(this->robotPose.pos.x, this->robotPose.pos.y - distance);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->go(this->robotPose.pos.x, this->robotPose.pos.y + distance);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     bool detectedPurple = false;
 
@@ -1547,20 +1554,20 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     this->transit(plantPosition[0]-(600*direction), plantPosition[1], 170);
     // this->go(plantPosition[0]-500, plantPosition[1]);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->baisserBras();
 
     this->setMaxSpeed();
 
     this->rotate(angle);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->transit(plantPosition[0]-(400*direction), plantPosition[1], 150);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->rotate(angle);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->setMaxSpeed();
 
@@ -1580,7 +1587,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
     usleep(200'000);
 
     this->transit(plantPosition[0], this->robotPose.pos.y, 130);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->setMaxSpeed();
 
@@ -1593,12 +1600,12 @@ void TCPServer::go3Plants(const StratPattern sp) {
     usleep(500'000);
 
     this->rotate(angle);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     this->setSpeed(160);
 
     this->go(this->robotPose.pos.x - (200 * direction), this->robotPose.pos.y);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     for (int i = 0; i < 3; i++) {
         this->openPince(i);
@@ -1607,7 +1614,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     this->setSpeed(150);
     this->go(this->robotPose.pos.x + (75 * direction), this->robotPose.pos.y);
-    awaitRobotIdle();
+    if (awaitRobotIdle() < 0) return;
 
     for (int i = 0; i < 3; i++) {
         this->closePince(i);
@@ -1622,26 +1629,26 @@ void TCPServer::removePot(StratPattern sp) {
     if (team == BLUE) {
         if (sp == REMOVE_POT_J2) {
             this->transit(250, 1100, 150);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
             this->setMaxSpeed();
             this->go(210, 900);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
             this->go(200, 400);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
             this->go(250, 650);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
         }
     } else if (team == YELLOW) {
         if (sp == REMOVE_POT_J2) {
             this->transit(2750, 1100, 150);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
             this->setMaxSpeed();
             this->go(2780, 900);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
             this->go(2790, 400);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
             this->go(2750, 650);
-            awaitRobotIdle();
+            if (awaitRobotIdle() < 0) return;
         }
     }
 }
@@ -1685,11 +1692,11 @@ void TCPServer::checkpoint(const StratPattern sp) {
         switch (sp) {
             case CHECKPOINT_MIDDLE:
                 this->go(500, 1500);
-                this->awaitRobotIdle();
+                this->if (awaitRobotIdle() < 0) return;
                 break;
             case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
                 this->go(800, 1800);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
                 this->go(500, 1700);
                 usleep(500'000);
                 break;
@@ -1700,11 +1707,11 @@ void TCPServer::checkpoint(const StratPattern sp) {
         switch (sp) {
             case CHECKPOINT_MIDDLE:
                 this->go(2500, 1500);
-                this->awaitRobotIdle();
+                this->if (awaitRobotIdle() < 0) return;
                 break;
             case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
                 this->go(2200, 1800);
-                awaitRobotIdle();
+                if (awaitRobotIdle() < 0) return;
                 this->go(2500, 1700);
                 usleep(500'000);
                 break;
