@@ -72,10 +72,10 @@ TCPServer::TCPServer(int port) : team(TEST)
 
     std::cout << "Server started on port " << port << std::endl;
 
-    clients.reserve(6);
+    clients.reserve(5);
 
     clients.emplace_back("tirette");
-    clients.emplace_back("aruco");
+    // clients.emplace_back("aruco");
     clients.emplace_back("ihm");
     clients.emplace_back("lidar");
     clients.emplace_back("arduino");
