@@ -1645,7 +1645,7 @@ void TCPServer::removePot(StratPattern sp) {
             this->setMaxSpeed();
             this->go(2780, 900);
             if (awaitRobotIdle() < 0) return;
-            this->go(2790, 400);
+            this->go(2780, 400);
             if (awaitRobotIdle() < 0) return;
             this->go(2750, 650);
             if (awaitRobotIdle() < 0) return;
