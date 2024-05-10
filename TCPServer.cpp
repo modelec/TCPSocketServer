@@ -816,7 +816,7 @@ int TCPServer::awaitRobotIdle() {
         timeout++;
         if (timeout > 80) {
             this->broadcastMessage("strat;arduino;clear;1");
-            return -2;
+            return 1;
         }
     }
     return 0;
