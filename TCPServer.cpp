@@ -1692,7 +1692,7 @@ void TCPServer::checkpoint(const StratPattern sp) {
         switch (sp) {
             case CHECKPOINT_MIDDLE:
                 this->go(500, 1500);
-                this->if (awaitRobotIdle() < 0) return;
+                if (awaitRobotIdle() < 0) return;
                 break;
             case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
                 this->go(800, 1800);
@@ -1707,7 +1707,7 @@ void TCPServer::checkpoint(const StratPattern sp) {
         switch (sp) {
             case CHECKPOINT_MIDDLE:
                 this->go(2500, 1500);
-                this->if (awaitRobotIdle() < 0) return;
+                if (awaitRobotIdle() < 0) return;
                 break;
             case CHECKPOINT_TRANSITION_SOLAR_PANEL_FLOWER:
                 this->go(2200, 1800);
