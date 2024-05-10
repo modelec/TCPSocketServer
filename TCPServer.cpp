@@ -1575,18 +1575,16 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     this->setMaxSpeed();
 
-    this->arucoTags.clear();
-    for (int i = 0; i < 5; i++) {
-        this->broadcastMessage("strat;aruco;get aruco;1\n");
-        usleep(110'000);
-    }
+    // this->arucoTags.clear();
+    // for (int i = 0; i < 5; i++) {
+        // this->broadcastMessage("strat;aruco;get aruco;1\n");
+        // usleep(110'000);
+    // }
 
-    std::vector<PinceState> pinceCanTakeFLower = getNotFallenFlowers();
+    // std::vector<PinceState> pinceCanTakeFLower = getNotFallenFlowers();
 
     for (int i = 0; i < 3; i++) {
-        if (pinceCanTakeFLower[i] != NONE) {
-            this->openPince(i);
-        }
+        this->openPince(i);
     }
     usleep(200'000);
 
@@ -1599,7 +1597,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     for (int i = 0; i < 3; i++) {
         this->closePince(i);
-        pinceState[i] = pinceCanTakeFLower[i];
+        pinceState[i] = FLOWER;
     }
     usleep(500'000);
 
