@@ -1425,20 +1425,17 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
 void TCPServer::dropBaseFlowers(StratPattern sp) {
     std::array<int, 2> dropPosition{};
     double angle;
-    double Positioningangle;
     float distance;
 
     if (team == BLUE) {
         if (sp == DROP_FLOWER_BASE_1) {
             dropPosition = {300, 400};
             angle = PI / 2;
-            Positioningangle = 0;
             distance = 150;
         }
         else if (sp == DROP_FLOWER_BASE_2) {
             dropPosition = {300, 1600};
             angle = -PI / 2;
-            Positioningangle = 0;
             distance = -150;
         }
         else {
@@ -1449,13 +1446,14 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
         if (sp == DROP_FLOWER_BASE_1) {
             dropPosition = {2700, 400};
             angle = PI / 2;
-            Positioningangle = PI;
             distance = 150;
+
+            this->rotate(0);
+            awaitRobotIdle();
         }
         else if (sp == DROP_FLOWER_BASE_2) {
             dropPosition = {2700, 1600};
             angle = -PI / 2;
-            Positioningangle = PI;
             distance = -150;
         } else {
             return;
@@ -1466,9 +1464,6 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
     }
 
     this->setMaxSpeed();
-
-    this->rotate(Positioningangle);
-    if (awaitRobotIdle() < 0) return;
 
     this->go(dropPosition);
     if (awaitRobotIdle() < 0) return;
