@@ -1371,6 +1371,8 @@ void TCPServer::dropJardiniereFlowers(const StratPattern sp) {
     this->transit(whiteDropSetup, 170);
     if (awaitRobotIdle() < 0) return;
 
+    this->setMaxSpeed();
+
     this->rotate(angle);
     if (awaitRobotIdle() < 0) return;
 
@@ -1552,7 +1554,7 @@ void TCPServer::go3Plants(const StratPattern sp) {
 
     this->setMaxSpeed();
 
-    this->transit(plantPosition[0]-(600*direction), plantPosition[1], 170);
+    this->transit(plantPosition[0]-(600*direction), plantPosition[1], 150);
     // this->go(plantPosition[0]-500, plantPosition[1]);
     if (awaitRobotIdle() < 0) return;
 
