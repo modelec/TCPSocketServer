@@ -1432,13 +1432,13 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
         if (sp == DROP_FLOWER_BASE_1) {
             dropPosition = {300, 400};
             angle = PI / 2;
-            angleStart = PI;
+            angleStart = 3 * PI / 4;
             distance = 150;
         }
         else if (sp == DROP_FLOWER_BASE_2) {
             dropPosition = {300, 1600};
             angle = -PI / 2;
-            angleStart = PI;
+            angleStart = -3 * PI / 4;
             distance = -150;
         }
         else {
@@ -1449,13 +1449,13 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
         if (sp == DROP_FLOWER_BASE_1) {
             dropPosition = {2700, 400};
             angle = PI / 2;
-            angleStart = 0;
+            angleStart = PI / 4;
             distance = 150;
         }
         else if (sp == DROP_FLOWER_BASE_2) {
             dropPosition = {2700, 1600};
             angle = -PI / 2;
-            angleStart = 0;
+            angleStart = -PI / 4;
             distance = -150;
         } else {
             return;
