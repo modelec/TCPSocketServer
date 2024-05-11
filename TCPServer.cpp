@@ -1481,8 +1481,6 @@ void TCPServer::dropBaseFlowers(StratPattern sp) {
     this->rotate(angle);
     if (awaitRobotIdle() < 0) return;
 
-    this->setMaxSpeed();
-
     this->baisserBras();
 
     for (int i = 0; i < 3; i++) {
