@@ -18,17 +18,13 @@ int main(int argc, char* argv[]) {
 
     TCPServer server(port);
 
-    try {
-        server.start();
+    server.start();
 
-        while (!server.shouldStop() && !shouldStop) {
-            usleep(500'000);
-        }
-
-        server.stop();
-    } catch (const std::exception& ex) {
-        std::cerr << "Error: " << ex.what() << std::endl;
-        return 1;
+    while (!server.shouldStop() && !shouldStop) {
+        usleep(500'000);
     }
+
+    server.stop();
+
     return 0;
 }
