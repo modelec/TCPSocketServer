@@ -373,7 +373,7 @@ void TCPServer::togglePince(int pince) {
         this->broadcastMessage("strat;servo_moteur;ouvrir pince;" + std::to_string(pince) + "\n");
         pinceState[pince] = FLOWER;
     }
-    else if (pinceState[pince] == FLOWER) {
+    else if (pinceState[pince] != NONE) {
         this->broadcastMessage("strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n");
         pinceState[pince] = NONE;
     }
