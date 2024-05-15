@@ -120,8 +120,11 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         return;
     }
     if (TCPUtils::contains(tokens[2], "stop proximity")) {
-        // TODO handle math to know if the robot is in face of the obstacle
         stopEmergency = true;
+
+        std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
+
+        this->lidarDectectionAngle = stod(args[1]);
 
         if (!handleEmergecnyFlag) {
             std::thread([this]() { handleEmergency(); }).detach();
@@ -161,26 +164,25 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 value = 0;
             }
             if (args[0] == "0") {
-                // this value represent the angle of the robot
-                // wrap the value between TODO
-
                 if (!handleEmergecnyFlag) {
-                    // double angle =
+                    double angle = static_cast<int>((value * PI / 2) / 327.67f);
+                    this->broadcastMessage("strat;arduino;angle;" + std::to_string(angle) + "\n");
                 }
             }
             else if (args[0] == "1") {
-                // my value are between -32768 and 32767
-                // this value represent the speed of the robot
-                // wrap the value between -200 and 200
+                int speed = static_cast<int>((- value * 3.2) / 327.670f);
                 if (!handleEmergecnyFlag) {
-                    int speed = static_cast<int>((- value * 2) / 327.670f);
+                    this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
+                }
+                else {
+                    if (speed > 0 && (this->lidarDectectionAngle > PI / 2 || this->lidarDectectionAngle < - PI / 2)) {
+                        this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
+                    }
                 }
             }
             else if (args[0] == "2") {
-                // TODO rotate
-                // my value are between -32768 and 32767
-                // the value represent the speed of the rotate and the -/+ the direction
-                // double angle =
+                double speed = static_cast<int>((value * 3.2) / 327.670f);
+                this->broadcastMessage("start;arduino;rotate;" + std::to_string(speed));
             }
         }
         else if (tokens[2] == "button down") {
@@ -211,10 +213,16 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
             int nb = std::stoi(args[0]);
 
-            double percentage = 100 - std::stod(args[1]) / 327.670f;
+            double percentage = std::stod(args[1]) / 327.670f;
 
             this->percentagePanel(nb + 6, static_cast<int>(percentage));
-
+        }
+    }
+    else if (tokens[0] == "arduino") {
+        if (tokens[2] == "set pos") {
+            std::vector<std::string> pos = TCPUtils::split(tokens[3], ",");
+            this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]) / 100};
+            this->sendToClient("strat;lidar;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta) + "\n", lidarSocket);
         }
     }
 }
@@ -356,6 +364,25 @@ void TCPServer::checkIfAllClientsReady() {
     if (allReady)
     {
         this->broadcastMessage("strat;all;ready;1\n");
+        std::thread([this]() { askArduinoPos(); }).detach();
+    }
+}
+
+void TCPServer::askArduinoPos() {
+    for (const auto & client : clients) {
+        if (client.name == "arduino") {
+            this->arduinoSocket = client.socket;
+            break;
+        }
+    }
+
+    if (this->arduinoSocket == -1) {
+        return;
+    }
+
+    while (!this->_shouldStop) {
+        this->sendToClient("strat;arduino;get pos;1\n", this->arduinoSocket);
+        usleep(50'000);
     }
 }
 

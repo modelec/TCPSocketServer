@@ -81,6 +81,8 @@ private:
 
     Axis axisLeft{0, 0};
 
+    double lidarDectectionAngle = 0;
+
 public:
     explicit TCPServer(int port);
 
@@ -103,6 +105,8 @@ public:
     void clientDisconnected(int clientSocket); // New method to handle client disconnection
 
     void stop();
+
+    void askArduinoPos();
 
     [[nodiscard]] size_t nbClients() const;
 
