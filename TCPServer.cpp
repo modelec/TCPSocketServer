@@ -370,11 +370,11 @@ void TCPServer::toggleBras() {
 
 void TCPServer::togglePince(int pince) {
     if (pinceState[pince] == NONE) {
-        this->broadcastMessage("strat;servo_moteur;pince;ouvrir;" + std::to_string(pince) + "\n");
+        this->broadcastMessage("strat;servo_moteur;ouvrir pince;" + std::to_string(pince) + "\n");
         pinceState[pince] = FLOWER;
     }
     else if (pinceState[pince] == FLOWER) {
-        this->broadcastMessage("strat;arduino;servo_moteur;fermer;" + std::to_string(pince) + "\n");
+        this->broadcastMessage("strat;arduino;servo_moteur;fermer pince;" + std::to_string(pince) + "\n");
         pinceState[pince] = NONE;
     }
 }
