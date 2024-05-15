@@ -374,7 +374,7 @@ void TCPServer::togglePince(int pince) {
         pinceState[pince] = FLOWER;
     }
     else if (pinceState[pince] == FLOWER) {
-        this->broadcastMessage("strat;arduino;servo_moteur;fermer pince;" + std::to_string(pince) + "\n");
+        this->broadcastMessage("strat;servo_moteur;fermer pince;" + std::to_string(pince) + "\n");
         pinceState[pince] = NONE;
     }
 }
