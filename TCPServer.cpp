@@ -211,7 +211,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
             int nb = std::stoi(args[0]);
 
-            double percentage = std::stod(args[1]) / 327.670f;
+            double percentage = 100 - std::stod(args[1]) / 327.670f;
 
             this->percentagePanel(nb + 6, static_cast<int>(percentage));
 
