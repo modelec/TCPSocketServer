@@ -175,7 +175,10 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                 }
                 else {
-                    if (speed > 0 && (this->lidarDectectionAngle > PI / 2 || this->lidarDectectionAngle < - PI / 2)) {
+                    if (speed > 0 && (this->lidarDectectionAngle > PI / 3 || this->lidarDectectionAngle < - PI / 3)) {
+                        this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
+                    }
+                    else if (speed < 0 && (this->lidarDectectionAngle < PI / 3 && this->lidarDectectionAngle > - PI / 3)) {
                         this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                     }
                 }
@@ -356,7 +359,6 @@ void TCPServer::checkIfAllClientsReady() {
     {
         if (!isReady)
         {
-            // std::cout << name << " is not ready" << std::endl;
             allReady = false;
         }
     }
