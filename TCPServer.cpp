@@ -171,7 +171,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             }
             if (args[0] == "0") {
                 if (!handleEmergecnyFlag) {
-                    int angle = TCPUtils::mapValue(value, -32767, 32768, - PI / 2, PI / 2);
+                    int angle = static_cast<int>(TCPUtils::mapValue(value, -32767.0, 32768.0, - PI / 2, PI / 2));
                     this->broadcastMessage("strat;arduino;angle;" + std::to_string(angle) + "\n");
                 }
             }
@@ -181,11 +181,11 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 value = -value;
 
                 if (value < 0) {
-                    speed = TCPUtils::mapValue(value, -32767, 0, -310, -70);
+                    speed = static_cast<int>(TCPUtils::mapValue(value, -32767.0, 0.0, -310.0, -70.0));
                 } else if (value == 0) {
                     speed = 0; // Maps 0 to 0
                 } else {
-                    speed = TCPUtils::mapValue(value, 70, 32768, 70, 310);
+                    speed = static_cast<int>(TCPUtils::mapValue(value, 0.0, 32768.0, 70.0, 310.0));
                 }
 
                 if (!handleEmergecnyFlag) {
@@ -201,7 +201,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 }
             }
             else if (args[0] == "2") {
-                int speed = TCPUtils::mapValue(value, -32767, 32768, -310, 310);
+                int speed = static_cast<int>(TCPUtils::mapValue(value, -32767.0, 32768.0, -310.0, 310.0));
                 this->broadcastMessage("start;arduino;rotate;" + std::to_string(speed));
             }
         }

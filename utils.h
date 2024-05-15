@@ -26,8 +26,8 @@ namespace TCPUtils {
     std::vector<std::string> split(const std::string& str, const std::string& delimiter);
 
     template<typename T>
-    int mapValue(T v, int v_min, int v_max, int v_min_prime, int v_max_prime) {
-        return v_min_prime + (static_cast<int>(v) - v_min) * (v_max_prime - v_min_prime) / (v_max - v_min);
+    T mapValue(T v, T v_min, T v_max, T v_min_prime, T v_max_prime) {
+        return v_min_prime + (v - v_min) * (v_max_prime - v_min_prime) / (v_max - v_min);
     }
 }
 
