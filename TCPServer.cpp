@@ -151,6 +151,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 break;
             }
         }
+        checkIfAllClientsReady();
     }
     else if (tokens[0] == "gc") {
         if (tokens[2] == "axis") {
@@ -339,6 +340,23 @@ void TCPServer::handleEmergency() {
 void TCPServer::start()
 {
     std::thread([this]() { acceptConnections(); }).detach();
+}
+
+void TCPServer::checkIfAllClientsReady() {
+    bool allReady = true;
+    for (auto&[name, socket, isReady] : clients)
+    {
+        if (!isReady)
+        {
+            // std::cout << name << " is not ready" << std::endl;
+            allReady = false;
+        }
+    }
+
+    if (allReady)
+    {
+        this->broadcastMessage("strat;all;ready;1\n");
+    }
 }
 
 void TCPServer::toggleBras() {
