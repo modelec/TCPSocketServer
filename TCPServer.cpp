@@ -120,15 +120,18 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         return;
     }
     if (TCPUtils::contains(tokens[2], "stop proximity")) {
-        stopEmergency = true;
-
         std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
 
-        this->lidarDectectionAngle = stod(args[1]);
+        if (stoi(args[0]) < 200) {
+            stopEmergency = true;
 
-        if (!handleEmergecnyFlag) {
-            std::thread([this]() { handleEmergency(); }).detach();
+            this->lidarDectectionAngle = stod(args[1]) / 100;
+
+            if (!handleEmergecnyFlag) {
+                std::thread([this]() { handleEmergency(); }).detach();
+            }
         }
+        this->broadcastMessage(message, clientSocket);
     }
     else if (tokens[1] != "strat") {
         this->broadcastMessage(message, clientSocket);
@@ -336,7 +339,6 @@ void TCPServer::handleEmergency() {
 
     handleEmergecnyFlag = true;
 
-    this->broadcastMessage("strat;all;stop proximity;1\n", lidarSocket);
     this->sendToClient("strat;arduino;clear;1\n", arduinoSocket);
     this->sendToClient("strat;arduino;clear;1\n", arduinoSocket);
 
