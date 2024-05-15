@@ -181,9 +181,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     if (speed > 0 && !(this->lidarDectectionAngle > PI / 2 || this->lidarDectectionAngle < 3 * PI / 2)) {
                         this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                     }
-                    // else if (speed < 0 && !(this->lidarDectectionAngle < PI / 2 && this->lidarDectectionAngle > 3 *PI / 2)) {
-                    //     this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
-                    // }
+                    else if (speed < 0 && !(this->lidarDectectionAngle < PI / 2 && this->lidarDectectionAngle > 3 *PI / 2)) {
+                    this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
+                    }
                 }
             }
             else if (args[0] == "2") {
