@@ -362,9 +362,9 @@ void TCPServer::checkIfAllClientsReady() {
 void TCPServer::toggleBras() {
     brasBaisser = !brasBaisser;
     if (brasBaisser) {
-        this->broadcastMessage("strat;servo_moteur;bras;baisser\n");
+        this->broadcastMessage("strat;servo_moteur;baisser bras;1\n");
     } else {
-        this->broadcastMessage("strat;servo_moteur;bras;lever\n");
+        this->broadcastMessage("strat;servo_moteur;lever bras;1\n");
     }
 }
 
