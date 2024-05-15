@@ -168,7 +168,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             }
             if (args[0] == "0") {
                 if (!handleEmergecnyFlag) {
-                    double angle = static_cast<int>((value * PI / 2) / 327.67f);
+                    double angle = static_cast<int>((value * PI / 2) / 327.67f * 100);
                     this->broadcastMessage("strat;arduino;angle;" + std::to_string(angle) + "\n");
                 }
             }
