@@ -163,7 +163,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         if (tokens[2] == "axis") {
             std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
             double value = std::stod(args[1]);
-            if (value > -500 && value < 500) {
+            if (value > -1000 && value < 1000) {
                 value = 0;
             }
             if (args[0] == "0") {
