@@ -169,7 +169,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             if (args[0] == "0") {
                 if (!handleEmergecnyFlag) {
                     int angle = static_cast<int>((value * PI / 2) / 327.67f * 100);
-                    this->broadcastMessage("strat;arduino;angle;" + std::to_string(angle) + "\n");
+                    // this->broadcastMessage("strat;arduino;angle;" + std::to_string(angle) + "\n");
                 }
             }
             else if (args[0] == "1") {
@@ -188,7 +188,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             }
             else if (args[0] == "2") {
                 int speed = static_cast<int>((value * 3.1) / 327.670f);
-                this->broadcastMessage("start;arduino;rotate;" + std::to_string(speed));
+                // this->broadcastMessage("start;arduino;rotate;" + std::to_string(speed));
             }
         }
         else if (tokens[2] == "button down") {
