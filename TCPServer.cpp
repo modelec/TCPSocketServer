@@ -168,7 +168,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             }
             if (args[0] == "0") {
                 if (!handleEmergecnyFlag) {
-                    double angle = static_cast<int>((value * PI / 2) / 327.67f * 100);
+                    int angle = static_cast<int>((value * PI / 2) / 327.67f * 100);
                     this->broadcastMessage("strat;arduino;angle;" + std::to_string(angle) + "\n");
                 }
             }
@@ -177,7 +177,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 if (!handleEmergecnyFlag) {
                     this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                 }
-/*                else {
+                /*else {
                     if (speed > 0 && !(this->lidarDectectionAngle > PI / 2 || this->lidarDectectionAngle < 3 * PI / 2)) {
                         this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                     }
@@ -187,7 +187,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 }*/
             }
             else if (args[0] == "2") {
-                double speed = static_cast<int>((value * 3.1) / 327.670f);
+                int speed = static_cast<int>((value * 3.1) / 327.670f);
                 this->broadcastMessage("start;arduino;rotate;" + std::to_string(speed));
             }
         }
