@@ -188,7 +188,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             }
             else if (args[0] == "2") {
                 int speed = static_cast<int>((value * 3.1) / 327.670f);
-                // this->broadcastMessage("start;arduino;rotate;" + std::to_string(speed));
+                this->broadcastMessage("start;arduino;rotate;" + std::to_string(speed));
             }
         }
         else if (tokens[2] == "button down") {
