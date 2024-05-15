@@ -74,14 +74,11 @@ TCPServer::TCPServer(int port)
 
     clients.reserve(5);
 
-    clients.emplace_back("tirette");
-    // clients.emplace_back("aruco");
     clients.emplace_back("ihm");
     clients.emplace_back("lidar");
     clients.emplace_back("arduino");
     clients.emplace_back("servo_moteur");
-    // clients.emplace_back("point");
-
+    clients.emplace_back("gc");
 }
 
 void TCPServer::acceptConnections()
