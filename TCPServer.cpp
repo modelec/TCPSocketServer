@@ -173,7 +173,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 }
             }
             else if (args[0] == "1") {
-                int speed = static_cast<int>((- value * 3.1) / 327.670f);
+                int speed = static_cast<int>((value * (310 - 70) / 32767.0f) + 70);
                 if (!handleEmergecnyFlag) {
                     this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                 }
