@@ -175,12 +175,14 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             else if (args[0] == "1") {
                 int speed;
 
+                value = -value;
+
                 if (value < 0) {
-                    speed = static_cast<int>((-value * (70 + 370) / 32767) - 370); // Maps [-32767, 0] to [-370, -70]
+                    speed = static_cast<int>((value * (70 + 370) / 32767) - 370); // Maps [-32767, 0] to [-370, -70]
                 } else if (value == 0) {
                     speed = 0; // Maps 0 to 0
                 } else {
-                    speed = static_cast<int>((-value * (70 + 310) / 32768) + 70); // Maps [0, 32768] to [70, 310]
+                    speed = static_cast<int>((value * (70 + 310) / 32768) + 70); // Maps [0, 32768] to [70, 310]
                 }
 
                 if (!handleEmergecnyFlag) {
