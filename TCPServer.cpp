@@ -210,6 +210,12 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             else if (tokens[3] == "14") {
                 this->togglePanel(1);
             }
+            else if (tokens[3] == "10") {
+                this->broadcastMessage("strat;arduino;clear;1\n");
+            }
+            else if (tokens[3] == "9") {
+                this->broadcastMessage("strat;arduino;clear;1\n");
+            }
         }
         else if (tokens[2] == "button up") {
 
