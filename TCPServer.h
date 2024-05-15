@@ -83,6 +83,8 @@ private:
 
     double lidarDectectionAngle = 0;
 
+    int lidarDecetionDistance = 0;
+
 public:
     explicit TCPServer(int port);
 

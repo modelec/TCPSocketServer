@@ -122,6 +122,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     if (TCPUtils::contains(tokens[2], "stop proximity")) {
         std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
 
+        lidarDecetionDistance = stoi(args[0]);
+        // TODO distance de detection proportionnelle a la vitesse
+
         if (stoi(args[0]) < 300) {
             stopEmergency = true;
 
