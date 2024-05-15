@@ -223,6 +223,9 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
             this->percentagePanel(nb + 6, static_cast<int>(percentage));
         }
+        else if (tokens[2] == "disconnect") {
+            this->broadcastMessage("strat;arduino;clear;1\n");
+        }
     }
     else if (tokens[0] == "arduino") {
         if (tokens[2] == "set pos") {
