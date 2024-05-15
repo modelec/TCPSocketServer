@@ -362,19 +362,19 @@ void TCPServer::checkIfAllClientsReady() {
 void TCPServer::toggleBras() {
     brasBaisser = !brasBaisser;
     if (brasBaisser) {
-        this->broadcastMessage("strat;arduino;bras;baisser\n");
+        this->broadcastMessage("strat;servo_moteur;bras;baisser\n");
     } else {
-        this->broadcastMessage("strat;arduino;bras;lever\n");
+        this->broadcastMessage("strat;servo_moteur;bras;lever\n");
     }
 }
 
 void TCPServer::togglePince(int pince) {
     if (pinceState[pince] == NONE) {
-        this->broadcastMessage("strat;arduino;pince;ouvrir;" + std::to_string(pince) + "\n");
+        this->broadcastMessage("strat;servo_moteur;pince;ouvrir;" + std::to_string(pince) + "\n");
         pinceState[pince] = FLOWER;
     }
     else if (pinceState[pince] == FLOWER) {
-        this->broadcastMessage("strat;arduino;pince;fermer;" + std::to_string(pince) + "\n");
+        this->broadcastMessage("strat;arduino;servo_moteur;fermer;" + std::to_string(pince) + "\n");
         pinceState[pince] = NONE;
     }
 }
@@ -382,12 +382,12 @@ void TCPServer::togglePince(int pince) {
 void TCPServer::togglePanel(int servo_moteur) {
     panneauCheck[servo_moteur] = !panneauCheck[servo_moteur];
     if (panneauCheck[servo_moteur]) {
-        this->broadcastMessage("strat;arduino;check panneau;" + std::to_string(servo_moteur + 6) + "\n");
+        this->broadcastMessage("strat;servo_moteur;check panneau;" + std::to_string(servo_moteur + 6) + "\n");
     } else {
-        this->broadcastMessage("strat;arduino;uncheck panneau;" + std::to_string(servo_moteur + 6) + "\n");
+        this->broadcastMessage("strat;servo_moteur;uncheck panneau;" + std::to_string(servo_moteur + 6) + "\n");
     }
 }
 
 void TCPServer::percentagePanel(int servo_moteur, int percentage) {
-    this->broadcastMessage("strat;arduino;panneau;" + std::to_string(servo_moteur) + "," + std::to_string(percentage) + "\n");
+    this->broadcastMessage("strat;servo_moteur;panneau;" + std::to_string(servo_moteur) + "," + std::to_string(percentage) + "\n");
 }
