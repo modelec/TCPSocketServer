@@ -113,7 +113,7 @@ void TCPServer::acceptConnections()
 
 void TCPServer::handleMessage(const std::string& message, int clientSocket)
 {
-    std::cout << message << std::endl;
+    // std::cout << message << std::endl;
 
     std::vector<std::string> tokens = TCPUtils::split(message, ";");
 
@@ -124,7 +124,11 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
     if (TCPUtils::contains(tokens[2], "stop proximity")) {
         // TODO handle math to know if the robot is in face of the obstacle
-        this->broadcastMessage("strat;arduino;clear;1\n");
+        stopEmergency = true;
+
+        if (!handleEmergecnyFlag) {
+            std::thread([this]() { handleEmergency(); }).detach();
+        }
     }
     else if (tokens[1] != "strat") {
         this->broadcastMessage(message, clientSocket);
@@ -141,6 +145,11 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 {
                     arduinoSocket = clientSocket;
                 }
+                else if (client.name == "lidar") {
+                    this->broadcastMessage("strat;lidar;start;1\n");
+                    this->broadcastMessage("strat;lidar;set beacon;0\n");
+                    lidarSocket = clientSocket;
+                }
                 std::cout << client.socket << " | " << client.name << " is ready" << std::endl;
                 break;
             }
@@ -148,23 +157,32 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
     else if (tokens[0] == "gc") {
         if (tokens[2] == "axis") {
-            if (!gameWithControllerStarted) {
-                gameWithControllerStarted = true;
-                std::thread t(&TCPServer::sendAxisToArduino, this);
-                t.detach();
-            }
             std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
+            double value = std::stod(args[1]);
+            if (value > -600 && value < 600) {
+                value = 0;
+            }
             if (args[0] == "0") {
-                axisLeft.x = std::stoi(args[1]);
+                // this value represent the angle of the robot
+                // wrap the value between TODO
+
+                if (!handleEmergecnyFlag) {
+                    // double angle =
+                }
             }
             else if (args[0] == "1") {
-                axisLeft.y = std::stoi(args[1]);
+                // my value are between -32768 and 32767
+                // this value represent the speed of the robot
+                // wrap the value between -200 and 200
+                if (!handleEmergecnyFlag) {
+                    int speed = static_cast<int>((- value * 2) / 327.670f);
+                }
             }
             else if (args[0] == "2") {
-                axisRight.x = std::stoi(args[1]);
-            }
-            else if (args[0] == "3") {
-                axisRight.y = std::stoi(args[1]);
+                // TODO rotate
+                // my value are between -32768 and 32767
+                // the value represent the speed of the rotate and the -/+ the direction
+                // double angle =
             }
         }
         else if (tokens[2] == "button down") {
@@ -305,6 +323,22 @@ size_t TCPServer::nbClients() const {
     return connectedClients;
 }
 
+void TCPServer::handleEmergency() {
+
+    handleEmergecnyFlag = true;
+
+    this->broadcastMessage("strat;all;stop proximity;1\n", lidarSocket);
+    this->sendToClient("strat;arduino;clear;1\n", arduinoSocket);
+    this->sendToClient("strat;arduino;clear;1\n", arduinoSocket);
+
+    while (stopEmergency) {
+        stopEmergency = false;
+        usleep(300'000);
+    }
+    handleEmergecnyFlag = false;
+}
+
+
 void TCPServer::start()
 {
     std::thread([this]() { acceptConnections(); }).detach();
@@ -341,13 +375,4 @@ void TCPServer::togglePanel(int servo_moteur) {
 
 void TCPServer::percentagePanel(int servo_moteur, int percentage) {
     this->broadcastMessage("strat;arduino;panneau;" + std::to_string(servo_moteur) + "," + std::to_string(percentage) + "\n");
-}
-
-void TCPServer::sendAxisToArduino() {
-    while (!_shouldStop) {
-
-        // if (axisLeft.x > 20 && axisLeft.x)
-        // this->broadcastMessage("strat;arduino;gc axis;" + std::to_string(axisLeft.x) + "," + std::to_string(axisLeft.y) + "\n");
-        usleep(10'000);
-    }
 }

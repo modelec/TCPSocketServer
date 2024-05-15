@@ -70,17 +70,16 @@ private:
 
     bool stopEmergency = false;
 
+    bool handleEmergecnyFlag = false;
+
     int arduinoSocket = -1;
+    int lidarSocket = -1;
 
     struct Axis {
         int x, y;
     };
 
     Axis axisLeft{0, 0};
-
-    Axis axisRight{0, 0};
-
-    bool gameWithControllerStarted = false;
 
 public:
     explicit TCPServer(int port);
@@ -109,6 +108,8 @@ public:
 
     [[nodiscard]] bool shouldStop() const;
 
+    void handleEmergency();
+
     void toggleBras();
 
     void togglePince(int pince);
@@ -116,8 +117,6 @@ public:
     void togglePanel(int servo_moteur);
 
     void percentagePanel(int servo_moteur, int percentage);
-
-    void sendAxisToArduino();
 
     ~TCPServer();
 };
