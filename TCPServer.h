@@ -106,8 +106,6 @@ public:
 
     void stop();
 
-    void askArduinoPos();
-
     [[nodiscard]] size_t nbClients() const;
 
     [[nodiscard]] bool shouldStop() const;

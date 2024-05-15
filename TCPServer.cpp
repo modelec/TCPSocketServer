@@ -173,7 +173,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 }
             }
             else if (args[0] == "1") {
-                int speed = static_cast<int>((- value * 3.2) / 327.670f);
+                int speed = static_cast<int>((- value * 3.1) / 327.670f);
                 if (!handleEmergecnyFlag) {
                     this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                 }
@@ -187,7 +187,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 }
             }
             else if (args[0] == "2") {
-                double speed = static_cast<int>((value * 3.2) / 327.670f);
+                double speed = static_cast<int>((value * 3.1) / 327.670f);
                 this->broadcastMessage("start;arduino;rotate;" + std::to_string(speed));
             }
         }
@@ -225,13 +225,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         }
         else if (tokens[2] == "disconnect") {
             this->broadcastMessage("strat;arduino;clear;1\n");
-        }
-    }
-    else if (tokens[0] == "arduino") {
-        if (tokens[2] == "set pos") {
-            std::vector<std::string> pos = TCPUtils::split(tokens[3], ",");
-            this->robotPose = {std::stof(pos[0]), std::stof(pos[1]), std::stof(pos[2]) / 100};
-            this->sendToClient("strat;lidar;set pos;" + std::to_string(this->robotPose.pos.x) + "," + std::to_string(this->robotPose.pos.y) + "," + std::to_string(this->robotPose.theta) + "\n", lidarSocket);
         }
     }
 }
@@ -371,27 +364,6 @@ void TCPServer::checkIfAllClientsReady() {
     if (allReady)
     {
         this->broadcastMessage("strat;all;ready;1\n");
-        std::thread([this]() { askArduinoPos(); }).detach();
-        this->broadcastMessage("strat;arduino;set pos;0,0,0");
-        this->broadcastMessage("strat;arduino;set pos;0,0,0");
-    }
-}
-
-void TCPServer::askArduinoPos() {
-    for (const auto & client : clients) {
-        if (client.name == "arduino") {
-            this->arduinoSocket = client.socket;
-            break;
-        }
-    }
-
-    if (this->arduinoSocket == -1) {
-        return;
-    }
-
-    while (!this->_shouldStop) {
-        this->sendToClient("strat;arduino;get pos;1\n", this->arduinoSocket);
-        usleep(50'000);
     }
 }
 
