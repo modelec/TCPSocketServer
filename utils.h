@@ -4,12 +4,15 @@
 #include <utility>
 #include <vector>
 #include <string>
+#include <ostream>
+#include <cmath>
 
 #define PI 3.14159265358979323846
 
 enum PinceState {
     WHITE_FLOWER,
     PURPLE_FLOWER,
+    FLOWER,
     NONE
 };
 
@@ -26,9 +29,11 @@ namespace TCPUtils {
 class ArucoTag {
 
 public:
-    ArucoTag(int id, std::string  name, std::array<float, 2> pos, std::array<float, 3> rot);
+    ArucoTag(int id, std::string name, std::array<float, 2> pos, std::array<float, 3> rot);
 
     ArucoTag() = default;
+
+    ArucoTag(const ArucoTag& other) = default;
 
     [[nodiscard]] int id() const;
 
@@ -52,27 +57,14 @@ public:
 
     [[nodiscard]] int getNbFind() const;
 
+    friend std::ostream& operator<<(std::ostream& os, const ArucoTag& tag);
+
 private:
     int _id = -1;
     std::string _name;
-    std::array<float, 2> _pos;
-    std::array<float, 3> _rot;
-    int nbFind = 0;
+    std::array<float, 2> _pos = {0, 0};
+    std::array<float, 3> _rot = {0, 0, 0};
+    int nbFind = 1;
 };
 
-class FlowerAruco {
-
-public:
-    FlowerAruco();
-
-    explicit FlowerAruco(ArucoTag* tag);
-
-    [[nodiscard]] ArucoTag* getTag() const;
-
-    [[nodiscard]] std::array<float, 2> getPos() const;
-
-private:
-    ArucoTag* tag;
-
-    std::array<float, 2> _realPos;
-};
+double distanceToTag(const ArucoTag& tag);

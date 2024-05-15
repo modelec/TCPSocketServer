@@ -4,14 +4,12 @@
 std::atomic<bool> shouldStop = false;
 
 void signalHandler( int signum ) {
-
     shouldStop = true;
-
-    exit(signum);
 }
 
 int main(int argc, char* argv[]) {
     signal(SIGINT, signalHandler);
+    signal(SIGTERM, signalHandler);
 
     int port = 8080;
     if (argc >= 2) {
