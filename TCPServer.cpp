@@ -183,7 +183,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 if (value < 0) {
                     speed = static_cast<int>(TCPUtils::mapValue(value, -32767.0, 0.0, -310.0, -70.0));
                 } else if (value == 0) {
-                    speed = 0; // Maps 0 to 0
+                    speed = 0;
                 } else {
                     speed = static_cast<int>(TCPUtils::mapValue(value, 0.0, 32768.0, 70.0, 310.0));
                 }
