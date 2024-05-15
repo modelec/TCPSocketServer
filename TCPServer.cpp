@@ -365,6 +365,8 @@ void TCPServer::checkIfAllClientsReady() {
     {
         this->broadcastMessage("strat;all;ready;1\n");
         std::thread([this]() { askArduinoPos(); }).detach();
+        this->broadcastMessage("strat;arduino;set pos;0,0,0");
+        this->broadcastMessage("strat;arduino;set pos;0,0,0");
     }
 }
 
