@@ -110,6 +110,8 @@ public:
 
     void handleEmergency();
 
+    void checkIfAllClientsReady();
+
     void toggleBras();
 
     void togglePince(int pince);
