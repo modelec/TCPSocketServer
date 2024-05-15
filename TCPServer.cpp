@@ -175,10 +175,10 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                 }
                 else {
-                    if (speed > 0 && (this->lidarDectectionAngle > PI / 3 || this->lidarDectectionAngle < - PI / 3)) {
+                    if (speed > 0 && !(this->lidarDectectionAngle > PI / 2 || this->lidarDectectionAngle < - PI / 2)) {
                         this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                     }
-                    else if (speed < 0 && (this->lidarDectectionAngle < PI / 3 && this->lidarDectectionAngle > - PI / 3)) {
+                    else if (speed < 0 && !(this->lidarDectectionAngle < PI / 2 && this->lidarDectectionAngle > - PI / 2)) {
                         this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                     }
                 }
