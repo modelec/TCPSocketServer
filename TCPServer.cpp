@@ -125,7 +125,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         lidarDecetionDistance = stoi(args[0]);
         // TODO distance de detection proportionnelle a la vitesse
 
-        if (stoi(args[0]) < 300) {
+        if (lidarDecetionDistance < 300) {
             stopEmergency = true;
 
             this->lidarDectectionAngle = stod(args[1]) / 100;
@@ -153,7 +153,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 }
                 else if (client.name == "lidar") {
                     this->broadcastMessage("strat;lidar;start;1\n");
-                    this->broadcastMessage("strat;lidar;set beacon;0\n");
+                    this->broadcastMessage("strat;lidar;set table;0\n");
+                    this->broadcastMessage("strat;lidar;set range;750\n");
                     lidarSocket = clientSocket;
                 }
                 std::cout << client.socket << " | " << client.name << " is ready" << std::endl;
@@ -192,10 +193,10 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                 }
                 else {
-                    if (speed >= 0 && (this->lidarDectectionAngle > PI / 2 && this->lidarDectectionAngle < 3 * PI / 2)) {
+                    if (speed >= 0 && ((this->lidarDectectionAngle > PI / 2 && this->lidarDectectionAngle < 3 * PI / 2) || (this->lidarDecetionDistance > speed * 1.5))) {
                         this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                     }
-                    else if (speed <= 0 && (this->lidarDectectionAngle < PI / 2 || this->lidarDectectionAngle > 3 * PI / 2)) {
+                    else if (speed <= 0 && ((this->lidarDectectionAngle < PI / 2 || this->lidarDectectionAngle > 3 * PI / 2) || (this->lidarDecetionDistance > speed * 1.5))) {
                         this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                     }
                 }
