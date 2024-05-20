@@ -3,7 +3,15 @@ project(socketServer)
 
 set(CMAKE_CXX_STANDARD 17)
 
+find_package(Modelec COMPONENTS
+        Utils
+        REQUIRED
+)
+
 add_executable(socketServer main.cpp
         TCPServer.cpp
-        utils.cpp
+)
+
+target_link_libraries(socketServer
+        Modelec::Utils
 )

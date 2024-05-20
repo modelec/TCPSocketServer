@@ -12,8 +12,16 @@
 #include <atomic>
 #include <fstream>
 #include <optional>
+#include <array>
 
-#include "utils.h"
+#include <Modelec/Utils.h>
+
+enum PinceState {
+    WHITE_FLOWER,
+    PURPLE_FLOWER,
+    FLOWER,
+    NONE
+};
 
 struct ClientTCP
 {

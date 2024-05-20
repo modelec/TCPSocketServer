@@ -18,7 +18,7 @@ void ClientHandler::handle() {
                 break;
             }
 
-            std::vector<std::string> messages = TCPUtils::split(buffer, "\n");
+            std::vector<std::string> messages = Modelec::split(buffer, "\n");
             for (const std::string& message : messages) {
                 processMessage(message);
             }
@@ -92,7 +92,7 @@ void TCPServer::acceptConnections()
             std::cerr << "Accepting connection failed" << std::endl;
             continue;
         }
-        std::cout << "Connection accepted" << std::endl;
+        std::cout << "Connection accepted." << clientSocket << std::endl;
 
 
         // Add the client socket to the list
@@ -112,15 +112,15 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 {
     // std::cout << message << std::endl;
 
-    std::vector<std::string> tokens = TCPUtils::split(message, ";");
+    std::vector<std::string> tokens = Modelec::split(message, ";");
 
     if (tokens.size() != 4)
     {
         std::cerr << "Invalid message format, token size : " << std::to_string(tokens.size()) << " from message : " << message << std::endl;
         return;
     }
-    if (TCPUtils::contains(tokens[2], "stop proximity")) {
-        std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
+    if (Modelec::contains(tokens[2], "stop proximity")) {
+        std::vector<std::string> args = Modelec::split(tokens[3], ",");
 
         lidarDecetionDistance = stoi(args[0]);
         // TODO distance de detection proportionnelle a la vitesse
@@ -165,14 +165,14 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
     }
     else if (tokens[0] == "gc") {
         if (tokens[2] == "axis") {
-            std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
+            std::vector<std::string> args = Modelec::split(tokens[3], ",");
             double value = std::stod(args[1]);
             if (value > -1000 && value < 1000) {
                 value = 0;
             }
             if (args[0] == "0") {
                 if (!handleEmergecnyFlag) {
-                    int angle = static_cast<int>(TCPUtils::mapValue(value, -32767.0, 32768.0, - PI / 2, PI / 2));
+                    int angle = static_cast<int>(Modelec::mapValue(value, -32767.0, 32768.0, - PI / 2, PI / 2));
                     this->broadcastMessage("strat;arduino;angle;" + std::to_string(angle) + "\n");
                 }
             }
@@ -182,11 +182,11 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 value = -value;
 
                 if (value < 0) {
-                    speed = static_cast<int>(TCPUtils::mapValue(value, -32767.0, 0.0, -310.0, -70.0));
+                    speed = static_cast<int>(Modelec::mapValue(value, -32767.0, 0.0, -310.0, -70.0));
                 } else if (value == 0) {
                     speed = 0;
                 } else {
-                    speed = static_cast<int>(TCPUtils::mapValue(value, 0.0, 32768.0, 70.0, 310.0));
+                    speed = static_cast<int>(Modelec::mapValue(value, 0.0, 32768.0, 70.0, 310.0));
                 }
 
                 if (!handleEmergecnyFlag) {
@@ -202,7 +202,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 }
             }
             else if (args[0] == "2") {
-                int speed = static_cast<int>(TCPUtils::mapValue(value, -32767.0, 32768.0, -310.0, 310.0));
+                int speed = static_cast<int>(Modelec::mapValue(value, -32767.0, 32768.0, -310.0, 310.0));
                 this->broadcastMessage("start;arduino;rotate;" + std::to_string(speed));
             }
         }
@@ -236,7 +236,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
         }
         else if (tokens[2] == "trigger") {
-            std::vector<std::string> args = TCPUtils::split(tokens[3], ",");
+            std::vector<std::string> args = Modelec::split(tokens[3], ",");
 
             int nb = std::stoi(args[0]);
 
