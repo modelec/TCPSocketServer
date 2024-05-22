@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package(Modelec COMPONENTS
         Utils
+        CLParser
         REQUIRED
 )
 
@@ -14,4 +15,5 @@ add_executable(socketServer main.cpp
 
 target_link_libraries(socketServer
         Modelec::Utils
+        Modelec::CLParser
 )
