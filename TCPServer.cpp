@@ -172,7 +172,15 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             }
             if (args[0] == "0") {
                 if (!handleEmergecnyFlag) {
-                    int angle = static_cast<int>(Modelec::mapValue(value, -32767.0, 32768.0, -PI / 2, PI / 2));
+
+                    int angle;
+                    if (value < 0) {
+                        angle = static_cast<int>(Modelec::mapValue(value, -32767.0, -2000.0, -PI / 2, 0.0));
+                    }
+                    else {
+                        angle = static_cast<int>(Modelec::mapValue(value, 2000.0, 32768.0, 0.0, PI / 2));
+                    }
+
                     this->broadcastMessage("strat;arduino;angle;" + std::to_string(angle) + "\n");
                 }
             }
