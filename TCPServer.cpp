@@ -190,11 +190,11 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 value = -value;
 
                 if (value < 0) {
-                    speed = static_cast<int>(Modelec::mapValue(value, -32767.0, -4000.0, -310.0, -70.0));
+                    speed = static_cast<int>(Modelec::mapValue(value, -32767.0, 0.0, -310.0, -70.0));
                 } else if (value == 0) {
                     speed = 0;
                 } else {
-                    speed = static_cast<int>(Modelec::mapValue(value, 4000.0, 32768.0, 70.0, 310.0));
+                    speed = static_cast<int>(Modelec::mapValue(value, 0.0, 32768.0, 70.0, 310.0));
                 }
 
                 if (!handleEmergecnyFlag) {
