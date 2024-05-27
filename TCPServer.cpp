@@ -206,7 +206,15 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 }
             }
             else if (args[0] == "2") {
-                int speed = static_cast<int>(Modelec::mapValue(value, -32767.0, 32768.0, -310.0, 310.0));
+
+                int speed;
+                if (value < 0) {
+                    speed = static_cast<int>(Modelec::mapValue(value, -32767.0, 2000.0, -310.0, 0.0));
+                }
+                else {
+                    speed = static_cast<int>(Modelec::mapValue(value, 2000.0, 32768.0, 0.0, 310.0));
+                }
+
                 this->broadcastMessage("start;arduino;rotate;" + std::to_string(speed));
             }
         }
