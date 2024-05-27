@@ -175,10 +175,10 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
                     int angle;
                     if (value < 0) {
-                        angle = static_cast<int>(Modelec::mapValue(value, -32767.0, -2000.0, -PI / 2, 0.0));
+                        angle = static_cast<int>(Modelec::mapValue(value, -32767.0, -2000.0, -PI / 2, 0.0) * 100);
                     }
                     else {
-                        angle = static_cast<int>(Modelec::mapValue(value, 2000.0, 32768.0, 0.0, PI / 2));
+                        angle = static_cast<int>(Modelec::mapValue(value, 2000.0, 32768.0, 0.0, PI / 2) * 100);
                     }
 
                     this->broadcastMessage("strat;arduino;angle;" + std::to_string(angle) + "\n");
@@ -186,10 +186,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             }
             else if (args[0] == "1") {
                 int speed;
-
-                if (value > -4000 && value < 4000) {
-                    value = 0;
-                }
 
                 value = -value;
 
@@ -217,7 +213,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
                 int speed;
                 if (value < 0) {
-                    speed = static_cast<int>(Modelec::mapValue(value, -32767.0, 2000.0, -310.0, 0.0));
+                    speed = static_cast<int>(Modelec::mapValue(value, -32767.0, -2000.0, -310.0, 0.0));
                 }
                 else {
                     speed = static_cast<int>(Modelec::mapValue(value, 2000.0, 32768.0, 0.0, 310.0));
