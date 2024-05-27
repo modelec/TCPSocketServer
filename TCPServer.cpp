@@ -173,12 +173,28 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             if (args[0] == "0") {
                 if (!handleEmergecnyFlag) {
 
+                    if (value < -23000) value = -23000;
+                    if (value > 23000) value = 23000;
+
                     int angle;
                     if (value < 0) {
-                        angle = static_cast<int>(Modelec::mapValue(value, -32767.0, -2000.0, -PI / 2, 0.0) * 100);
+                        if (value < -23000) {
+                            angle = -PI * 100 / 2;
+                        }
+                        else {
+                            angle = static_cast<int>(Modelec::mapValue(value, -23000.0, -2000.0, -PI / 2, 0.0) * 100);
+                        }
+                    }
+                    else if (value == 0) {
+                        angle = 0;
                     }
                     else {
-                        angle = static_cast<int>(Modelec::mapValue(value, 2000.0, 32768.0, 0.0, PI / 2) * 100);
+                        if (value > 0) {
+                            angle = PI * 100 / 2;
+                        }
+                        else {
+                            angle = static_cast<int>(Modelec::mapValue(value, 2000.0, 23000.0, 0.0, PI / 2) * 100);
+                        }
                     }
 
                     this->broadcastMessage("strat;arduino;angle;" + std::to_string(angle) + "\n");
@@ -187,24 +203,38 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             else if (args[0] == "1") {
                 int speed;
 
+                if (value > -4000 && value < 4000) {
+                    value = 0;
+                }
+
                 value = -value;
 
                 if (value < 0) {
-                    speed = static_cast<int>(Modelec::mapValue(value, -32767.0, 0.0, -310.0, -70.0));
+                    if (value < -25000) {
+                        speed = -310;
+                    }
+                    else {
+                        speed = static_cast<int>(Modelec::mapValue(value, -25000.0, -4000.0, -310.0, -70.0));
+                    }
                 } else if (value == 0) {
                     speed = 0;
                 } else {
-                    speed = static_cast<int>(Modelec::mapValue(value, 0.0, 32768.0, 70.0, 310.0));
+                    if (value > 25000) {
+                        speed = 310;
+                    }
+                    else {
+                        speed = static_cast<int>(Modelec::mapValue(value, 4000.0, 25000.0, 70.0, 310.0));
+                    }
                 }
 
                 if (!handleEmergecnyFlag) {
                     this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                 }
                 else {
-                    if (speed >= 0 && ((this->lidarDectectionAngle > PI / 2 && this->lidarDectectionAngle < 3 * PI / 2) || (this->lidarDecetionDistance > speed * 1.5))) {
+                    if (speed >= 0 && (this->lidarDectectionAngle > PI / 2 && this->lidarDectectionAngle < 3 * PI / 2)) {
                         this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                     }
-                    else if (speed <= 0 && ((this->lidarDectectionAngle < PI / 2 || this->lidarDectectionAngle > 3 * PI / 2) || (this->lidarDecetionDistance > speed * 1.5))) {
+                    else if (speed <= 0 && (this->lidarDectectionAngle < PI / 2 || this->lidarDectectionAngle > 3 * PI / 2)) {
                         this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                     }
                 }
@@ -213,10 +243,23 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
                 int speed;
                 if (value < 0) {
-                    speed = static_cast<int>(Modelec::mapValue(value, -32767.0, -2000.0, -310.0, 0.0));
+                    if (value < -25000) {
+                        speed = -310;
+                    }
+                    else {
+                        speed = static_cast<int>(Modelec::mapValue(value, -25000.0, -2000.0, -310.0, 0.0));
+                    }
+                }
+                else if (value == 0) {
+                    speed = 0;
                 }
                 else {
-                    speed = static_cast<int>(Modelec::mapValue(value, 2000.0, 32768.0, 0.0, 310.0));
+                    if (value > 25000) {
+                        speed = 310;
+                    }
+                    else {
+                        speed = static_cast<int>(Modelec::mapValue(value, 2000.0, 25000.0, 0.0, 310.0));
+                    }
                 }
 
                 this->broadcastMessage("start;arduino;rotate;" + std::to_string(speed));
