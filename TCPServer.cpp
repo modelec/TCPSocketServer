@@ -187,7 +187,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             else if (args[0] == "1") {
                 int speed;
 
-                if (value > 4000 && value > 400) {
+                if (value > -4000 && value > 400) {
                     value = 0;
                 }
 
