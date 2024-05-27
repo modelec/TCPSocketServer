@@ -110,7 +110,7 @@ void TCPServer::acceptConnections()
 
 void TCPServer::handleMessage(const std::string& message, int clientSocket)
 {
-    // std::cout << message << std::endl;
+    std::cout << message << std::endl;
 
     std::vector<std::string> tokens = Modelec::split(message, ";");
 
@@ -167,26 +167,30 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         if (tokens[2] == "axis") {
             std::vector<std::string> args = Modelec::split(tokens[3], ",");
             double value = std::stod(args[1]);
-            if (value > -1000 && value < 1000) {
+            if (value > -2000 && value < 2000) {
                 value = 0;
             }
             if (args[0] == "0") {
                 if (!handleEmergecnyFlag) {
-                    int angle = static_cast<int>(Modelec::mapValue(value, -32767.0, 32768.0, - PI / 2, PI / 2));
+                    int angle = static_cast<int>(Modelec::mapValue(value, -32767.0, 32768.0, -PI / 2, PI / 2));
                     this->broadcastMessage("strat;arduino;angle;" + std::to_string(angle) + "\n");
                 }
             }
             else if (args[0] == "1") {
                 int speed;
 
+                if (value > 4000 && value > 400) {
+                    value = 0;
+                }
+
                 value = -value;
 
                 if (value < 0) {
-                    speed = static_cast<int>(Modelec::mapValue(value, -32767.0, 0.0, -310.0, -70.0));
+                    speed = static_cast<int>(Modelec::mapValue(value, -32767.0, -4000.0, -310.0, -70.0));
                 } else if (value == 0) {
                     speed = 0;
                 } else {
-                    speed = static_cast<int>(Modelec::mapValue(value, 0.0, 32768.0, 70.0, 310.0));
+                    speed = static_cast<int>(Modelec::mapValue(value, 4000.0, 32768.0, 70.0, 310.0));
                 }
 
                 if (!handleEmergecnyFlag) {
