@@ -130,7 +130,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
             this->lidarDectectionAngle = stod(args[1]) / 100;
 
-            if (!handleEmergecnyFlag) {
+            if (!handleEmergencyFlag) {
                 std::thread([this]() { handleEmergency(); }).detach();
             }
         }
@@ -155,6 +155,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     this->broadcastMessage("strat;lidar;start;1\n");
                     this->broadcastMessage("strat;lidar;set table;0\n");
                     this->broadcastMessage("strat;lidar;set range;300\n");
+                    this->broadcastMessage("strat;gc;nonvalid borne;2000\n");
                     lidarSocket = clientSocket;
                 }
                 std::cout << client.socket << " | " << client.name << " is ready" << std::endl;
@@ -167,11 +168,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         if (tokens[2] == "axis") {
             std::vector<std::string> args = Modelec::split(tokens[3], ",");
             double value = std::stod(args[1]);
-            if (value > -2000 && value < 2000) {
-                value = 0;
-            }
             if (args[0] == "0") {
-                if (!handleEmergecnyFlag || !alertLidar) {
+                if (!handleEmergencyFlag || !alertLidar) {
 
                     if (value < -15000) value = -15000;
                     if (value > 15000) value = 15000;
@@ -229,7 +227,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     }
                 }
 
-                if (!handleEmergecnyFlag || !alertLidar) {
+                if (!handleEmergencyFlag || !alertLidar) {
                     this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                 }
                 else {
@@ -423,7 +421,7 @@ size_t TCPServer::nbClients() const {
 
 void TCPServer::handleEmergency() {
 
-    handleEmergecnyFlag = true;
+    handleEmergencyFlag = true;
 
     this->sendToClient("strat;arduino;clear;1\n", arduinoSocket);
     this->sendToClient("strat;arduino;clear;1\n", arduinoSocket);
@@ -432,7 +430,7 @@ void TCPServer::handleEmergency() {
         stopEmergency = false;
         usleep(300'000);
     }
-    handleEmergecnyFlag = false;
+    handleEmergencyFlag = false;
 }
 
 

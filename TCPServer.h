@@ -78,7 +78,7 @@ private:
 
     bool stopEmergency = false;
 
-    bool handleEmergecnyFlag = false;
+    bool handleEmergencyFlag = false;
 
     int arduinoSocket = -1;
     int lidarSocket = -1;
