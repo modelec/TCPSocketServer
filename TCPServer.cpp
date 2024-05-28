@@ -173,8 +173,10 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             if (args[0] == "0") {
                 if (!handleEmergecnyFlag) {
 
-                    if (value < -23000) value = -23000;
-                    if (value > 23000) value = 23000;
+                    if (value < -15000) value = -15000;
+                    if (value > 15000) value = 15000;
+
+                    if (value > -5000 && value < 5000) value = 0;
 
                     int angle;
                     if (value < 0) {
@@ -182,7 +184,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                             angle = -PI * 100 / 2;
                         }
                         else {
-                            angle = static_cast<int>(Modelec::mapValue(value, -23000.0, -2000.0, -PI / 2, 0.0) * 100);
+                            angle = static_cast<int>(Modelec::mapValue(value, -15000.0, -5000.0, -PI / 2, 0.0) * 100);
                         }
                     }
                     else if (value == 0) {
@@ -193,7 +195,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                             angle = PI * 100 / 2;
                         }
                         else {
-                            angle = static_cast<int>(Modelec::mapValue(value, 2000.0, 23000.0, 0.0, PI / 2) * 100);
+                            angle = static_cast<int>(Modelec::mapValue(value, 5000.0, 15000.0, 0.0, PI / 2) * 100);
                         }
                     }
 
