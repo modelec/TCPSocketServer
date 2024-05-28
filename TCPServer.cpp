@@ -280,6 +280,14 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             else if (tokens[3] == "1") {
                 this->togglePince(2);
             }
+            else if (tokens[3] == "11") {
+                this->alertLidar = true;
+                this->broadcastMessage("strat;gc;start proximity;1\n");
+            }
+            else if (tokens[3] == "12") {
+                this->alertLidar = false;
+                this->broadcastMessage("strat;gc;stop proximity;1\n");
+            }
             else if (tokens[3] == "13") {
                 this->togglePanel(0);
             }

@@ -93,6 +93,8 @@ private:
 
     int lidarDecetionDistance = 0;
 
+    bool alertLidar = true;
+
 public:
     explicit TCPServer(int port);
 
