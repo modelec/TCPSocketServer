@@ -154,7 +154,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 else if (client.name == "lidar") {
                     this->broadcastMessage("strat;lidar;start;1\n");
                     this->broadcastMessage("strat;lidar;set table;0\n");
-                    this->broadcastMessage("strat;lidar;set range;750\n");
+                    this->broadcastMessage("strat;lidar;set range;300\n");
                     lidarSocket = clientSocket;
                 }
                 std::cout << client.socket << " | " << client.name << " is ready" << std::endl;
@@ -171,7 +171,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 value = 0;
             }
             if (args[0] == "0") {
-                if (!handleEmergecnyFlag) {
+                if (!handleEmergecnyFlag || !alertLidar) {
 
                     if (value < -15000) value = -15000;
                     if (value > 15000) value = 15000;
@@ -229,7 +229,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                     }
                 }
 
-                if (!handleEmergecnyFlag) {
+                if (!handleEmergecnyFlag || !alertLidar) {
                     this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                 }
                 else {
@@ -282,11 +282,11 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             }
             else if (tokens[3] == "11") {
                 this->alertLidar = true;
-                this->broadcastMessage("strat;gc;start proximity;1\n");
+                this->broadcastMessage("strat;gc;start proximity alert;1\n");
             }
             else if (tokens[3] == "12") {
                 this->alertLidar = false;
-                this->broadcastMessage("strat;gc;stop proximity;1\n");
+                this->broadcastMessage("strat;gc;stop proximity alert;1\n");
             }
             else if (tokens[3] == "13") {
                 this->togglePanel(0);
