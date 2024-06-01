@@ -125,7 +125,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         lidarDecetionDistance = stoi(args[0]);
         // TODO distance de detection proportionnelle a la vitesse
 
-        if (lidarDecetionDistance < 300) {
+        if (lidarDecetionDistance < 400) {
             stopEmergency = true;
 
             this->lidarDectectionAngle = stod(args[1]) / 100;
@@ -154,7 +154,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 else if (client.name == "lidar") {
                     this->broadcastMessage("strat;lidar;start;1\n");
                     this->broadcastMessage("strat;lidar;set table;0\n");
-                    this->broadcastMessage("strat;lidar;set range;300\n");
+                    this->broadcastMessage("strat;lidar;set range;400\n");
                     this->broadcastMessage("strat;gc;nonvalid borne;2000\n");
                     lidarSocket = clientSocket;
                 }
@@ -186,7 +186,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                         }
                     }
                     else if (value == 0) {
-                        angle = 0;
+                        this->broadcastMessage("strat;arduino;clear;1\n");
+                        return;
                     }
                     else {
                         if (value > 0) {
@@ -217,7 +218,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                         speed = static_cast<int>(Modelec::mapValue(value, -25000.0, -4000.0, -310.0, -70.0));
                     }
                 } else if (value == 0) {
-                    speed = 0;
+                        this->broadcastMessage("strat;arduino;clear;1\n");
+                        return;
                 } else {
                     if (value > 25000) {
                         speed = 310;
@@ -284,6 +286,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             }
             else if (tokens[3] == "12") {
                 this->alertLidar = false;
+                this->handleEmergencyFlag = false;
                 this->broadcastMessage("strat;gc;stop proximity alert;1\n");
             }
             else if (tokens[3] == "13") {
