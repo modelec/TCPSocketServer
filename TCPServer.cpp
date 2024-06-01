@@ -186,8 +186,7 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                         }
                     }
                     else if (value == 0) {
-                        this->broadcastMessage("strat;arduino;clear;1\n");
-                        return;
+                        angle = 0;
                     }
                     else {
                         if (value > 0) {
