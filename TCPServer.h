@@ -78,7 +78,7 @@ private:
 
     bool stopEmergency = false;
 
-    bool handleEmergecnyFlag = false;
+    bool handleEmergencyFlag = false;
 
     int arduinoSocket = -1;
     int lidarSocket = -1;
@@ -92,6 +92,8 @@ private:
     double lidarDectectionAngle = 0;
 
     int lidarDecetionDistance = 0;
+
+    bool alertLidar = true;
 
 public:
     explicit TCPServer(int port);

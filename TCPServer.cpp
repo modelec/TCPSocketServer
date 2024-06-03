@@ -124,12 +124,12 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
         lidarDecetionDistance = stoi(args[0]);
 
-        if (lidarDecetionDistance < 300) {
+        if (lidarDecetionDistance < 400) {
             stopEmergency = true;
 
             this->lidarDectectionAngle = stod(args[1]) / 100;
 
-            if (!handleEmergecnyFlag) {
+            if (!handleEmergencyFlag) {
                 std::thread([this]() { handleEmergency(); }).detach();
             }
         }
@@ -153,7 +153,8 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
                 else if (client.name == "lidar") {
                     this->broadcastMessage("strat;lidar;start;1\n");
                     this->broadcastMessage("strat;lidar;set table;0\n");
-                    this->broadcastMessage("strat;lidar;set range;750\n");
+                    this->broadcastMessage("strat;lidar;set range;400\n");
+                    this->broadcastMessage("strat;gc;nonvalid borne;2000\n");
                     lidarSocket = clientSocket;
                 }
                 std::cout << client.socket << " | " << client.name << " is ready" << std::endl;
@@ -166,18 +167,33 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         if (tokens[2] == "axis") {
             std::vector<std::string> args = Modelec::split(tokens[3], ",");
             double value = std::stod(args[1]);
-            if (value > -2000 && value < 2000) {
-                value = 0;
-            }
             if (args[0] == "0") {
-                if (!handleEmergecnyFlag) {
+                if (!handleEmergencyFlag || !alertLidar) {
+
+                    if (value < -15000) value = -15000;
+                    if (value > 15000) value = 15000;
+
+                    if (value > -5000 && value < 5000) value = 0;
 
                     int angle;
                     if (value < 0) {
-                        angle = static_cast<int>(Modelec::mapValue(value, -32767.0, -2000.0, -PI / 2, 0.0) * 100);
+                        if (value < -23000) {
+                            angle = -PI * 100 / 2;
+                        }
+                        else {
+                            angle = static_cast<int>(Modelec::mapValue(value, -15000.0, -5000.0, -PI / 2, 0.0) * 100);
+                        }
+                    }
+                    else if (value == 0) {
+                        angle = 0;
                     }
                     else {
-                        angle = static_cast<int>(Modelec::mapValue(value, 2000.0, 32768.0, 0.0, PI / 2) * 100);
+                        if (value > 0) {
+                            angle = PI * 100 / 2;
+                        }
+                        else {
+                            angle = static_cast<int>(Modelec::mapValue(value, 5000.0, 15000.0, 0.0, PI / 2) * 100);
+                        }
                     }
 
                     this->broadcastMessage("strat;arduino;angle;" + std::to_string(angle) + "\n");
@@ -186,24 +202,39 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             else if (args[0] == "1") {
                 int speed;
 
+                if (value > -4000 && value < 4000) {
+                    value = 0;
+                }
+
                 value = -value;
 
                 if (value < 0) {
-                    speed = static_cast<int>(Modelec::mapValue(value, -32767.0, 0.0, -310.0, -70.0));
+                    if (value < -25000) {
+                        speed = -310;
+                    }
+                    else {
+                        speed = static_cast<int>(Modelec::mapValue(value, -25000.0, -4000.0, -310.0, -70.0));
+                    }
                 } else if (value == 0) {
-                    speed = 0;
+                        this->broadcastMessage("strat;arduino;clear;1\n");
+                        return;
                 } else {
-                    speed = static_cast<int>(Modelec::mapValue(value, 0.0, 32768.0, 70.0, 310.0));
+                    if (value > 25000) {
+                        speed = 310;
+                    }
+                    else {
+                        speed = static_cast<int>(Modelec::mapValue(value, 4000.0, 25000.0, 70.0, 310.0));
+                    }
                 }
 
-                if (!handleEmergecnyFlag) {
+                if (!handleEmergencyFlag || !alertLidar) {
                     this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                 }
                 else {
-                    if (speed >= 0 && ((this->lidarDectectionAngle > PI / 2 && this->lidarDectectionAngle < 3 * PI / 2) || (this->lidarDecetionDistance > speed * 1.5))) {
+                    if (speed >= 0 && (this->lidarDectectionAngle > PI / 2 && this->lidarDectectionAngle < 3 * PI / 2)) {
                         this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                     }
-                    else if (speed <= 0 && ((this->lidarDectectionAngle < PI / 2 || this->lidarDectectionAngle > 3 * PI / 2) || (this->lidarDecetionDistance > speed * 1.5))) {
+                    else if (speed <= 0 && (this->lidarDectectionAngle < PI / 2 || this->lidarDectectionAngle > 3 * PI / 2)) {
                         this->broadcastMessage("strat;arduino;speed;" + std::to_string(speed) + "\n");
                     }
                 }
@@ -212,10 +243,23 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
 
                 int speed;
                 if (value < 0) {
-                    speed = static_cast<int>(Modelec::mapValue(value, -32767.0, -2000.0, -310.0, 0.0));
+                    if (value < -25000) {
+                        speed = -310;
+                    }
+                    else {
+                        speed = static_cast<int>(Modelec::mapValue(value, -25000.0, -2000.0, -310.0, 0.0));
+                    }
+                }
+                else if (value == 0) {
+                    speed = 0;
                 }
                 else {
-                    speed = static_cast<int>(Modelec::mapValue(value, 2000.0, 32768.0, 0.0, 310.0));
+                    if (value > 25000) {
+                        speed = 310;
+                    }
+                    else {
+                        speed = static_cast<int>(Modelec::mapValue(value, 2000.0, 25000.0, 0.0, 310.0));
+                    }
                 }
 
                 this->broadcastMessage("start;arduino;rotate;" + std::to_string(speed));
@@ -233,6 +277,15 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
             }
             else if (tokens[3] == "1") {
                 this->togglePince(2);
+            }
+            else if (tokens[3] == "11") {
+                this->alertLidar = true;
+                this->broadcastMessage("strat;gc;start proximity alert;1\n");
+            }
+            else if (tokens[3] == "12") {
+                this->alertLidar = false;
+                this->handleEmergencyFlag = false;
+                this->broadcastMessage("strat;gc;stop proximity alert;1\n");
             }
             else if (tokens[3] == "13") {
                 this->togglePanel(0);
@@ -369,7 +422,7 @@ size_t TCPServer::nbClients() const {
 
 void TCPServer::handleEmergency() {
 
-    handleEmergecnyFlag = true;
+    handleEmergencyFlag = true;
 
     this->sendToClient("strat;arduino;clear;1\n", arduinoSocket);
     this->sendToClient("strat;arduino;clear;1\n", arduinoSocket);
@@ -378,7 +431,7 @@ void TCPServer::handleEmergency() {
         stopEmergency = false;
         usleep(300'000);
     }
-    handleEmergecnyFlag = false;
+    handleEmergencyFlag = false;
 }
 
 
