@@ -123,7 +123,6 @@ void TCPServer::handleMessage(const std::string& message, int clientSocket)
         std::vector<std::string> args = Modelec::split(tokens[3], ",");
 
         lidarDecetionDistance = stoi(args[0]);
-        // TODO distance de detection proportionnelle a la vitesse
 
         if (lidarDecetionDistance < 300) {
             stopEmergency = true;
