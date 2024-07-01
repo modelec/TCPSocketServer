@@ -1,4 +1,5 @@
 #include "TCPServer.h"
+#include <Modelec/CLParser.h>
 #include <csignal>
 
 std::atomic<bool> shouldStop = false;
@@ -13,10 +14,9 @@ void signalHandler( int signum ) {
 int main(int argc, char* argv[]) {
     signal(SIGINT, signalHandler);
 
-    int port = 8080;
-    if (argc >= 2) {
-        port = std::stoi(argv[1]);
-    }
+    CLParser clParser(argc, argv);
+
+    int port = clParser.getOption<int>("port", 8080);
 
     TCPServer server(port);
 
