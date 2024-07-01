@@ -88,18 +88,11 @@ int ArucoTag::getNbFind() const {
     return nbFind;
 }
 
-FlowerAruco::FlowerAruco() : tag(nullptr), _realPos({0, 0}) {
-
+std::ostream& operator<<(std::ostream& os, const ArucoTag& tag) {
+    os << "ArucoTag{id=" << tag.id() << ", name=" << tag.name() << ", pos=[" << tag.pos()[0] << ", " << tag.pos()[1] << "], rot=[" << tag.rot()[0] << ", " << tag.rot()[1] << ", " << tag.rot()[2] << "]}";
+    return os;
 }
 
-FlowerAruco::FlowerAruco(ArucoTag *tag) : tag(tag), _realPos({0, 0}) {
-
-}
-
-ArucoTag *FlowerAruco::getTag() const {
-    return tag;
-}
-
-std::array<float, 2> FlowerAruco::getPos() const {
-    return _realPos;
+double distanceToTag(const ArucoTag& tag) {
+    return std::sqrt(pow(tag.pos()[0], 2) + pow(tag.pos()[1], 2));
 }
